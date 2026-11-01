@@ -1,7 +1,6 @@
 # Gielinor
 
 Browser-based 3D RPG inspired by classic RuneScape (2004 era). Plain static site, no build step.
-The original 2D game lives in `/2d/`.
 
 ## Deploy to GitHub Pages
 
