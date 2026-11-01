@@ -1,3 +1,4 @@
+import { migrateRenameText } from './renames.js';
 import { normalizeSaga } from './saga.js';
 import { normalizeShopState, normalizeWear } from './economy.js';
 import { normalizeTasks } from './tasks.js';
@@ -26,7 +27,7 @@ import { normalizeSkywing } from './skywing.js';
 import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 
-export const SAVE_VERSION = 18;
+export const SAVE_VERSION = 19;
 export const POS_LIMIT = 146; // world half-size (150) minus a margin
 const KEY = 'gielinor3d';
 // Wanderer's Horizons (v15+): extra player fields saved and loaded as-is (normalized in migrateSave).
@@ -148,7 +149,7 @@ export function migrateSave(saved) {
   if (typeof p.prayerPoints !== 'number' || !(p.prayerPoints >= 0)) p.prayerPoints = saved.skills.Prayer.level * 10;
   p.prayerPoints = Math.min(p.prayerPoints, saved.skills.Prayer.level * 10);
   if (fromVersion < 4) notes.push('New in this update: stacking items, a toolbelt, quests, prayer and combat skills. See Settings → What\'s new.');
-  // v6: potions/poison state, Herblore skill (added by normalizeSkills), quest cape for earlier finishers.
+  // v6: potions/poison state, Herbalism skill (added by normalizeSkills), quest cape for earlier finishers.
   if (!Array.isArray(p.effects)) p.effects = [];
   p.effects = p.effects.filter(e => e && ITEMS[e.id] && e.left > 0);
   if (!p.poison || typeof p.poison !== 'object' || !(p.poison.dmg > 0)) p.poison = null;
@@ -160,10 +161,10 @@ export function migrateSave(saved) {
     if (hadAll || ownsCape) { p.questCapeLegacy = true; notes.push('You keep your Quest point cape, even as new quests are added.'); }
   }
   p.questCapeLegacy = !!p.questCapeLegacy;
-  if (fromVersion < 6) notes.push('New: Herblore and potions, endless trees, rocks and fishing spots, and 5x level bonuses. See Settings → What\'s new.');
+  if (fromVersion < 6) notes.push('New: Herbalism and potions, endless trees, rocks and fishing spots, and 5x level bonuses. See Settings → What\'s new.');
   if (fromVersion < 5) notes.push('New: perks every 5 levels, gear bonuses with jewellery, capes and armour sets, and lasting quest bonuses. See Settings → What\'s new.');
-  // v7: Magic, Agility, Thieving and Runecrafting (normalizeSkills starts them at level 1).
-  if (fromVersion < 7) notes.push('New skills: Magic, Agility, Thieving and Runecrafting, plus the towns of Saltreach, Highcrest and Whitecairn. See Settings → What\'s new.');
+  // v7: Magic, Agility, Thieving and Glyphcraft (normalizeSkills starts them at level 1).
+  if (fromVersion < 7) notes.push('New skills: Magic, Agility, Thieving and Glyphcraft, plus the towns of Saltreach, Highcrest and Whitecairn. See Settings → What\'s new.');
   // v8: 100 new quests. Anyone who had finished all 22 earlier quests keeps the Quest point cape.
   if (fromVersion < 8) {
     const OLD22 = ['cook', 'fallen', 'doric', 'goblins', 'hides', 'tools', 'supply', 'archers', 'honour', 'fishing', 'emberfold_help', 'eastern_guards', 'herbs_for_wren', 'smith_order', 'eastern_feast', 'scout_report', 'miner_tools', 'sister_prayers', 'trader_supplies', 'knight_honour_east', 'angler_catch', 'carpenter_wood'];
@@ -215,8 +216,11 @@ export function migrateSave(saved) {
 
 export function applySaveData(data, skills, player, playerMesh) {
   try {
-    const saved = typeof data === 'string' ? JSON.parse(data) : data;
+    let saved = typeof data === 'string' ? JSON.parse(data) : data;
     if (!saved || typeof saved !== 'object') return false;
+    // v19: RuneScape-derived names became original ones (js/renames.js). Rewrite old saves/exports once.
+    const renamed = !(Number(saved.version) >= 19);
+    if (renamed) saved = JSON.parse(migrateRenameText(JSON.stringify(saved)));
     const notes = migrateSave(saved);
     Object.assign(skills, saved.skills);
     const p = saved.player;
@@ -235,6 +239,7 @@ export function applySaveData(data, skills, player, playerMesh) {
       playerMesh.mesh.position.x = Math.max(-POS_LIMIT, Math.min(POS_LIMIT, saved.position.x));
       playerMesh.mesh.position.z = Math.max(-POS_LIMIT, Math.min(POS_LIMIT, saved.position.z));
     }
+    if (renamed) notes.push('The world is now called Aerondel, and its towns, people, skills, metals, herbs, spells and prayers have new names. Your progress carried over.');
     applySaveData.lastNotes = notes;
     return true;
   } catch (e) {
