@@ -14,7 +14,7 @@ export const TALENTS = [
   [['Precision', { acc: 0.06 }], ['Brutality', { dmg: 0.05 }], ['Bulwark Stance', { red: 0.05 }]],
   [['Field Medic', { regen: 0.8 }], ['Vampiric', { killHeal: 0.06 }], ['Sharpshooter', { acc: 0.07 }]],
   [['Juggernaut', { red: 0.06 }], ['Executioner', { dmg: 0.06 }], ['Lifeblood', { regen: 1.0 }]],
-  [['Hawk Eye', { acc: 0.08 }], ['Unbroken', { red: 0.06 }], ['Reaver', { dmg: 0.07, killHeal: 0.03 }]],
+  [['Falcon Sight', { acc: 0.08 }], ['Unbroken', { red: 0.06 }], ['Reaver', { dmg: 0.07, killHeal: 0.03 }]],
   [['Avatar of War', { dmg: 0.1 }], ['Living Fortress', { red: 0.1 }], ['Font of Life', { regen: 1.5, killHeal: 0.05 }]]
 ];
 export const rowsOpen = cl => Math.max(0, Math.min(TALENTS.length, Math.floor((cl - PATH_LEVEL) / 10) + 1));

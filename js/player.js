@@ -9,7 +9,7 @@ import { inSound, clampToIsland } from './sea.js';
 export const WALK_SPEED = 3.3;  // world units per second
 export const RUN_SPEED = 6.2;
 
-const METAL = { Bronze: 0xb87333, Iron: 0x9a9a9a, Steel: 0xd0d8e0, Mithril: 0x5a6ad0, Adamant: 0x3a9a5a, Rune: 0x3ab8d0, Dragon: 0xb83a34, Wooden: 0x8a5a2a, Oak: 0xc49a5a, Willow: 0x9aaa5a, Maple: 0xc0702a, Yew: 0x6a4a2a, Magic: 0x5a8ae0, Leather: 0x7a4a24, Hard: 0x5a3a1a, Shortbow: 0x8a5a2a };
+const METAL = { Bronze: 0xb87333, Iron: 0x9a9a9a, Steel: 0xd0d8e0, Bluesteel: 0x5a6ad0, Verdite: 0x3a9a5a, Cobalt: 0x3ab8d0, Emberite: 0xb83a34, Wooden: 0x8a5a2a, Oak: 0xc49a5a, Willow: 0x9aaa5a, Maple: 0xc0702a, Yew: 0x6a4a2a, Magic: 0x5a8ae0, Leather: 0x7a4a24, Hard: 0x5a3a1a, Shortbow: 0x8a5a2a };
 
 // Hand with a palm, four fingers of three jointed segments and a two-segment thumb.
 // Origin at the wrist (sits at the end of the forearm). hand.userData.curl(c) closes it: 0 open, 1 fist/grip.
@@ -204,7 +204,7 @@ function gearKind(item) {
   if (!item) return 0;
   if (/chain/i.test(item)) return 1;
   if (/leather|cowl|chaps|Wooden|Oak|Willow|Maple|Yew/i.test(item)) return 3;
-  if (/^(Bronze|Iron|Steel|Mithril|Adamant|Rune|Dragon)/.test(item)) return 2;
+  if (/^(Bronze|Iron|Steel|Bluesteel|Verdite|Cobalt|Emberite)/.test(item)) return 2;
   return 0;
 }
 function setGear(mat, item, rough, metal) {
@@ -397,7 +397,7 @@ const SKILL_POSES = {
     p.leftArm.rotation.x = -0.6; elbow(p.leftArm).rotation.x = -1.2; p.leftArm.rotation.z = 0.15;
     p.body.rotation.x = 0.22; p.body.rotation.y = 0; knee(p.leftLeg).rotation.x = 0.12; knee(p.rightLeg).rotation.x = 0.12;
   },
-  // close bench work (fletching, crafting, herblore): hands together at the chest, head down, small cutting strokes
+  // close bench work (fletching, crafting, herbalism): hands together at the chest, head down, small cutting strokes
   craft(p, t, knee, elbow, pm) {
     const cut = Math.max(0, Math.sin((pm.idleT || 0) * 7));
     p.leftArm.rotation.x = -0.55; p.leftArm.rotation.z = 0.3; elbow(p.leftArm).rotation.x = -1.6;

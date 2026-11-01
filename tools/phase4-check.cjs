@@ -31,7 +31,7 @@ const [,,path='',tier='low',sz='390x844',savef]=process.argv;const [w,h]=sz.spli
   // styles + hex
   P.equipment.weapon='Iron flintlock';P.equipment.ammo='Lead shot';P.ammoCount=10;g.skills.Ranged.level=Math.max(10,g.skills.Ranged.level);
   const m=g.monsters.find(x=>x.alive&&(x.name==='Goblin'||x.name==='Cow'));g.pm.mesh.position.set(m.mesh.position.x+2,0,m.mesh.position.z);g.startAction({kind:'attack',mon:m});await S(7000);o.shot=P.ammoCount<10;
-  P.equipment.weapon='Hexwood staff';P.inventory['Bog rune']=10;P.inventory['Mind rune']=10;g.skills.Magic.level=Math.max(20,g.skills.Magic.level);
+  P.equipment.weapon='Hexwood staff';P.inventory['Bog rune']=10;P.inventory['Thought rune']=10;g.skills.Magic.level=Math.max(20,g.skills.Magic.level);
   const m2=g.monsters.find(x=>x.alive&&x.name==='Cow');g.pm.mesh.position.set(m2.mesh.position.x+3,0,m2.mesh.position.z);g.startAction({kind:'attack',mon:m2,spell:'hex_rot'});await S(6000);o.hex=(P.hexCasts||0)>0;
   o.drownedCrew=g.monsters.filter(x=>x.drowned).length;o.ports=g.nodes.filter(n=>n.sea==='harbour').length;
   // land quick buttons (Dig) don't overlap

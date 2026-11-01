@@ -79,7 +79,7 @@ export const QUESTS = [
   },
   {
     id: 'fallen', name: 'Rest for the Fallen', giver: 'priest', points: 1, start: 'Talk to Father Elric outside the church, north of the town square.',
-    rewards: ['250 Prayer XP', 'Unlocks the Protect from Melee prayer (Prayer 43)', '2 Cooked trout'],
+    rewards: ['250 Prayer XP', 'Unlocks the Ward against Melee prayer (Prayer 43)', '2 Cooked trout'],
     bonus: { desc: 'Prayers drain 5% slower and you slowly regain prayer points', fx: { drainLess: 0.05, ppRegen: 0.02 } },
     journal(player) {
       const st = q(player, 'fallen');
@@ -106,14 +106,14 @@ export const QUESTS = [
       if (st.stage === 2) return [['npc', 'Well done. Now pray at the altar beside me.']];
       return [
         ['npc', 'I felt the spirits settle. You have done a holy thing.'],
-        ['npc', 'When your faith is strong enough, you may call on Protect from Melee.'],
+        ['npc', 'When your faith is strong enough, you may call on Ward against Melee.'],
         { run: () => finish(player, this, g) }
       ];
     }
   },
   {
     id: 'doric', name: "Bruna's Quest", giver: 'doric', points: 1, start: 'Talk to Bruna at the smithy, south-east of the town square.',
-    rewards: ['400 Mining XP', '180 coins', 'Mithril and adamant tools sold at the Tool Shop'],
+    rewards: ['400 Mining XP', '180 coins', 'Bluesteel and verdite tools sold at the Tool Shop'],
     bonus: { desc: '+5% Mining and Smithing XP', fx: { 'xp.Mining': 0.05, 'xp.Smithing': 0.05 } },
     journal(player) {
       const s = q(player, 'doric').stage;
@@ -124,7 +124,7 @@ export const QUESTS = [
     reward(g) { g.xp('Mining', 2000); g.gold(900); },
     talk(player, g) {
       const s = q(player, 'doric').stage;
-      if (s === 'done') return [['npc', "Tobin's selling my mithril and adamant tools now. Tell him Bruna sent you!"]];
+      if (s === 'done') return [['npc', "Tobin's selling my bluesteel and verdite tools now. Tell him Bruna sent you!"]];
       if (s === 0) return [
         ['npc', "Hello traveller. I'm Bruna, the town smith. I'm short of ore for a big order."],
         ['npc', "Bring me 4 Copper ore, 4 Tin ore and 2 Iron ore and I'll make it worth your while. The mine's south-east."],
@@ -136,7 +136,7 @@ export const QUESTS = [
       if (g.has('Copper ore', 4) && g.has('Tin ore', 4) && g.has('Iron ore', 2)) return [
         ['player', "Here's your ore."],
         { run: () => { g.take('Copper ore', 4); g.take('Tin ore', 4); g.take('Iron ore', 2); } },
-        ['npc', "Lovely stuff! With this I can finish those mithril and adamant tools. I'll send them to Tobin's Tool Shop."],
+        ['npc', "Lovely stuff! With this I can finish those bluesteel and verdite tools. I'll send them to Tobin's Tool Shop."],
         { run: () => finish(player, this, g) }
       ];
       return [['npc', '4 Copper, 4 Tin and 2 Iron ore. The mine is south-east of town.']];
@@ -145,14 +145,14 @@ export const QUESTS = [
   {
     id: 'goblins', name: 'Goblin Trouble', giver: 'captain', points: 2, start: 'Talk to Captain Rhea on the south road out of town.',
     rewards: ['600 Attack XP', '600 Strength XP', 'Steel sword'],
-    bonus: { desc: '+10% damage against goblins and hill giants, +20 max hitpoints', fx: { 'dmgVs.Goblin': 0.1, 'dmgVs.Hill Giant': 0.1, maxHp: 20 } },
+    bonus: { desc: '+10% damage against goblins and hill giants, +20 max hitpoints', fx: { 'dmgVs.Goblin': 0.1, 'dmgVs.Crag Giant': 0.1, maxHp: 20 } },
     journal(player) {
       const st = q(player, 'goblins');
       if (st.stage === 0) return [{ text: this.start }];
       return [
         { text: `Kill 5 goblins north-east of town (${Math.min(5, st.kills || 0)}/5).`, done: st.stage === 'done' || st.stage >= 2 },
         { text: 'Report to Captain Rhea.', done: st.stage === 'done' || st.stage >= 3 },
-        { text: 'Slay a Hill Giant in the northern hills.', done: st.stage === 'done' || st.stage >= 4 },
+        { text: 'Slay a Crag Giant in the northern hills.', done: st.stage === 'done' || st.stage >= 4 },
         { text: 'Return to Captain Rhea.', done: st.stage === 'done' }
       ];
     },
@@ -170,13 +170,13 @@ export const QUESTS = [
       ];
       if (st.stage === 1) return [['npc', `${st.kills || 0} of 5 goblins down. Keep at it.`]];
       if (st.stage === 2) return [
-        ['npc', 'Fine work. But my scouts say the goblins answer to a Hill Giant in the hills north of town.'],
+        ['npc', 'Fine work. But my scouts say the goblins answer to a Crag Giant in the hills north of town.'],
         ['npc', 'Slay one and the raids should stop. Giants hit hard: bring food and use your combat skills.'],
         { run: () => setQ(player, 'goblins', { stage: 3 }) }
       ];
       if (st.stage === 3) return [['npc', 'The Hill Giants live up the north road, past the church.']];
       return [
-        ['npc', "A Hill Giant? Ha! You've earned this steel blade."],
+        ['npc', "A Crag Giant? Ha! You've earned this steel blade."],
         { run: () => finish(player, this, g) }
       ];
     }
@@ -314,8 +314,8 @@ export const QUESTS = [
   },
   {
     id: 'honour', name: "Knight's Honour", giver: 'knight', points: 2, start: 'Talk to Sir Calder on the north road, past the church.',
-    rewards: ['1000 Defence XP', '500 Attack XP', 'Amulet of glory'],
-    bonus: { desc: 'Take 3% less damage, +30 max hitpoints, +10% damage against black knights', fx: { dr: 0.03, maxHp: 30, 'dmgVs.Black Knight': 0.1 } },
+    rewards: ['1000 Defence XP', '500 Attack XP', 'Amulet of renown'],
+    bonus: { desc: 'Take 3% less damage, +30 max hitpoints, +10% damage against black knights', fx: { dr: 0.03, maxHp: 30, 'dmgVs.Ironveil Knight': 0.1 } },
     journal(player) {
       const st = q(player, 'honour');
       if (st.stage === 0) return [{ text: this.start }];
@@ -324,7 +324,7 @@ export const QUESTS = [
         { text: `Bring Sir Calder a Steel full helm as proof of your skill (have ${player.inventory['Steel full helm'] || 0}).`, done: st.stage === 'done' }
       ];
     },
-    reward(g) { g.xp('Defence', 5000); g.xp('Attack', 2500); g.give('Amulet of glory', 1); },
+    reward(g) { g.xp('Defence', 5000); g.xp('Attack', 2500); g.give('Amulet of renown', 1); },
     talk(player, g) {
       const st = q(player, 'honour');
       if (st.stage === 'done') return [['npc', 'Larkhaven is proud of you, knight.']];
@@ -468,14 +468,14 @@ export const QUESTS = [
   },
   {
     id: 'smith_order', name: 'Torin\'s Order', giver: 'smith2', points: 1, start: 'Talk to Smith Torin in Emberfold Smithy.',
-    rewards: ['2000 Smithing XP', '1200 coins', 'Mithril bar'],
+    rewards: ['2000 Smithing XP', '1200 coins', 'Bluesteel bar'],
     bonus: { desc: '+5% Smithing XP', fx: { 'xp.Smithing': 0.05 } },
     journal(player) {
       const s = q(player, 'smith_order').stage;
       if (s === 0) return [{ text: this.start }];
       return [{ text: 'Bring Torin 8 Iron bars and 4 Coal.', done: s === 'done' }];
     },
-    reward(g) { g.xp('Smithing', 2000); g.gold(1200); g.give('Mithril bar', 1); },
+    reward(g) { g.xp('Smithing', 2000); g.gold(1200); g.give('Bluesteel bar', 1); },
     talk(player, g) {
       const s = q(player, 'smith_order').stage;
       if (s === 'done') return [['npc', 'These bars will make fine tools. My thanks!']];
@@ -490,7 +490,7 @@ export const QUESTS = [
       if (g.has('Iron bar', 8) && g.has('Coal', 4)) return [
         ['player', 'Here are the bars and coal.'],
         { run: () => { g.take('Iron bar', 8); g.take('Coal', 4); } },
-        ['npc', 'Excellent quality! Take this mithril bar as a bonus.'],
+        ['npc', 'Excellent quality! Take this bluesteel bar as a bonus.'],
         { run: () => finish(player, this, g) }
       ];
       return [['npc', 'Need 8 Iron bars and 4 Coal.']];
@@ -557,14 +557,14 @@ export const QUESTS = [
   },
   {
     id: 'miner_tools', name: 'Kael\'s Tools', giver: 'miner', points: 1, start: 'Talk to Miner Kael near the eastern mines.',
-    rewards: ['1800 Mining XP', '700 coins', 'Adamant pickaxe'],
+    rewards: ['1800 Mining XP', '700 coins', 'Verdite pickaxe'],
     bonus: { desc: '+3% mining success', fx: { gather: 0.03 } },
     journal(player) {
       const s = q(player, 'miner_tools').stage;
       if (s === 0) return [{ text: this.start }];
       return [{ text: 'Bring Kael 6 Iron bars and 4 Oak logs.', done: s === 'done' }];
     },
-    reward(g) { g.xp('Mining', 1800); g.gold(700); g.tool('Adamant pickaxe'); },
+    reward(g) { g.xp('Mining', 1800); g.gold(700); g.tool('Verdite pickaxe'); },
     talk(player, g) {
       const s = q(player, 'miner_tools').stage;
       if (s === 'done') return [['npc', 'These tools will last years. Thank you!']];
@@ -579,7 +579,7 @@ export const QUESTS = [
       if (g.has('Iron bar', 6) && g.has('Oak logs', 4)) return [
         ['player', 'Here are the bars and logs.'],
         { run: () => { g.take('Iron bar', 6); g.take('Oak logs', 4); } },
-        ['npc', 'Fine work! Take this adamant pickaxe.'],
+        ['npc', 'Fine work! Take this verdite pickaxe.'],
         { run: () => finish(player, this, g) }
       ];
       return [['npc', 'Need 6 Iron bars and 4 Oak logs.']];
@@ -646,36 +646,36 @@ export const QUESTS = [
   },
   {
     id: 'knight_honour_east', name: 'Eastern Honour', giver: 'knight2', points: 2, start: 'Talk to Sir Elric near Emberfold.',
-    rewards: ['3000 Defence XP', '2000 Attack XP', 'Amulet of glory'],
+    rewards: ['3000 Defence XP', '2000 Attack XP', 'Amulet of renown'],
     bonus: { desc: 'Take 2% less damage', fx: { dr: 0.02 } },
     journal(player) {
       const st = q(player, 'knight_honour_east');
       if (st.stage === 0) return [{ text: this.start }];
       return [
         { text: `Defeat 3 Black Knights (${Math.min(3, st.kills || 0)}/3).`, done: st.stage === 'done' || st.stage >= 2 },
-        { text: 'Bring a Mithril full helm.', done: st.stage === 'done' }
+        { text: 'Bring a Bluesteel full helm.', done: st.stage === 'done' }
       ];
     },
-    reward(g) { g.xp('Defence', 3000); g.xp('Attack', 2000); g.give('Amulet of glory', 1); },
+    reward(g) { g.xp('Defence', 3000); g.xp('Attack', 2000); g.give('Amulet of renown', 1); },
     talk(player, g) {
       const st = q(player, 'knight_honour_east');
       if (st.stage === 'done') return [['npc', 'Emberfold is proud to call you an ally.']];
       if (st.stage === 0) return [
         ['npc', 'Black Knights threaten the eastern approaches. Prove your honour.'],
-        ['npc', 'Defeat 3 Black Knights, then bring a Mithril full helm.'],
+        ['npc', 'Defeat 3 Black Knights, then bring a Bluesteel full helm.'],
         { choose: [
           ['I accept the challenge.', [{ run: () => setQ(player, 'knight_honour_east', { stage: 1, kills: 0 }) }, ['npc', 'For Larkhaven and Emberfold!']]],
           ['Not yet.', [['npc', 'Honour waits for the ready.']]]
         ] }
       ];
       if (st.stage === 1) return [['npc', `${st.kills || 0} of 3 Black Knights defeated.`]];
-      if (g.has('Mithril full helm', 1)) return [
-        ['player', 'The knights are defeated. Here is a mithril helm.'],
-        { run: () => g.take('Mithril full helm', 1) },
+      if (g.has('Bluesteel full helm', 1)) return [
+        ['player', 'The knights are defeated. Here is a bluesteel helm.'],
+        { run: () => g.take('Bluesteel full helm', 1) },
         ['npc', 'Rise, defender of the east! Wear this amulet.'],
         { run: () => finish(player, this, g) }
       ];
-      return [['npc', 'Bring a Mithril full helm when the knights are slain.']];
+      return [['npc', 'Bring a Bluesteel full helm when the knights are slain.']];
     }
   },
   {
@@ -770,10 +770,10 @@ export function onKill(player, monName) {
   const out = [];
   for (const [id, mon, need, returnTo] of [
     ['archers', 'Dark Archer', 3, 'Ranger Wyn'],
-    ['honour', 'Black Knight', 2, 'Sir Calder'],
+    ['honour', 'Ironveil Knight', 2, 'Sir Calder'],
     ['eastern_guards', 'Goblin', 8, 'Guard Captain Ryn'],
     ['scout_report', 'Dark Archer', 4, 'Scout Vey'],
-    ['knight_honour_east', 'Black Knight', 3, 'Sir Elric']
+    ['knight_honour_east', 'Ironveil Knight', 3, 'Sir Elric']
   ]) {
     const st = q(player, id);
     if (st.stage === 1 && monName === mon) {
@@ -788,9 +788,9 @@ export function onKill(player, monName) {
     const kills = (st.kills || 0) + 1;
     setQ(player, 'goblins', { kills, stage: kills >= 5 ? 2 : 1 });
     out.push(kills >= 5 ? 'Goblin Trouble: that\'s 5 goblins. Report to Captain Rhea.' : `Goblin Trouble: ${kills}/5 goblins killed.`);
-  } else if (st.stage === 3 && monName === 'Hill Giant') {
+  } else if (st.stage === 3 && monName === 'Crag Giant') {
     setQ(player, 'goblins', { stage: 4 });
-    out.push('Goblin Trouble: you slew a Hill Giant! Return to Captain Rhea.');
+    out.push('Goblin Trouble: you slew a Crag Giant! Return to Captain Rhea.');
   }
   out.push(...progress(player, QUESTS, 'kill', monName, 0, LIB));
   return out;

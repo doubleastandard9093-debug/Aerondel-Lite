@@ -266,30 +266,30 @@ function paint(c, item) {
   const low = item.toLowerCase();
   const wood = WOODS.indexOf(item);
   if (wood >= 0) return logs(c, WOOD_COL[wood]);
-  if (/shortbow|dark bow/.test(low)) { const t = info.tier != null ? info.tier : 4; return bow(c, item === 'Dark bow' ? '#3a2a4a' : WOOD_COL[t] || WOOD_COL[0]); }
+  if (/shortbow|dusk bow/.test(low)) { const t = info.tier != null ? info.tier : 4; return bow(c, item === 'Dusk bow' ? '#3a2a4a' : WOOD_COL[t] || WOOD_COL[0]); }
   if (/crossbow/.test(low)) return bow(c, '#7a5030', true, m);
   if (/ bolts$/.test(low)) return arrows(c, m, true);
   if (/ arrows$/.test(low)) return arrows(c, m);
   if (/ bar$/.test(low)) return bar(c, item === 'Gold bar' ? '#ffd040' : m);
   if (item === 'Coal') return ore(c, '#111', true);
-  if (/ ore$|^runite|^adamantite/.test(low)) { const col = { 'Copper ore': '#d8803a', 'Tin ore': '#d8d8d8', 'Iron ore': '#9a4a3a', 'Gold ore': '#ffd040', 'Mithril ore': '#5a6ad0', 'Adamantite ore': '#3aa05a', 'Runite ore': '#3ac8e0', 'Dragon ore': '#d04040' }[item] || m; return ore(c, col); }
-  if (/essence/.test(low)) return ore(c, item === 'Pure essence' ? '#f0f0ff' : '#c0c8d0');
+  if (/ ore$|^cobalt|^verdite/.test(low)) { const col = { 'Copper ore': '#d8803a', 'Tin ore': '#d8d8d8', 'Iron ore': '#9a4a3a', 'Gold ore': '#ffd040', 'Bluesteel ore': '#5a6ad0', 'Verdite ore': '#3aa05a', 'Cobalt ore': '#3ac8e0', 'Emberite ore': '#d04040' }[item] || m; return ore(c, col); }
+  if (/essence/.test(low)) return ore(c, item === 'Clear essence' ? '#f0f0ff' : '#c0c8d0');
   if (info.type === 'rune') { const r = RUNES.find(x => x[0] === item); return rune(c, r ? r[2] : '#fff', item[0]); }
-  if (/(thrown dagger|dagger)$/.test(low)) return dagger(c, item === 'Venom dagger' ? '#5ac04a' : item === 'Dragon dagger' ? '#c04040' : m);
+  if (/(thrown dagger|dagger)$/.test(low)) return dagger(c, item === 'Venom dagger' ? '#5ac04a' : item === 'Emberite dagger' ? '#c04040' : m);
   if (/throwing axe/.test(low)) return axe(c, m);
   if (/pickaxe$/.test(low)) return axe(c, m, true);
   if (/ axe$/.test(low)) return axe(c, m);
   if (/sword$|blade$|cutlass$|longsword$/.test(low)) return sword(c, item === 'Vampyric blade' ? '#8a1a2a' : item === "Captain's cutlass" ? '#c8c8d8' : m, /long/.test(low));
-  if (/maul|warhammer/.test(low)) { c.save(); c.translate(32, 32); c.rotate(-Math.PI / 4); c.beginPath(); c.roundRect(-3, -6, 6, 32, 2); finish(c, WOODHANDLE); c.beginPath(); c.roundRect(-16, -22, 32, 17, 3); finish(c, metalFill(c, item === 'Granite maul' ? '#7a7a70' : '#8a8aa0', 0, -22, 0, -5)); c.restore(); return; }
-  if (item === 'Battlestaff' || /^staff|staff$/.test(low)) { const r = info.runeSource && RUNES.find(x => x[0] === info.runeSource); return staff(c, r ? r[2] : item === 'Mystic staff' ? '#9a5aff' : '#8a8a9a', !!(r || /mystic|battle/i.test(item))); }
-  if (info.type === 'head') return helm(c, /^(Wizard|Mystic)/.test(item) ? (/Mystic/.test(item) ? '#3a5ad0' : '#2a3a9a') : /cowl/i.test(item) ? '#8a5a2a' : item.startsWith('Wyrmscale') ? '#2a8a3a' : m, /hat$/.test(low) ? 'hat' : /cowl/.test(low) ? 'cowl' : 'helm');
-  if (info.type === 'body') return body(c, /robe/.test(low) ? (/Mystic/.test(item) ? '#3a5ad0' : '#2a3a9a') : /leather/.test(low) ? (/Hard/.test(item) ? '#6a4020' : '#9a6a3a') : item.startsWith('Wyrmscale') ? '#2a8a3a' : m, /robe/.test(low) ? 'robe' : /leather/.test(low) ? 'leather' : 'plate');
-  if (info.type === 'legs') return legs(c, /robe/.test(low) ? (/Mystic/.test(item) ? '#3a5ad0' : '#2a3a9a') : /chaps/.test(low) ? '#8a5a2a' : item.startsWith('Wyrmscale') ? '#2a8a3a' : m, /robe|chaps/.test(low) ? 'cloth' : 'plate');
+  if (/maul|warhammer/.test(low)) { c.save(); c.translate(32, 32); c.rotate(-Math.PI / 4); c.beginPath(); c.roundRect(-3, -6, 6, 32, 2); finish(c, WOODHANDLE); c.beginPath(); c.roundRect(-16, -22, 32, 17, 3); finish(c, metalFill(c, item === 'Basalt maul' ? '#7a7a70' : '#8a8aa0', 0, -22, 0, -5)); c.restore(); return; }
+  if (item === 'Battlestaff' || /^staff|staff$/.test(low)) { const r = info.runeSource && RUNES.find(x => x[0] === info.runeSource); return staff(c, r ? r[2] : item === 'Starweave staff' ? '#9a5aff' : '#8a8a9a', !!(r || /starweave|battle/i.test(item))); }
+  if (info.type === 'head') return helm(c, /^(Wizard|Starweave)/.test(item) ? (/Starweave/.test(item) ? '#3a5ad0' : '#2a3a9a') : /cowl/i.test(item) ? '#8a5a2a' : item.startsWith('Wyrmscale') ? '#2a8a3a' : m, /hat$/.test(low) ? 'hat' : /cowl/.test(low) ? 'cowl' : 'helm');
+  if (info.type === 'body') return body(c, /robe/.test(low) ? (/Starweave/.test(item) ? '#3a5ad0' : '#2a3a9a') : /leather/.test(low) ? (/Hard/.test(item) ? '#6a4020' : '#9a6a3a') : item.startsWith('Wyrmscale') ? '#2a8a3a' : m, /robe/.test(low) ? 'robe' : /leather/.test(low) ? 'leather' : 'plate');
+  if (info.type === 'legs') return legs(c, /robe/.test(low) ? (/Starweave/.test(item) ? '#3a5ad0' : '#2a3a9a') : /chaps/.test(low) ? '#8a5a2a' : item.startsWith('Wyrmscale') ? '#2a8a3a' : m, /robe|chaps/.test(low) ? 'cloth' : 'plate');
   if (info.type === 'shield') return shield(c, /Wooden/.test(item) ? '#8a5a2a' : /Oak/.test(item) ? '#c49a5a' : item.startsWith('Wyrmscale') ? '#2a8a3a' : m, /Wooden|Oak/.test(item));
-  if (info.type === 'cape') return cape(c, item === 'Red cape' ? '#c03030' : item === 'Blue cape' ? '#3050c0' : item === 'Obsidian cape' ? '#2a2a30' : item === 'Quest point cape' ? '#3060ff' : '#7a2a8a', info.capeSkill || item === 'Quest point cape' ? '#ffd040' : null);
-  if (info.type === 'ring') return ring(c, { 'Warrior ring': '#d04a4a', 'Archer ring': '#4ad04a', 'Ring of regeneration': '#ff80c0', "Miner's ring": '#9a9a9a', "Forester's ring": '#3a8a3a', "Angler's ring": '#3a7ad0', 'Berserker ring': '#8a2a2a', 'Ring of recoil': '#c0c0ff' }[item] || '#d0d0ff');
+  if (info.type === 'cape') return cape(c, item === 'Red cape' ? '#c03030' : item === 'Blue cape' ? '#3050c0' : item === 'Cinderglass cape' ? '#2a2a30' : item === 'Quest point cape' ? '#3060ff' : '#7a2a8a', info.capeSkill || item === 'Quest point cape' ? '#ffd040' : null);
+  if (info.type === 'ring') return ring(c, { 'Warrior ring': '#d04a4a', 'Archer ring': '#4ad04a', 'Ring of regeneration': '#ff80c0', "Miner's ring": '#9a9a9a', "Forester's ring": '#3a8a3a', "Angler's ring": '#3a7ad0', 'Ring of fury': '#8a2a2a', 'Ring of rebuke': '#c0c0ff' }[item] || '#d0d0ff');
   if (info.type === 'neck') return item === 'Holy symbol' ? (path(c, [28, 8, 36, 8, 36, 22, 48, 22, 48, 30, 36, 30, 36, 56, 28, 56, 28, 30, 16, 30, 16, 22, 28, 22]), finish(c, metalFill(c, '#e8e8f0', 16, 8, 48, 56)))
-    : amulet(c, { 'Amulet of accuracy': '#4a8ad0', 'Amulet of strength': '#d04a4a', 'Amulet of defence': '#4ad08a', 'Amulet of glory': '#ff3a3a', "Herbalist's amulet": '#3ad03a' }[item] || '#e0e0e0');
+    : amulet(c, { 'Amulet of accuracy': '#4a8ad0', 'Amulet of strength': '#d04a4a', 'Amulet of defence': '#4ad08a', 'Amulet of renown': '#ff3a3a', "Herbalist's amulet": '#3ad03a' }[item] || '#e0e0e0');
   if (item === 'Lobster pot') return lobsterPot(c);
   if (item === 'Small fishing net') return net(c);
   if (item === 'Fly fishing rod') return rod(c);
@@ -299,9 +299,9 @@ function paint(c, item) {
   if (item === 'Bird nest') return nest(c);
   if (/dust$/.test(low)) return dust(c, { 'Unicorn horn dust': '#f0f0f8', 'Chocolate dust': '#6a3a1a', 'Goat horn dust': '#c8b890', 'Dragon scale dust': '#5ac0a0' }[item] || '#ccc');
   if (item === 'Eye of newt') return eye(c);
-  if (item === 'Limpwurt root') return root(c);
+  if (item === 'Bitterroot') return root(c);
   if (item === 'White berries') return berries(c, '#f0f0e8');
-  if (item === 'Snape grass') return herb(c, '#3a7a3a');
+  if (item === 'Marsh reed') return herb(c, '#3a7a3a');
   if (item === 'Red spider eggs') return eggs(c);
   if (item === 'Wine of the pyre') return wine(c);
   if (/lobster/.test(low)) return crustacean(c, /Cooked/.test(item));
@@ -314,7 +314,7 @@ function paint(c, item) {
   if (item === 'Vial') return vial(c);
   if (item === 'Vial of water') return potion(c, '#4a8ae0');
   if (info.type === 'bones') return bones(c, item === 'Dragon bones' ? '#c8e0b0' : item === 'Big bones' ? '#f0e0b8' : '#ece4d0');
-  if (info.type === 'herb' || info.type === 'grimy') return herb(c, ['#3ad03a', '#5ac05a', '#4aa04a', '#6ab03a', '#2a9a5a', '#5a9a8a', '#8ab03a', '#3a8a6a', '#6a8a3a', '#2ab07a', '#4a7a3a', '#5a6a3a', '#7a5a8a'][Math.max(0, ['Guam', 'Marr', 'Tarr', 'Harr', 'Rana', 'Toad', 'Irit', 'Avan', 'Kwua', 'Snap', 'Cada', 'Dwar', 'Tors'].indexOf(item.replace('Grimy ', '').slice(0, 4).replace(/^./, x => x.toUpperCase())))], info.type === 'grimy');
+  if (info.type === 'herb' || info.type === 'grimy') return herb(c, ['#3ad03a', '#5ac05a', '#4aa04a', '#6ab03a', '#2a9a5a', '#5a9a8a', '#8ab03a', '#3a8a6a', '#6a8a3a', '#2ab07a', '#4a7a3a', '#5a6a3a', '#7a5a8a'][Math.max(0, ['Greenwort', 'Marr', 'Tarr', 'Harr', 'Rana', 'Toad', 'Irit', 'Avan', 'Kwua', 'Snap', 'Cada', 'Dwar', 'Tors'].indexOf(item.replace('Grimy ', '').slice(0, 4).replace(/^./, x => x.toUpperCase())))], info.type === 'grimy');
   const g = low.match(/(uncut )?(sapphire|emerald|ruby|diamond)/); if (g) return gem(c, GEM[g[2]], !!g[1]);
   if (item === 'Cowhide' || /leather$/.test(low)) return hide(c, item === 'Cowhide' ? '#e8e0d0' : item === 'Hard leather' ? '#6a4020' : '#a0703a');
   if (item === 'Cloth') return hide(c, '#d8d0c0');

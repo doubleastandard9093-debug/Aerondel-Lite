@@ -27,9 +27,9 @@ export const POTIONS = {
 };
 export function isPotion(item) { return !!POTIONS[item]; }
 
-// Potion duration: Herblore perks, gear (Herbalist's amulet) and quest bonuses make it longer.
+// Potion duration: Herbalism perks, gear (Herbalist's amulet) and quest bonuses make it longer.
 export function potionTicks(player, skills, base = POTION_TICKS) {
-  let more = perk(skills, 'Herblore', 'potionTime') + questFx(player, 'potionTime');
+  let more = perk(skills, 'Herbalism', 'potionTime') + questFx(player, 'potionTime');
   for (const it of Object.values(player.equipment || {})) if (it && ITEMS[it] && ITEMS[it].eff && ITEMS[it].eff.potionTime) more += ITEMS[it].eff.potionTime;
   return Math.round(base * (1 + more));
 }

@@ -1,5 +1,5 @@
 // Scars and Quirks: the game notices how you play and offers a Quirk: a lasting downside paired with a boon.
-// You may decline, hold at most 3, and remove one with Apothecary Ysolde's remedy (Herblore). Logic and UI only.
+// You may decline, hold at most 3, and remove one with Apothecary Ysolde's remedy (Herbalism). Logic and UI only.
 export const QUIRK_MAX = 3;
 export const QUIRKS = [
   { id: 'ember', name: 'Ember-shy', counter: 'fire', at: 300, why: 'You have been burned a lot.', down: 'Fire-touched foes hit you 10% harder', up: '+5% Cooking and Smithing XP', fireMult: 1.1, xp: { Cooking: 0.05, Smithing: 0.05 } },
@@ -7,7 +7,7 @@ export const QUIRKS = [
   { id: 'glassjaw', name: 'Glass Jaw', counter: 'deaths', at: 5, why: 'You have been knocked out a few times.', down: 'You take 5% more damage', up: '+3% XP in every combat skill', allMult: 1.05, xp: { Attack: 0.03, Strength: 0.03, Defence: 0.03, Ranged: 0.03, Magic: 0.03, Hitpoints: 0.03 } },
   { id: 'brawler', name: 'Knuckle-head', counter: 'meleeKills', at: 300, why: 'You settle almost everything up close.', down: '-10% ranged accuracy', up: '+5% melee damage', rangedAcc: -0.1, meleeDmg: 0.05 }
 ];
-export const REMEDY = { herblore: 30, gold: 2000, items: [['Grimy guam leaf', 5]], xp: 400 };
+export const REMEDY = { herbalism: 30, gold: 2000, items: [['Grimy greenwort', 5]], xp: 400 };
 export const FIRE_RE = /dragon|fire|flame|ember|lava|infernal|blaze|cinder|ash/i;
 export function quirkById(id) { return QUIRKS.find(q => q.id === id); }
 export function normalizeQuirks(q) {

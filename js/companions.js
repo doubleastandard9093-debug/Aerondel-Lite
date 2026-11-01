@@ -16,7 +16,7 @@ export const COMPANIONS = [
     style: 'melee', examine: 'A stout dwarf smith with soot in his braids.',
     recruit: { kind: 'item', item: 'Iron bar', n: 3, req: ['Smithing', 15], ask: 'You want a dwarf at your side? Prove you know the forge. Three iron bars, smelted by your own hand.' } },
   { id: 'mirelle', name: 'Mirelle the Hedge-mage', short: 'Mirelle', face: '🔮', x: -74, z: 54, look: { body: 0x5a2a6a, legs: 0x2a1a3a, hat: 0x3a2a4a, hatH: 0.45, hatW: 0.4 },
-    role: 'Hedge-mage', skills: ['Magic', 'Herblore'], likes: 'cunning', giftRe: / rune$|Grimy |leaf$|Marrentill|Tarromin/, giftWord: 'runes or herbs',
+    role: 'Hedge-mage', skills: ['Magic', 'Herbalism'], likes: 'cunning', giftRe: / rune$|Grimy |leaf$|Marshmint|Tallowroot/, giftWord: 'runes or herbs',
     style: 'magic', examine: 'A wandering hedge-mage who smells faintly of thyme and thunder.',
     recruit: { kind: 'item', item: 'Air rune', n: 30, req: ['Magic', 10], ask: 'The sea air ate my rune pouch. Thirty air runes and a little magic of your own, and I\'ll travel with you.' } }
 ];

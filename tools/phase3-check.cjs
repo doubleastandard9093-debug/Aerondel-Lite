@@ -24,12 +24,12 @@ const [,,path='',tier='low',sz='390x844',savef]=process.argv;const [w,h]=sz.spli
     g.talkTo(c);let k=await adv();
     if(k==='choose'){[...d.querySelectorAll('.d-opt')][0].click();k=await adv();}
     if(!P.saga.active){log.push('notActive'+i+':'+gateTxt.slice(0,60));break;}
-    const ch=P.saga.ch;P.saga.prog=99;P.inventory['Cowhide']=5;P.inventory['Rune essence']=(ch===4?5:20);
+    const ch=P.saga.ch;P.saga.prog=99;P.inventory['Cowhide']=5;P.inventory['Glyph essence']=(ch===4?5:20);
     g.talkTo(c);k=await adv();
     if(k==='wheel'){const t=tones[i];const bt=[...d.querySelectorAll('.w-opt')].find(b=>+b.dataset.i===['kind','firm','cunning'].indexOf(t));bt.click();await adv();}
     log.push(P.saga.ch);
   }
-  return{ver,qpGate:qpGate.slice(0,40),log,ch:P.saga.ch,title:P.saga.title,flags:P.saga.flags,tamsin:P.companions.tamsin.recruited,active:P.activeCompanion,essLeft:P.inventory['Rune essence']||0,choices:P.saga.choices.map(c=>c.tone).join(',')};});
+  return{ver,qpGate:qpGate.slice(0,40),log,ch:P.saga.ch,title:P.saga.title,flags:P.saga.flags,tamsin:P.companions.tamsin.recruited,active:P.activeCompanion,essLeft:P.inventory['Glyph essence']||0,choices:P.saga.choices.map(c=>c.tone).join(',')};});
  const hi=req.filter(u=>/textures\/|\.webp|detail_/.test(u));
  const ok=r.ch===6&&!!r.title&&r.flags.varro&&r.flags.left_tamsin&&!r.tamsin&&(tier!=='low'||hi.length===0)&&!errs.length;
  console.log(JSON.stringify({ok,tier,path,sz,r,highAssetRequests:hi.length,errs:errs.slice(0,4)}));

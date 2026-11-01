@@ -252,17 +252,17 @@ function dragon(v) {
 // Monster humanoids: per-type anatomy on the shared humanoid rig.
 const HUMANOID_LOOK = {
   Goblin: v => ({ bare: true, build: 0.78 * v.k, chest: 0.85, height: 0.95, skin: v.tint, legs: 0x5a4024, belt: 0x3a2414, barefoot: true, hair: null, hairStyle: 'bald', nose: 1.6, jaw: 1.3, eyes: 0xd0b020, mottle: 0.12, curl: 0.9 }),
-  'Hill Giant': v => ({ bare: true, build: 1.25 * v.k, chest: 1.2, skin: v.tint, legs: 0x5a4a2a, barefoot: true, hair: v.r() < 0.5 ? null : 0x3a2a1a, hairStyle: 'short', nose: 1.5, jaw: 1.4, mottle: 0.1, stubble: true }),
-  'Moss Giant': v => ({ bare: true, build: 1.3 * v.k, chest: 1.25, skin: v.tint, legs: 0x3a5a1a, barefoot: true, hair: 0x3a6a1a, hairStyle: 'curly', nose: 1.5, jaw: 1.4, mottle: 0.2 }),
+  'Crag Giant': v => ({ bare: true, build: 1.25 * v.k, chest: 1.2, skin: v.tint, legs: 0x5a4a2a, barefoot: true, hair: v.r() < 0.5 ? null : 0x3a2a1a, hairStyle: 'short', nose: 1.5, jaw: 1.4, mottle: 0.1, stubble: true }),
+  'Bog Giant': v => ({ bare: true, build: 1.3 * v.k, chest: 1.25, skin: v.tint, legs: 0x3a5a1a, barefoot: true, hair: 0x3a6a1a, hairStyle: 'curly', nose: 1.5, jaw: 1.4, mottle: 0.2 }),
   'Ice Giant': v => ({ bare: true, build: 1.3 * v.k, chest: 1.25, skin: v.tint, legs: 0x5a7a9a, barefoot: true, hair: 0xe0f0ff, hairStyle: 'spiky', nose: 1.4, jaw: 1.4, mottle: 0.12, eyes: 0x80c0ff }),
   Ogre: v => ({ bare: true, build: 1.35 * v.k, chest: 1.3, skin: v.tint, legs: 0x4a3a1a, barefoot: true, hair: null, nose: 1.7, jaw: 1.6, mottle: 0.15, curl: 0.9 }),
   Grumsh: v => ({ bare: true, build: 1.4, chest: 1.35, skin: v.tint, legs: 0x3a2a14, barefoot: true, hair: null, nose: 1.7, jaw: 1.7, mottle: 0.15, curl: 0.9 }),
   Skeleton: v => ({ bare: true, build: 0.6, chest: 0.8, skin: 0xe8e4d4, legs: 0xd8d4c4, belt: 0x6a5a4a, barefoot: true, hair: null, nose: 0.4, jaw: 1.5, eyes: 0x050505, mottle: 0.2 }),
   Zombie: v => ({ body: v.tint2, sleeveLen: 0.15, build: 0.9, skin: v.tint, legs: 0x3a3a2a, barefoot: v.r() < 0.5, hair: v.r() < 0.5 ? null : 0x4a4a3a, hairStyle: 'long', eyes: 0xd0e060, mottle: 0.25, curl: 1.0 }),
-  'Lesser Demon': v => ({ bare: true, build: 1.2, chest: 1.2, skin: v.tint, legs: 0x3a0a0a, barefoot: true, hair: null, nose: 1.2, jaw: 1.5, eyes: 0xffd020, mottle: 0.12, curl: 1.0 }),
+  'Cinder Fiend': v => ({ bare: true, build: 1.2, chest: 1.2, skin: v.tint, legs: 0x3a0a0a, barefoot: true, hair: null, nose: 1.2, jaw: 1.5, eyes: 0xffd020, mottle: 0.12, curl: 1.0 }),
   Bandit: v => ({ body: v.tint, build: 0.95 * v.k, legs: 0x3a3028, boots: 0x2a1e14, hair: undefined, eyes: undefined }),
   'Dark Archer': v => ({ body: v.tint, build: 0.9, legs: 0x1e2a1e, boots: 0x1a1a14, hair: null }),
-  'Black Knight': v => ({ body: 0x24242c, sleeve: 0x2a2a34, sleeveLen: 0.7, build: 1.1, legs: 0x1e1e26, boots: 0x18181e, skin: 0xc89a74, hair: null, bootH: 0.3 }),
+  'Ironveil Knight': v => ({ body: 0x24242c, sleeve: 0x2a2a34, sleeveLen: 0.7, build: 1.1, legs: 0x1e1e26, boots: 0x18181e, skin: 0xc89a74, hair: null, bootH: 0.3 }),
   'Drowned Deckhand': v => ({ body: 0x3a5a5a, sleeveLen: 0.2, build: 0.9, skin: 0x7aa898, legs: 0x2a3a3a, barefoot: true, hair: 0x2a4a3a, hairStyle: 'long', eyes: 0x60f0d0, mottle: 0.3, curl: 1.0 }),
   'Drowned Gunner': v => ({ body: 0x4a3a2a, sleeveLen: 0.6, build: 1.0, skin: 0x6a9a8a, legs: 0x2a2a2a, boots: 0x1a1a14, hair: null, eyes: 0x60f0d0, mottle: 0.3 }),
   'Captain Saltgrave': v => ({ body: 0x2a1a3a, sleeve: 0x3a2a4a, sleeveLen: 0.8, build: 1.2, skin: 0x5a8a7a, legs: 0x1a1a22, boots: 0x14100c, bootH: 0.3, hair: 0x1a2a2a, hairStyle: 'long', eyes: 0x80ffe0, mottle: 0.35 }),
@@ -283,7 +283,7 @@ export function rollVariant(typeName, t, seed) {
   const r = seeded(seed * 1000 + 3);
   const k = 0.92 + r() * 0.18;
   const hs = (r() - 0.5) * 0.05, ls = (r() - 0.5) * 0.14;
-  const tint = C(t.skin || (typeName === 'Goblin' ? 0x6aa040 : typeName === 'Hill Giant' ? 0xb08a5a : t.color)).offsetHSL(hs, (r() - 0.5) * 0.15, ls).getHex();
+  const tint = C(t.skin || (typeName === 'Goblin' ? 0x6aa040 : typeName === 'Crag Giant' ? 0xb08a5a : t.color)).offsetHSL(hs, (r() - 0.5) * 0.15, ls).getHex();
   const color = C(t.color).offsetHSL(hs, (r() - 0.5) * 0.12, ls).getHex();
   const v = { seed: seed * 10, r, k, tint, color, tint2: C(t.color).offsetHSL(r() * 0.1, 0, ls).getHex() };
   if (typeName === 'Wolf') Object.assign(v, { color: [0x7a7a80, 0x6a6058, 0x8a8a90, 0x4a4440, 0x9a8a70][Math.floor(r() * 5)], saddle: r() * 0.8, earK: 0.85 + r() * 0.35, tailUp: 0.5 + r() * 0.8, eye: [0xe8c040, 0xd09a30, 0x9ac0e0][Math.floor(r() * 3)], scar: r() < 0.25 });
@@ -294,7 +294,7 @@ export function rollVariant(typeName, t, seed) {
 }
 const NAMED = {
   Goblin: ['Snaggletooth', 'Grubfoot', 'Nix'], Wolf: ['Scarface', 'Old Grey', 'Fang'], Cow: ['Old Bessie', 'Daisy'], 'Giant Spider': ['Widowmaker'],
-  'Hill Giant': ['Big Tobin'], Zombie: ['Shambling Sid'], Skeleton: ['Rattlebones'], Bandit: ['One-Eye Jack'], 'Moss Giant': ['Mossback'], Ogre: ['Gutbelly']
+  'Crag Giant': ['Big Tobin'], Zombie: ['Shambling Sid'], Skeleton: ['Rattlebones'], Bandit: ['One-Eye Jack'], 'Bog Giant': ['Mossback'], Ogre: ['Gutbelly']
 };
 export function namedVariant(typeName, seed) {
   const list = NAMED[typeName]; if (!list) return null;
@@ -380,8 +380,8 @@ export function buildCreatureRig(typeName, t, v, extras = [], headExtras = [], h
     if (look.hair === undefined) look.hair = [0x1a1410, 0x3a2a1a, 0x6a4a2a][Math.floor(v.r() * 3)];
     if (!look.hairStyle) look.hairStyle = look.hair ? ['short', 'long', 'spiky', 'pony'][Math.floor(v.r() * 4)] : 'bald';
     look.headExtras = headExtras;
-    const armour = typeName === 'Black Knight' ? plateCharMat : typeName === 'Guard' ? chainCharMat : undefined;   // armoured humanoids get the plate/chain surface detail
-    const rig = buildHumanoidRig(look, { extras, held, claws: CLAWED.test(typeName), ears: typeName === 'Goblin' || typeName === 'Lesser Demon' ? true : null, material: armour });
+    const armour = typeName === 'Ironveil Knight' ? plateCharMat : typeName === 'Guard' ? chainCharMat : undefined;   // armoured humanoids get the plate/chain surface detail
+    const rig = buildHumanoidRig(look, { extras, held, claws: CLAWED.test(typeName), ears: typeName === 'Goblin' || typeName === 'Cinder Fiend' ? true : null, material: armour });
     rig.userData.id = v.seed;
     return rig;
   }

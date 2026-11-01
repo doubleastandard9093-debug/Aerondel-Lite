@@ -1,6 +1,6 @@
-# Gielinor: WebGPU release
+# Aerondel: WebGPU release
 
-A second build of the same game at `/Gielinor-Lite/webgpu/`, rendered with three.js `WebGPURenderer` and TSL node materials.
+A second build of the same game at `/Aerondel-Lite/webgpu/`, rendered with three.js `WebGPURenderer` and TSL node materials.
 The WebGL game at the site root is untouched.
 
 - **Backend:** WebGPU when the browser has it, otherwise three's WebGL2 backend. A badge at the top of the screen shows which one is running. Add `?backend=webgl` to force the fallback.

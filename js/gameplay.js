@@ -22,12 +22,12 @@ export const ROCKS = {
   Tin:        { level: 1,  xp: 17.5, item: 'Tin ore',        respawn: 4000 },
   Iron:       { level: 15, xp: 35,   item: 'Iron ore',       respawn: 7000 },
   Coal:       { level: 30, xp: 50,   item: 'Coal',           respawn: 20000 },
-  Mithril:    { level: 55, xp: 80,   item: 'Mithril ore',    respawn: 30000 },
-  Adamantite: { level: 70, xp: 95,   item: 'Adamantite ore', respawn: 50000 },
-  Runite:     { level: 85, xp: 125,  item: 'Runite ore',     respawn: 90000 },
-  Dragon:     { level: 95, xp: 180,  item: 'Dragon ore',     respawn: 120000 },
-  // Rune essence rocks (Highcrest mine and a pair near Larkhaven): Pure essence from Mining 30.
-  Essence:    { level: 1,  xp: 5,    item: 'Rune essence',   respawn: 1000, pureAt: 30, pure: 'Pure essence' }
+  Bluesteel:    { level: 55, xp: 80,   item: 'Bluesteel ore',    respawn: 30000 },
+  Verdite: { level: 70, xp: 95,   item: 'Verdite ore', respawn: 50000 },
+  Cobalt:     { level: 85, xp: 125,  item: 'Cobalt ore',     respawn: 90000 },
+  Emberite:   { level: 95, xp: 180,  item: 'Emberite ore',     respawn: 120000 },
+  // Glyph essence rocks (Highcrest mine and a pair near Larkhaven): Clear essence from Mining 30.
+  Essence:    { level: 1,  xp: 5,    item: 'Glyph essence',   respawn: 1000, pureAt: 30, pure: 'Clear essence' }
 };
 // Herb patches: pick grimy herbs. Never run out.
 export const HERB_PATCHES = Object.fromEntries(HERBS.map(([h, lvl, xp]) => [h, { level: lvl, xp: Math.round(xp * 3 * 10) / 10, item: grimyOf(h) }]));
@@ -75,7 +75,7 @@ export function toolName(type) { return TOOL_NAME[type] || type; }
 export function gatherInfo(node) {
   if (node.type === 'tree') return { skill: 'Woodcutting', tool: 'axe', ...TREES[node.kind] };
   if (node.type === 'rock') return { skill: 'Mining', tool: 'pickaxe', ...ROCKS[node.ore] };
-  if (node.type === 'herb') return { skill: 'Herblore', tool: null, ...HERB_PATCHES[node.herb] };
+  if (node.type === 'herb') return { skill: 'Herbalism', tool: null, ...HERB_PATCHES[node.herb] };
   if (node.type === 'fish') {
     const spot = FISH_SPOTS[node.kind];
     const min = spot.catches[spot.catches.length - 1];
@@ -171,19 +171,19 @@ export const MONSTER_TYPES = {
   Skeleton:      { name: 'Skeleton',      level: 22, hp: 220, maxHit: 24, att: 18, def: 16, speed: 4, color: 0xd8d8c8, scale: 1.0, skin: 0xe8e8d8 },
   'Giant Spider':{ name: 'Giant Spider',  level: 27, hp: 280, maxHit: 22, att: 22, def: 18, speed: 4, color: 0x2a2a2a, scale: 1.1, shape: 'spider', poison: { chance: 0.25, dmg: 20 } },
   Bandit:        { name: 'Bandit',        level: 30, hp: 300, maxHit: 30, att: 26, def: 22, speed: 4, color: 0x5a4a3a, scale: 1.0, skin: 0xc89a74 },
-  'Moss Giant':  { name: 'Moss Giant',    level: 42, hp: 450, maxHit: 40, att: 32, def: 30, speed: 5, color: 0x3a6a2a, scale: 1.9, skin: 0x6a9a4a },
+  'Bog Giant':  { name: 'Bog Giant',    level: 42, hp: 450, maxHit: 40, att: 32, def: 30, speed: 5, color: 0x3a6a2a, scale: 1.9, skin: 0x6a9a4a },
   Ogre:          { name: 'Ogre',          level: 53, hp: 600, maxHit: 50, att: 40, def: 36, speed: 5, color: 0x6a5a2a, scale: 1.7, skin: 0x8a9a5a },
   'Ice Giant':   { name: 'Ice Giant',     level: 53, hp: 650, maxHit: 48, att: 40, def: 40, speed: 5, color: 0x8ab0d0, scale: 1.9, skin: 0xb0d0f0 },
   'Green Dragon':{ name: 'Green Dragon',  level: 79, hp: 750, maxHit: 80, att: 60, def: 55, speed: 4, color: 0x2a7a2a, scale: 1.6, shape: 'dragon' },
-  'Lesser Demon':{ name: 'Lesser Demon',  level: 82, hp: 790, maxHit: 80, att: 65, def: 50, speed: 4, color: 0x9a1a1a, scale: 1.6, skin: 0xb02a2a },
+  'Cinder Fiend':{ name: 'Cinder Fiend',  level: 82, hp: 790, maxHit: 80, att: 65, def: 50, speed: 4, color: 0x9a1a1a, scale: 1.6, skin: 0xb02a2a },
   Grumsh:        { name: 'Grumsh', title: 'Grumsh the Ogre Chieftain', level: 90, hp: 1600, maxHit: 90, att: 70, def: 60, speed: 5, color: 0x5a3a1a, scale: 2.4, skin: 0x7a8a4a, boss: true, respawn: 180000 },
   Scorchwing:    { name: 'Scorchwing', title: 'Scorchwing the Green Wyrm', level: 150, hp: 3000, maxHit: 140, att: 110, def: 100, speed: 5, color: 0x1a5a2a, scale: 2.6, shape: 'dragon', boss: true, respawn: 300000, ranged: true, range: 5 },
   'Dark Archer': { name: 'Dark Archer', level: 25, hp: 260, maxHit: 30, att: 24, def: 16, speed: 5, color: 0x2a3a2a, scale: 1.0, ranged: true, range: 6 },
   Goblin:        { name: 'Goblin',       level: 2,  hp: 50,  maxHit: 8,  att: 1,  def: 1,  speed: 4, color: 0x4a7a3a, scale: 0.85 },
   Cow:           { name: 'Cow',          level: 2,  hp: 80,  maxHit: 6,  att: 1,  def: 1,  speed: 4, color: 0x8a6a4a, scale: 1.0 },
   Guard:         { name: 'Guard',        level: 21, hp: 220, maxHit: 28, att: 18, def: 18, speed: 4, color: 0x3a3a6a, scale: 1.1 },
-  'Hill Giant':  { name: 'Hill Giant',   level: 28, hp: 350, maxHit: 36, att: 22, def: 24, speed: 5, color: 0x8a7a5a, scale: 1.8 },
-  'Black Knight':{ name: 'Black Knight', level: 33, hp: 420, maxHit: 42, att: 30, def: 34, speed: 4, color: 0x1a1a22, scale: 1.15 },
+  'Crag Giant':  { name: 'Crag Giant',   level: 28, hp: 350, maxHit: 36, att: 22, def: 24, speed: 5, color: 0x8a7a5a, scale: 1.8 },
+  'Ironveil Knight':{ name: 'Ironveil Knight', level: 33, hp: 420, maxHit: 42, att: 30, def: 34, speed: 4, color: 0x1a1a22, scale: 1.15 },
   // Hearth & Arena: a Proving Grounds duellist (stats are replaced per duel to copy your loadout)
   Duellist:      { name: 'Duellist', level: 30, hp: 300, maxHit: 30, att: 25, def: 25, speed: 4, color: 0x6a2a2a, scale: 1.0, skin: 0xc89a74, arena: true, respawn: 1e12 },
   'Ashen raider': { name: 'Ashen raider', level: 40, hp: 420, maxHit: 38, att: 32, def: 28, speed: 4, color: 0x3a3a3a, scale: 1.0, skin: 0xb88a64, wilds: true, respawn: 1e12 },
@@ -365,7 +365,7 @@ export function rollMonsterHit(mon, player, skills, rng = Math.random) {
 }
 
 export const DR_CAP = 0.6; // hard cap on damage reduction from perks + quests + sets
-// Damage you actually take after Defence perks, Protect from Melee and buffs.
+// Damage you actually take after Defence perks, Ward against Melee and buffs.
 export function reduceIncoming(dmg, player, skills, buffs = {}) {
   if (dmg <= 0) return 0;
   // Damage reduction from Defence perks, quests and armour sets (capped so nothing gets silly).
@@ -379,9 +379,9 @@ export function reduceIncoming(dmg, player, skills, buffs = {}) {
 // ---- Loot ----------------------------------------------------------------
 // Each entry rolls separately. chance is 0-1, qty is [min, max]. Coins go to your gold.
 // herbs: [...] = one random grimy herb from the list.
-const LOW_HERBS = ['Guam leaf', 'Marrentill', 'Tarromin'];
-const MID_HERBS = ['Harralander', 'Ranarr weed', 'Toadflax', 'Irit leaf'];
-const HIGH_HERBS = ['Avantoe', 'Kwuarm', 'Snapdragon', 'Cadantine', 'Dwarf weed', 'Torstol'];
+const LOW_HERBS = ['Greenwort', 'Marshmint', 'Tallowroot'];
+const MID_HERBS = ['Harrowbloom', 'Ravenweed', 'Toadflax', 'Ironleaf'];
+const HIGH_HERBS = ['Amberleaf', 'Knotroot', 'Snapdragon', 'Cindervine', 'Stoneweed', 'Thornstalk'];
 export const LOOT_TABLES = {
   'Drowned Deckhand': [
     { item: 'Bones', chance: 1 }, { item: 'Coins', chance: 0.6, qty: [10, 45] }, { item: 'Lead shot', chance: 0.2, qty: [3, 10] },
@@ -404,8 +404,8 @@ export const LOOT_TABLES = {
     { herbs: LOW_HERBS, chance: 0.25 }, { item: 'Iron ore', chance: 0.1 }, { item: 'Vampyric blade', chance: 1 / 120 }
   ],
   Skeleton: [
-    { item: 'Bones', chance: 1 }, { item: 'Coins', chance: 0.6, qty: [8, 35] }, { item: 'Snape grass', chance: 0.15 }, { item: 'Iron arrows', chance: 0.15, qty: [5, 12] },
-    { herbs: [...LOW_HERBS, 'Harralander'], chance: 0.25 }, { item: 'Steel full helm', chance: 0.02 }, { item: 'Vampyric blade', chance: 1 / 150 }
+    { item: 'Bones', chance: 1 }, { item: 'Coins', chance: 0.6, qty: [8, 35] }, { item: 'Marsh reed', chance: 0.15 }, { item: 'Iron arrows', chance: 0.15, qty: [5, 12] },
+    { herbs: [...LOW_HERBS, 'Harrowbloom'], chance: 0.25 }, { item: 'Steel full helm', chance: 0.02 }, { item: 'Vampyric blade', chance: 1 / 150 }
   ],
   'Giant Spider': [
     { item: 'Red spider eggs', chance: 0.6, qty: [1, 2] }, { item: 'Coins', chance: 0.4, qty: [5, 30] }, { herbs: [...LOW_HERBS, ...MID_HERBS.slice(0, 2)], chance: 0.25 },
@@ -414,42 +414,42 @@ export const LOOT_TABLES = {
   Bandit: [
     { item: 'Bones', chance: 1 }, { item: 'Coins', chance: 0.9, qty: [20, 80] }, { item: 'Chocolate dust', chance: 0.15 }, { item: 'Unicorn horn dust', chance: 0.08 },
     { herbs: MID_HERBS, chance: 0.2 }, { item: 'Wine of the pyre', chance: 0.03 }, { item: 'Steel arrows', chance: 0.15, qty: [5, 15] },
-    { item: 'Ring of recoil', chance: 1 / 60 }, { item: "Captain's cutlass", chance: 1 / 400 }
+    { item: 'Ring of rebuke', chance: 1 / 60 }, { item: "Captain's cutlass", chance: 1 / 400 }
   ],
-  'Moss Giant': [
-    { item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.8, qty: [30, 100] }, { item: 'Limpwurt root', chance: 0.25 }, { item: 'Snape grass', chance: 0.2 },
-    { herbs: MID_HERBS, chance: 0.35 }, { item: 'Mithril ore', chance: 0.08 }, { item: 'Mithril sword', chance: 0.02 }
+  'Bog Giant': [
+    { item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.8, qty: [30, 100] }, { item: 'Bitterroot', chance: 0.25 }, { item: 'Marsh reed', chance: 0.2 },
+    { herbs: MID_HERBS, chance: 0.35 }, { item: 'Bluesteel ore', chance: 0.08 }, { item: 'Bluesteel sword', chance: 0.02 }
   ],
   Ogre: [
-    { item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.8, qty: [40, 140] }, { item: 'Limpwurt root', chance: 0.25 }, { item: 'Goat horn dust', chance: 0.2 },
-    { herbs: [...MID_HERBS, 'Avantoe', 'Kwuarm'], chance: 0.35 }, { item: 'Adamantite ore', chance: 0.05 }, { item: 'Granite maul', chance: 1 / 80 }
+    { item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.8, qty: [40, 140] }, { item: 'Bitterroot', chance: 0.25 }, { item: 'Goat horn dust', chance: 0.2 },
+    { herbs: [...MID_HERBS, 'Amberleaf', 'Knotroot'], chance: 0.35 }, { item: 'Verdite ore', chance: 0.05 }, { item: 'Basalt maul', chance: 1 / 80 }
   ],
   'Ice Giant': [
     { item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.8, qty: [40, 150] }, { item: 'White berries', chance: 0.3 }, { item: 'Raw shark', chance: 0.05 },
-    { herbs: [...MID_HERBS, 'Avantoe', 'Kwuarm', 'Snapdragon'], chance: 0.35 }, { item: 'Adamant platelegs', chance: 0.02 }, { item: 'Berserker ring', chance: 1 / 200 }
+    { herbs: [...MID_HERBS, 'Amberleaf', 'Knotroot', 'Snapdragon'], chance: 0.35 }, { item: 'Verdite platelegs', chance: 0.02 }, { item: 'Ring of fury', chance: 1 / 200 }
   ],
   'Green Dragon': [
     { item: 'Dragon bones', chance: 1 }, { item: 'Coins', chance: 0.9, qty: [80, 300] }, { item: 'Dragon scale dust', chance: 0.4 },
-    { item: 'Dragon ore', chance: 0.08 }, { item: 'Dragon sword', chance: 0.015 }, { item: 'Dragon platelegs', chance: 0.008 },
-    { herbs: HIGH_HERBS, chance: 0.3 }, { item: 'Rune arrows', chance: 0.1, qty: [5, 15] }, { item: 'Dragon dagger', chance: 1 / 40 }, { item: 'Dragon longsword', chance: 1 / 120 }
+    { item: 'Emberite ore', chance: 0.08 }, { item: 'Emberite sword', chance: 0.015 }, { item: 'Emberite platelegs', chance: 0.008 },
+    { herbs: HIGH_HERBS, chance: 0.3 }, { item: 'Cobalt arrows', chance: 0.1, qty: [5, 15] }, { item: 'Emberite dagger', chance: 1 / 40 }, { item: 'Emberite longsword', chance: 1 / 120 }
   ],
-  'Lesser Demon': [
+  'Cinder Fiend': [
     { item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.9, qty: [100, 350] }, { item: 'Wine of the pyre', chance: 0.3 },
-    { herbs: HIGH_HERBS, chance: 0.35 }, { item: 'Rune full helm', chance: 0.02 }, { item: 'Obsidian cape', chance: 1 / 100 }, { item: 'Dark bow', chance: 1 / 120 }
+    { herbs: HIGH_HERBS, chance: 0.35 }, { item: 'Cobalt full helm', chance: 0.02 }, { item: 'Cinderglass cape', chance: 1 / 100 }, { item: 'Dusk bow', chance: 1 / 120 }
   ],
   Grumsh: [
-    { item: 'Big bones', chance: 1, qty: [2, 3] }, { item: 'Coins', chance: 1, qty: [500, 1500] }, { herbs: HIGH_HERBS, chance: 1 }, { item: 'Limpwurt root', chance: 1, qty: [3, 6] },
-    { item: 'Granite maul', chance: 1 / 8 }, { item: 'Berserker ring', chance: 1 / 6 }, { item: 'Obsidian cape', chance: 1 / 10 }, { item: 'Rune platelegs', chance: 0.1 }
+    { item: 'Big bones', chance: 1, qty: [2, 3] }, { item: 'Coins', chance: 1, qty: [500, 1500] }, { herbs: HIGH_HERBS, chance: 1 }, { item: 'Bitterroot', chance: 1, qty: [3, 6] },
+    { item: 'Basalt maul', chance: 1 / 8 }, { item: 'Ring of fury', chance: 1 / 6 }, { item: 'Cinderglass cape', chance: 1 / 10 }, { item: 'Cobalt platelegs', chance: 0.1 }
   ],
   Scorchwing: [
     { item: 'Dragon bones', chance: 1, qty: [3, 5] },
-    { item: 'Dragon ore', chance: 0.25 }, { item: 'Dragon sword', chance: 0.06 }, { item: 'Dragon full helm', chance: 0.03 }, { item: 'Dragon platebody', chance: 0.02 },
-    { item: 'Coins', chance: 1, qty: [2000, 5000] }, { item: 'Dragon scale dust', chance: 1, qty: [3, 8] }, { herbs: ['Torstol', 'Dwarf weed', 'Snapdragon'], chance: 1 },
+    { item: 'Emberite ore', chance: 0.25 }, { item: 'Emberite sword', chance: 0.06 }, { item: 'Emberite full helm', chance: 0.03 }, { item: 'Emberite platebody', chance: 0.02 },
+    { item: 'Coins', chance: 1, qty: [2000, 5000] }, { item: 'Dragon scale dust', chance: 1, qty: [3, 8] }, { herbs: ['Thornstalk', 'Stoneweed', 'Snapdragon'], chance: 1 },
     { item: 'Wyrmscale helm', chance: 1 / 5 }, { item: 'Wyrmscale body', chance: 1 / 6 }, { item: 'Wyrmscale legs', chance: 1 / 6 }, { item: 'Wyrmscale shield', chance: 1 / 5 },
-    { item: 'Dragon longsword', chance: 1 / 6 }, { item: 'Dark bow', chance: 1 / 15 }
+    { item: 'Emberite longsword', chance: 1 / 6 }, { item: 'Dusk bow', chance: 1 / 15 }
   ],
   Goblin: [
-    { herbs: ['Guam leaf', 'Marrentill'], chance: 0.1 },
+    { herbs: ['Greenwort', 'Marshmint'], chance: 0.1 },
     { item: 'Eye of newt', chance: 0.08 },
     { item: 'Bones', chance: 1 },
     { item: 'Coins', chance: 0.5, qty: [1, 15] },
@@ -462,7 +462,7 @@ export const LOOT_TABLES = {
     { item: 'Amulet of accuracy', chance: 0.01 }
   ],
   Cow: [
-    { item: 'Bones', chance: 1 }, { herbs: ['Guam leaf'], chance: 0.05 },
+    { item: 'Bones', chance: 1 }, { herbs: ['Greenwort'], chance: 0.05 },
     { item: 'Cowhide', chance: 1 },
     { item: 'Raw beef', chance: 1 }
   ],
@@ -479,33 +479,33 @@ export const LOOT_TABLES = {
     { item: 'Holy symbol', chance: 0.02 },
     { item: 'Red cape', chance: 0.03 }
   ],
-  'Hill Giant': [
-    { item: 'Big bones', chance: 1 }, { item: 'Limpwurt root', chance: 0.2 }, { herbs: [...LOW_HERBS, ...MID_HERBS], chance: 0.2 },
+  'Crag Giant': [
+    { item: 'Big bones', chance: 1 }, { item: 'Bitterroot', chance: 0.2 }, { herbs: [...LOW_HERBS, ...MID_HERBS], chance: 0.2 },
     { item: 'Coins', chance: 0.8, qty: [20, 80] },
     { item: 'Iron arrows', chance: 0.15, qty: [5, 20] },
     { item: 'Coal', chance: 0.2, qty: [1, 3] },
     { item: 'Steel bar', chance: 0.08 },
     { item: 'Steel axe', chance: 0.04 },
     { item: 'Steel full helm', chance: 0.03 },
-    { item: 'Mithril ore', chance: 0.05 },
+    { item: 'Bluesteel ore', chance: 0.05 },
     { item: 'Amulet of strength', chance: 0.02 },
     { item: 'Warrior ring', chance: 0.01 }
   ],
-  'Black Knight': [
+  'Ironveil Knight': [
     { item: 'Bones', chance: 1 }, { herbs: MID_HERBS, chance: 0.2 }, { item: 'Wine of the pyre', chance: 0.05 },
     { item: 'Coins', chance: 0.8, qty: [30, 120] },
     { item: 'Steel arrows', chance: 0.12, qty: [5, 15] },
-    { item: 'Mithril bar', chance: 0.05 },
+    { item: 'Bluesteel bar', chance: 0.05 },
     { item: 'Steel pickaxe', chance: 0.04 },
-    { item: 'Mithril sword', chance: 0.02 },
-    { item: 'Adamantite ore', chance: 0.02 },
+    { item: 'Bluesteel sword', chance: 0.02 },
+    { item: 'Verdite ore', chance: 0.02 },
     { item: 'Steel platelegs', chance: 0.03 },
     { item: 'Amulet of defence', chance: 0.02 },
     { item: 'Ring of regeneration', chance: 0.01 },
-    { item: 'Amulet of glory', chance: 0.005 }
+    { item: 'Amulet of renown', chance: 0.005 }
   ],
   'Dark Archer': [
-    { item: 'Bones', chance: 1 }, { herbs: [...LOW_HERBS, 'Harralander'], chance: 0.15 }, { item: 'White berries', chance: 0.1 },
+    { item: 'Bones', chance: 1 }, { herbs: [...LOW_HERBS, 'Harrowbloom'], chance: 0.15 }, { item: 'White berries', chance: 0.1 },
     { item: 'Coins', chance: 0.7, qty: [15, 60] },
     { item: 'Iron arrows', chance: 0.5, qty: [5, 15] },
     { item: 'Feather', chance: 0.3, qty: [5, 15] },
@@ -516,8 +516,8 @@ export const LOOT_TABLES = {
   ]
 };
 export const RARE_DROPS = new Set(['Bronze sword', 'Iron sword', 'Bronze shield', 'Bronze axe', 'Iron pickaxe', 'Steel axe', 'Steel full helm',
-  'Steel pickaxe', 'Mithril sword', 'Adamantite ore', 'Steel platelegs', 'Amulet of accuracy', 'Holy symbol', 'Red cape', 'Amulet of strength',
-  'Warrior ring', 'Amulet of defence', 'Ring of regeneration', 'Amulet of glory', 'Hard leather body', 'Oak shortbow', 'Archer ring']);
+  'Steel pickaxe', 'Bluesteel sword', 'Verdite ore', 'Steel platelegs', 'Amulet of accuracy', 'Holy symbol', 'Red cape', 'Amulet of strength',
+  'Warrior ring', 'Amulet of defence', 'Ring of regeneration', 'Amulet of renown', 'Hard leather body', 'Oak shortbow', 'Archer ring']);
 
 export function rollLoot(monName, rng = Math.random, rareBoost = 0) {
   const drops = [];
@@ -575,8 +575,8 @@ export const TOOL_STOCK = [
   { item: 'Bronze axe', price: 16 }, { item: 'Bronze pickaxe', price: 20 },
   { item: 'Iron axe', price: 56 }, { item: 'Iron pickaxe', price: 70 },
   { item: 'Steel axe', price: 200 }, { item: 'Steel pickaxe', price: 250 },
-  { item: 'Mithril axe', price: 520, unlock: 'doric' }, { item: 'Mithril pickaxe', price: 650, unlock: 'doric' },
-  { item: 'Adamant axe', price: 1280, unlock: 'doric' }, { item: 'Adamant pickaxe', price: 1600, unlock: 'doric' },
+  { item: 'Bluesteel axe', price: 520, unlock: 'doric' }, { item: 'Bluesteel pickaxe', price: 650, unlock: 'doric' },
+  { item: 'Verdite axe', price: 1280, unlock: 'doric' }, { item: 'Verdite pickaxe', price: 1600, unlock: 'doric' },
   { item: 'Small fishing net', price: 5 }, { item: 'Fly fishing rod', price: 15 }, { item: 'Lobster pot', price: 40 }, { item: 'Harpoon', price: 60 },
   { item: 'Hammer', price: 3 }, { item: 'Knife', price: 3 }, { item: 'Needle', price: 2 }, { item: 'Tinderbox', price: 2 }
 ];
@@ -584,19 +584,19 @@ export const TOOL_STOCK = [
 const sell = (item, mult = 1.6) => ({ item, price: Math.max(1, Math.round(itemValue(item) * mult)) });
 export const HERB_STOCK = [
   { item: 'Vial of water', price: 5 }, { item: 'Vial', price: 2 }, { item: 'Eye of newt', price: 6 }, { item: 'Unicorn horn dust', price: 25 },
-  { item: 'Chocolate dust', price: 18 }, { item: 'Limpwurt root', price: 30 }, { item: 'White berries', price: 45 }, { item: 'Snape grass', price: 40 },
-  { item: 'Grimy guam leaf', price: 12 }, { item: 'Grimy marrentill', price: 18 }, { item: 'Grimy tarromin', price: 25 },
+  { item: 'Chocolate dust', price: 18 }, { item: 'Bitterroot', price: 30 }, { item: 'White berries', price: 45 }, { item: 'Marsh reed', price: 40 },
+  { item: 'Grimy greenwort', price: 12 }, { item: 'Grimy marshmint', price: 18 }, { item: 'Grimy tallowroot', price: 25 },
   { item: 'Attack potion', price: 60 }, { item: 'Antipoison', price: 90 }, { item: 'Energy potion', price: 120 }, { item: 'Prayer potion', price: 400, unlock: 'apprentice' }
 ];
 const pieces = ['full helm', 'platebody', 'platelegs', 'shield'];
 export const ARMOUR_STOCK = [
-  ...['Mithril', 'Adamant', 'Rune'].flatMap(m => pieces.map(pc => sell(`${m} ${pc}`))),
-  sell('Hard leather body'), sell('Leather cowl'), sell('Leather chaps'), sell('Amulet of defence'), sell('Ring of recoil', 2)
+  ...['Bluesteel', 'Verdite', 'Cobalt'].flatMap(m => pieces.map(pc => sell(`${m} ${pc}`))),
+  sell('Hard leather body'), sell('Leather cowl'), sell('Leather chaps'), sell('Amulet of defence'), sell('Ring of rebuke', 2)
 ];
 export const WEAPON_STOCK = [
-  ...['Steel', 'Mithril', 'Adamant', 'Rune'].map(m => sell(`${m} sword`)),
+  ...['Steel', 'Bluesteel', 'Verdite', 'Cobalt'].map(m => sell(`${m} sword`)),
   ...['Willow shortbow', 'Maple shortbow', 'Yew shortbow', 'Magic shortbow'].map(b => sell(b)),
-  ...['Iron', 'Steel', 'Mithril', 'Adamant', 'Rune'].map(m => ({ item: `${m} arrows`, price: Math.max(2, Math.round(itemValue(`${m} arrows`) * 1.6)) })),
+  ...['Iron', 'Steel', 'Bluesteel', 'Verdite', 'Cobalt'].map(m => ({ item: `${m} arrows`, price: Math.max(2, Math.round(itemValue(`${m} arrows`) * 1.6)) })),
   sell('Warrior ring'), sell('Archer ring'), sell('Amulet of strength')
 ];
 // Every shop in the game. NPC/stall entities carry shop: '<id>'.
@@ -611,13 +611,13 @@ export const SHOPS = {
   general3: { title: 'Highcrag Trading Post', stock: SHOP_STOCK },
   apothecary: { title: 'Larkhaven Apothecary', stock: HERB_STOCK },
   chandlery: { title: 'Gullrest Chandlery', stock: [
-    { item: 'Bronze cutlass', price: 50 }, { item: 'Iron cutlass', price: 160 }, { item: 'Steel cutlass', price: 420 }, { item: 'Mithril cutlass', price: 1100 },
+    { item: 'Bronze cutlass', price: 50 }, { item: 'Iron cutlass', price: 160 }, { item: 'Steel cutlass', price: 420 }, { item: 'Bluesteel cutlass', price: 1100 },
     { item: 'Iron flintlock', price: 300 }, { item: 'Steel flintlock', price: 800 }, { item: 'Lead shot', price: 6 }, { item: 'Silver shot', price: 24 },
     { item: 'Spade', price: 8 }, { item: 'Cooked swordfish', price: 75 }] },
   armsBrine: { title: 'Brineholt Gunsmith', stock: [
-    { item: 'Adamant cutlass', price: 2600 }, { item: 'Rune cutlass', price: 7000 }, { item: 'Mithril flintlock', price: 2000 }, { item: 'Adamant flintlock', price: 5200 }, { item: 'Lead shot', price: 6 }, { item: 'Silver shot', price: 22 }] },
+    { item: 'Verdite cutlass', price: 2600 }, { item: 'Cobalt cutlass', price: 7000 }, { item: 'Bluesteel flintlock', price: 2000 }, { item: 'Verdite flintlock', price: 5200 }, { item: 'Lead shot', price: 6 }, { item: 'Silver shot', price: 22 }] },
   hexer: { title: "Mama Sorrel's Hex Shop", stock: [
-    { item: 'Bog rune', price: 22 }, { item: 'Bone rune', price: 40 }, { item: 'Hexwood staff', price: 900 }, { item: 'Mind rune', price: 4 }] }
+    { item: 'Bog rune', price: 22 }, { item: 'Bone rune', price: 40 }, { item: 'Hexwood staff', price: 900 }, { item: 'Thought rune', price: 4 }] }
 };
 
 // ---- Items in hand ---------------------------------------------------------
@@ -693,32 +693,32 @@ export function unequip(player, slot, onLog) {
 
 
 // ===========================================================================
-// Magic: RuneScape-style combat spells. Each cast uses runes (an elemental staff
+// Magic: classic-style combat spells. Each cast uses runes (an elemental staff
 // counts as unlimited runes of its element). Damage is 10x classic, like the rest.
 // ===========================================================================
-const strike = (el, n) => ({ 'Air rune': 1, 'Mind rune': 1, ...(el ? { [el]: n } : {}) });
+const strike = (el, n) => ({ 'Air rune': 1, 'Thought rune': 1, ...(el ? { [el]: n } : {}) });
 export const SPELLS = [
-  { id: 'wind_strike',  name: 'Wind Strike',  level: 1,  maxHit: 20,  xp: 5.5,  icon: '💨', runes: strike(null) },
-  { id: 'water_strike', name: 'Water Strike', level: 5,  maxHit: 40,  xp: 7.5,  icon: '💧', runes: strike('Water rune', 1) },
-  { id: 'earth_strike', name: 'Earth Strike', level: 9,  maxHit: 60,  xp: 9.5,  icon: '🪨', runes: strike('Earth rune', 2) },
-  { id: 'fire_strike',  name: 'Fire Strike',  level: 13, maxHit: 80,  xp: 11.5, icon: '🔥', runes: { 'Air rune': 2, 'Mind rune': 1, 'Fire rune': 3 } },
-  { id: 'wind_bolt',    name: 'Wind Bolt',    level: 17, maxHit: 90,  xp: 13.5, icon: '💨', runes: { 'Air rune': 2, 'Chaos rune': 1 } },
-  { id: 'water_bolt',   name: 'Water Bolt',   level: 23, maxHit: 100, xp: 16.5, icon: '💧', runes: { 'Air rune': 2, 'Water rune': 2, 'Chaos rune': 1 } },
-  { id: 'earth_bolt',   name: 'Earth Bolt',   level: 29, maxHit: 110, xp: 19.5, icon: '🪨', runes: { 'Air rune': 2, 'Earth rune': 3, 'Chaos rune': 1 } },
-  { id: 'fire_bolt',    name: 'Fire Bolt',    level: 35, maxHit: 120, xp: 22.5, icon: '🔥', runes: { 'Air rune': 3, 'Fire rune': 4, 'Chaos rune': 1 } },
-  { id: 'wind_blast',   name: 'Wind Blast',   level: 41, maxHit: 130, xp: 25.5, icon: '💨', runes: { 'Air rune': 3, 'Death rune': 1 } },
-  { id: 'water_blast',  name: 'Water Blast',  level: 47, maxHit: 140, xp: 28.5, icon: '💧', runes: { 'Air rune': 3, 'Water rune': 3, 'Death rune': 1 } },
-  { id: 'earth_blast',  name: 'Earth Blast',  level: 53, maxHit: 150, xp: 31.5, icon: '🪨', runes: { 'Air rune': 3, 'Earth rune': 4, 'Death rune': 1 } },
-  { id: 'fire_blast',   name: 'Fire Blast',   level: 59, maxHit: 160, xp: 34.5, icon: '🔥', runes: { 'Air rune': 4, 'Fire rune': 5, 'Death rune': 1 } },
-  { id: 'wind_wave',    name: 'Wind Wave',    level: 62, maxHit: 170, xp: 36,   icon: '💨', runes: { 'Air rune': 5, 'Blood rune': 1 } },
-  { id: 'water_wave',   name: 'Water Wave',   level: 65, maxHit: 180, xp: 37.5, icon: '💧', runes: { 'Air rune': 5, 'Water rune': 7, 'Blood rune': 1 } },
-  { id: 'earth_wave',   name: 'Earth Wave',   level: 70, maxHit: 190, xp: 40,   icon: '🪨', runes: { 'Air rune': 5, 'Earth rune': 7, 'Blood rune': 1 } },
-  { id: 'fire_wave',    name: 'Fire Wave',    level: 75, maxHit: 200, xp: 42.5, icon: '🔥', runes: { 'Air rune': 5, 'Fire rune': 7, 'Blood rune': 1 } },
+  { id: 'wind_strike',  name: 'Wind Dart',  level: 1,  maxHit: 20,  xp: 5.5,  icon: '💨', runes: strike(null) },
+  { id: 'water_strike', name: 'Water Dart', level: 5,  maxHit: 40,  xp: 7.5,  icon: '💧', runes: strike('Water rune', 1) },
+  { id: 'earth_strike', name: 'Earth Dart', level: 9,  maxHit: 60,  xp: 9.5,  icon: '🪨', runes: strike('Earth rune', 2) },
+  { id: 'fire_strike',  name: 'Fire Dart',  level: 13, maxHit: 80,  xp: 11.5, icon: '🔥', runes: { 'Air rune': 2, 'Thought rune': 1, 'Fire rune': 3 } },
+  { id: 'wind_bolt',    name: 'Wind Lance',    level: 17, maxHit: 90,  xp: 13.5, icon: '💨', runes: { 'Air rune': 2, 'Havoc rune': 1 } },
+  { id: 'water_bolt',   name: 'Water Lance',   level: 23, maxHit: 100, xp: 16.5, icon: '💧', runes: { 'Air rune': 2, 'Water rune': 2, 'Havoc rune': 1 } },
+  { id: 'earth_bolt',   name: 'Earth Lance',   level: 29, maxHit: 110, xp: 19.5, icon: '🪨', runes: { 'Air rune': 2, 'Earth rune': 3, 'Havoc rune': 1 } },
+  { id: 'fire_bolt',    name: 'Fire Lance',    level: 35, maxHit: 120, xp: 22.5, icon: '🔥', runes: { 'Air rune': 3, 'Fire rune': 4, 'Havoc rune': 1 } },
+  { id: 'wind_blast',   name: 'Wind Burst',   level: 41, maxHit: 130, xp: 25.5, icon: '💨', runes: { 'Air rune': 3, 'Grave rune': 1 } },
+  { id: 'water_blast',  name: 'Water Burst',  level: 47, maxHit: 140, xp: 28.5, icon: '💧', runes: { 'Air rune': 3, 'Water rune': 3, 'Grave rune': 1 } },
+  { id: 'earth_blast',  name: 'Earth Burst',  level: 53, maxHit: 150, xp: 31.5, icon: '🪨', runes: { 'Air rune': 3, 'Earth rune': 4, 'Grave rune': 1 } },
+  { id: 'fire_blast',   name: 'Fire Burst',   level: 59, maxHit: 160, xp: 34.5, icon: '🔥', runes: { 'Air rune': 4, 'Fire rune': 5, 'Grave rune': 1 } },
+  { id: 'wind_wave',    name: 'Wind Torrent',    level: 62, maxHit: 170, xp: 36,   icon: '💨', runes: { 'Air rune': 5, 'Crimson rune': 1 } },
+  { id: 'water_wave',   name: 'Water Torrent',   level: 65, maxHit: 180, xp: 37.5, icon: '💧', runes: { 'Air rune': 5, 'Water rune': 7, 'Crimson rune': 1 } },
+  { id: 'earth_wave',   name: 'Earth Torrent',   level: 70, maxHit: 190, xp: 40,   icon: '🪨', runes: { 'Air rune': 5, 'Earth rune': 7, 'Crimson rune': 1 } },
+  { id: 'fire_wave',    name: 'Fire Torrent',    level: 75, maxHit: 200, xp: 42.5, icon: '🔥', runes: { 'Air rune': 5, 'Fire rune': 7, 'Crimson rune': 1 } },
   // Hexcraft (Sails of Saltreach): swamp-and-bone hexes taught by Mama Sorrel. Each lands an effect as well as damage.
-  { id: 'hex_rot',   name: 'Rotting Hex',  level: 12, maxHit: 50,  xp: 12, icon: '🪲', hex: 'rot',   school: 'Hexcraft', runes: { 'Bog rune': 1, 'Mind rune': 1 }, about: 'rots the target for 4 extra hits over time' },
+  { id: 'hex_rot',   name: 'Rotting Hex',  level: 12, maxHit: 50,  xp: 12, icon: '🪲', hex: 'rot',   school: 'Hexcraft', runes: { 'Bog rune': 1, 'Thought rune': 1 }, about: 'rots the target for 4 extra hits over time' },
   { id: 'hex_bind',  name: 'Binding Hex',  level: 25, maxHit: 40,  xp: 18, icon: '🪢', hex: 'bind',  school: 'Hexcraft', runes: { 'Bog rune': 2, 'Bone rune': 1 }, about: 'roots the target so it cannot strike for 4 ticks' },
   { id: 'hex_wither',name: 'Withering Hex',level: 38, maxHit: 70,  xp: 26, icon: '🥀', hex: 'wither',school: 'Hexcraft', runes: { 'Bone rune': 2, 'Bog rune': 1 }, about: 'the target hits 30% softer for 20 seconds' },
-  { id: 'hex_leech', name: 'Leeching Hex', level: 52, maxHit: 130, xp: 34, icon: '🩸', hex: 'leech', school: 'Hexcraft', runes: { 'Bone rune': 3, 'Blood rune': 1 }, about: 'half the damage dealt heals you' }
+  { id: 'hex_leech', name: 'Leeching Hex', level: 52, maxHit: 130, xp: 34, icon: '🩸', hex: 'leech', school: 'Hexcraft', runes: { 'Bone rune': 3, 'Crimson rune': 1 }, about: 'half the damage dealt heals you' }
 ];
 export const SPELL_TICKS = 5; // 3 seconds per cast
 export function spellById(id) { return SPELLS.find(s => s.id === id) || null; }
@@ -768,9 +768,9 @@ export function magicAccuracy(player, skills, mon) {
 // or { error } when it can't be cast.
 // Elemental weaknesses: spells of that element deal +30% (Magic kit).
 export const WEAKNESS = {
-  Wolf: 'fire', Zombie: 'fire', Skeleton: 'earth', 'Giant Spider': 'fire', Bandit: 'wind', 'Moss Giant': 'fire', Ogre: 'water', 'Ice Giant': 'fire',
-  'Green Dragon': 'water', 'Lesser Demon': 'water', Grumsh: 'earth', Scorchwing: 'water', 'Dark Archer': 'wind', Goblin: 'wind', Cow: 'earth', Guard: 'earth',
-  'Hill Giant': 'water', 'Black Knight': 'earth', 'Drowned Deckhand': 'fire', 'Drowned Gunner': 'earth', 'Captain Saltgrave': 'fire'
+  Wolf: 'fire', Zombie: 'fire', Skeleton: 'earth', 'Giant Spider': 'fire', Bandit: 'wind', 'Bog Giant': 'fire', Ogre: 'water', 'Ice Giant': 'fire',
+  'Green Dragon': 'water', 'Cinder Fiend': 'water', Grumsh: 'earth', Scorchwing: 'water', 'Dark Archer': 'wind', Goblin: 'wind', Cow: 'earth', Guard: 'earth',
+  'Crag Giant': 'water', 'Ironveil Knight': 'earth', 'Drowned Deckhand': 'fire', 'Drowned Gunner': 'earth', 'Captain Saltgrave': 'fire'
 };
 export const WEAK_MULT = 1.3;
 export const ELEMENT_ICON = { wind: '💨', water: '💧', earth: '🪨', fire: '🔥' };
@@ -788,7 +788,7 @@ export function castSpell(spell, skills, player, mon, rng = Math.random) {
     if (weakTo(mon.name, spellElement(spell))) dmg = Math.floor(dmg * WEAK_MULT);
   }
   dmg = Math.min(dmg, mon.hp);
-  // Like RuneScape, a cast always gives its base XP; damage adds more.
+  // Like the old classics, a cast always gives its base XP; damage adds more.
   return { dmg, saved, xp: { Magic: spell.xp * 2 + dmg * 0.6, Hitpoints: dmg * 0.4 } };
 }
 
@@ -850,13 +850,13 @@ export function runObstacle(obs, skills, player, rng = Math.random) {
 export const THIEVE_TARGETS = {
   Man:      { level: 1,  xp: 8,     stun: 5, dmg: 10, loot: [{ item: 'Coins', qty: [3, 3] }] },
   Woman:    { level: 1,  xp: 8,     stun: 5, dmg: 10, loot: [{ item: 'Coins', qty: [3, 3] }] },
-  Farmer:   { level: 10, xp: 14.5,  stun: 5, dmg: 10, loot: [{ item: 'Coins', qty: [9, 9] }, { item: 'Raw beef', qty: [1, 1], chance: 0.2 }, { item: 'Grimy guam leaf', qty: [1, 1], chance: 0.15 }] },
+  Farmer:   { level: 10, xp: 14.5,  stun: 5, dmg: 10, loot: [{ item: 'Coins', qty: [9, 9] }, { item: 'Raw beef', qty: [1, 1], chance: 0.2 }, { item: 'Grimy greenwort', qty: [1, 1], chance: 0.15 }] },
   Sailor:   { level: 20, xp: 22,    stun: 5, dmg: 20, loot: [{ item: 'Coins', qty: [12, 18] }, { item: 'Raw shrimp', qty: [1, 2], chance: 0.25 }] },
   Warrior:  { level: 25, xp: 26,    stun: 5, dmg: 20, loot: [{ item: 'Coins', qty: [18, 18] }] },
   Guard:    { level: 40, xp: 46.8,  stun: 5, dmg: 20, loot: [{ item: 'Coins', qty: [30, 30] }, { item: 'Iron arrows', qty: [3, 8], chance: 0.2 }] },
-  Knight:   { level: 55, xp: 84.3,  stun: 6, dmg: 30, loot: [{ item: 'Coins', qty: [50, 50] }, { item: 'Chaos rune', qty: [1, 2], chance: 0.15 }] },
-  Paladin:  { level: 70, xp: 151.8, stun: 6, dmg: 30, loot: [{ item: 'Coins', qty: [80, 80] }, { item: 'Chaos rune', qty: [2, 2], chance: 0.4 }] },
-  Hero:     { level: 80, xp: 273.3, stun: 6, dmg: 40, loot: [{ item: 'Coins', qty: [200, 300] }, { item: 'Death rune', qty: [2, 2], chance: 0.25 }, { item: 'Blood rune', qty: [1, 1], chance: 0.15 }, { item: 'Amulet of glory', qty: [1, 1], chance: 0.01 }] }
+  Knight:   { level: 55, xp: 84.3,  stun: 6, dmg: 30, loot: [{ item: 'Coins', qty: [50, 50] }, { item: 'Havoc rune', qty: [1, 2], chance: 0.15 }] },
+  Paladin:  { level: 70, xp: 151.8, stun: 6, dmg: 30, loot: [{ item: 'Coins', qty: [80, 80] }, { item: 'Havoc rune', qty: [2, 2], chance: 0.4 }] },
+  Hero:     { level: 80, xp: 273.3, stun: 6, dmg: 40, loot: [{ item: 'Coins', qty: [200, 300] }, { item: 'Grave rune', qty: [2, 2], chance: 0.25 }, { item: 'Crimson rune', qty: [1, 1], chance: 0.15 }, { item: 'Amulet of renown', qty: [1, 1], chance: 0.01 }] }
 };
 export function thieveChance(level, req, bonus = 0) {
   return Math.max(0.1, Math.min(0.95, 0.6 + (level - req) * 0.012 + bonus));
@@ -882,19 +882,19 @@ export function thieve(targetType, skills, player, rng = Math.random) {
 }
 
 // ===========================================================================
-// Runecrafting: take essence to a rune altar and craft it all into runes at once.
-// Higher levels make several runes per essence. Chaos, Death and Blood need Pure essence.
+// Glyphcraft: take essence to a rune altar and craft it all into runes at once.
+// Higher levels make several runes per essence. Havoc, Death and Blood need Clear essence.
 // ===========================================================================
 export const RUNE_ALTARS = {
   Air:   { rune: 'Air rune',   level: 1,  xp: 5,    multi: 11, pure: false },
-  Mind:  { rune: 'Mind rune',  level: 2,  xp: 5.5,  multi: 14, pure: false },
+  Mind:  { rune: 'Thought rune',  level: 2,  xp: 5.5,  multi: 14, pure: false },
   Water: { rune: 'Water rune', level: 5,  xp: 6,    multi: 19, pure: false },
   Earth: { rune: 'Earth rune', level: 9,  xp: 6.5,  multi: 26, pure: false },
   Fire:  { rune: 'Fire rune',  level: 14, xp: 7,    multi: 35, pure: false },
-  Body:  { rune: 'Body rune',  level: 20, xp: 7.5,  multi: 46, pure: false },
-  Chaos: { rune: 'Chaos rune', level: 35, xp: 8.5,  multi: 74, pure: true },
-  Death: { rune: 'Death rune', level: 65, xp: 10,   multi: 0,  pure: true },
-  Blood: { rune: 'Blood rune', level: 77, xp: 10.5, multi: 0,  pure: true }
+  Body:  { rune: 'Vital rune',  level: 20, xp: 7.5,  multi: 46, pure: false },
+  Havoc: { rune: 'Havoc rune', level: 35, xp: 8.5,  multi: 74, pure: true },
+  Death: { rune: 'Grave rune', level: 65, xp: 10,   multi: 0,  pure: true },
+  Blood: { rune: 'Crimson rune', level: 77, xp: 10.5, multi: 0,  pure: true }
 };
 export function runesPerEssence(altar, level) {
   return altar.multi ? 1 + Math.floor(level / altar.multi) : 1;
@@ -903,36 +903,36 @@ export function runesPerEssence(altar, level) {
 export function craftRunes(altarName, skills, player, rng = Math.random) {
   const a = RUNE_ALTARS[altarName];
   if (!a) return { error: 'Nothing happens.' };
-  const lvl = skills.Runecrafting.level;
-  if (lvl < a.level) return { error: `You need a Runecrafting level of ${a.level} to craft ${a.rune.toLowerCase()}s.` };
-  const kinds = a.pure ? ['Pure essence'] : ['Pure essence', 'Rune essence'];
+  const lvl = skills.Glyphcraft.level;
+  if (lvl < a.level) return { error: `You need a Glyphcraft level of ${a.level} to craft ${a.rune.toLowerCase()}s.` };
+  const kinds = a.pure ? ['Clear essence'] : ['Clear essence', 'Glyph essence'];
   let used = 0;
   const parts = [];
   for (const k of kinds) { const n = player.inventory[k] || 0; if (n) { removeItem(player, k, n); used += n; parts.push(k); } }
-  if (!used) return { error: a.pure ? `You need pure essence to craft ${a.rune.toLowerCase()}s. Mine it at Mining 30 in the Highcrest essence mine.` : 'You don\'t have any rune essence. Buy some from a magic shop or mine it.' };
+  if (!used) return { error: a.pure ? `You need clear essence to craft ${a.rune.toLowerCase()}s. Mine it at Mining 30 in the Highcrest essence mine.` : 'You don\'t have any glyph essence. Buy some from a magic shop or mine it.' };
   let qty = used * runesPerEssence(a, lvl);
-  const dbl = perk(skills, 'Runecrafting', 'runeDouble');
+  const dbl = perk(skills, 'Glyphcraft', 'runeDouble');
   if (dbl > 0) { let extra = 0; for (let i = 0; i < used; i++) if (rng() < dbl) extra++; qty += extra; }
   addItem(player, a.rune, qty);
-  return { item: a.rune, qty, used, essence: parts, xp: used * a.xp * (1 + perk(skills, 'Runecrafting', 'rcXp')) };
+  return { item: a.rune, qty, used, essence: parts, xp: used * a.xp * (1 + perk(skills, 'Glyphcraft', 'rcXp')) };
 }
 
 // ---- Magic shops ----
 const runeStock = (list) => list.map(r => ({ item: r, price: Math.max(2, Math.round(itemValue(r) * 1.4)) }));
 export const MAGIC_STOCK_BASIC = [
-  ...runeStock(['Air rune', 'Mind rune', 'Water rune', 'Earth rune', 'Fire rune']),
-  { item: 'Rune essence', price: 8 }, { item: 'Staff', price: 20 }, { item: 'Wizard hat', price: 30 }, { item: 'Wizard robe', price: 45 }
+  ...runeStock(['Air rune', 'Thought rune', 'Water rune', 'Earth rune', 'Fire rune']),
+  { item: 'Glyph essence', price: 8 }, { item: 'Staff', price: 20 }, { item: 'Wizard hat', price: 30 }, { item: 'Wizard robe', price: 45 }
 ];
 export const MAGIC_STOCK = [
-  ...runeStock(['Air rune', 'Mind rune', 'Water rune', 'Earth rune', 'Fire rune', 'Body rune', 'Chaos rune']),
-  { item: 'Rune essence', price: 8 }, { item: 'Staff', price: 20 },
+  ...runeStock(['Air rune', 'Thought rune', 'Water rune', 'Earth rune', 'Fire rune', 'Vital rune', 'Havoc rune']),
+  { item: 'Glyph essence', price: 8 }, { item: 'Staff', price: 20 },
   { item: 'Staff of air', price: 1500 }, { item: 'Staff of water', price: 1500 }, { item: 'Staff of earth', price: 1500 }, { item: 'Staff of fire', price: 1500 },
   { item: 'Wizard hat', price: 30 }, { item: 'Wizard robe', price: 45 }
 ];
 export const RUNE_STOCK = [
-  ...runeStock(['Air rune', 'Mind rune', 'Water rune', 'Earth rune', 'Fire rune', 'Body rune', 'Chaos rune', 'Death rune']),
-  { item: 'Rune essence', price: 8 }, { item: 'Pure essence', price: 14 },
-  { item: 'Mystic staff', price: 9000 }, { item: 'Mystic hat', price: 3500 }, { item: 'Mystic robe top', price: 14000 }, { item: 'Mystic robe bottom', price: 10500 }
+  ...runeStock(['Air rune', 'Thought rune', 'Water rune', 'Earth rune', 'Fire rune', 'Vital rune', 'Havoc rune', 'Grave rune']),
+  { item: 'Glyph essence', price: 8 }, { item: 'Clear essence', price: 14 },
+  { item: 'Starweave staff', price: 9000 }, { item: 'Starweave hat', price: 3500 }, { item: 'Starweave robe top', price: 14000 }, { item: 'Starweave robe bottom', price: 10500 }
 ];
 Object.assign(SHOPS, {
   magic0: { title: "Mardoc's Magic Supplies", stock: MAGIC_STOCK_BASIC },
@@ -948,16 +948,16 @@ SHOPS.weapons.title = 'Highcrest Weaponsmith';
 SHOPS.general3.title = 'Highcrest General Store';
 SHOPS.herb2.title = "Nessa's Herb Stall (Whitecairn)";
 
-// Rune drops from monsters that cast or carry them.
+// Cobalt drops from monsters that cast or carry them.
 const addLoot = (mon, ...entries) => { if (LOOT_TABLES[mon]) LOOT_TABLES[mon].push(...entries); };
-addLoot('Goblin', { item: 'Air rune', chance: 0.12, qty: [3, 8] }, { item: 'Mind rune', chance: 0.08, qty: [2, 5] });
-addLoot('Dark Archer', { item: 'Chaos rune', chance: 0.1, qty: [1, 3] });
+addLoot('Goblin', { item: 'Air rune', chance: 0.12, qty: [3, 8] }, { item: 'Thought rune', chance: 0.08, qty: [2, 5] });
+addLoot('Dark Archer', { item: 'Havoc rune', chance: 0.1, qty: [1, 3] });
 addLoot('Skeleton', { item: 'Earth rune', chance: 0.15, qty: [3, 9] });
-addLoot('Bandit', { item: 'Chaos rune', chance: 0.15, qty: [2, 5] });
-addLoot('Moss Giant', { item: 'Water rune', chance: 0.2, qty: [8, 20] }, { item: 'Chaos rune', chance: 0.12, qty: [3, 6] });
-addLoot('Ice Giant', { item: 'Water rune', chance: 0.25, qty: [10, 25] }, { item: 'Death rune', chance: 0.08, qty: [2, 5] });
-addLoot('Lesser Demon', { item: 'Fire rune', chance: 0.3, qty: [20, 45] }, { item: 'Death rune', chance: 0.12, qty: [3, 6] }, { item: 'Blood rune', chance: 0.05, qty: [1, 3] });
-addLoot('Green Dragon', { item: 'Blood rune', chance: 0.08, qty: [2, 4] });
+addLoot('Bandit', { item: 'Havoc rune', chance: 0.15, qty: [2, 5] });
+addLoot('Bog Giant', { item: 'Water rune', chance: 0.2, qty: [8, 20] }, { item: 'Havoc rune', chance: 0.12, qty: [3, 6] });
+addLoot('Ice Giant', { item: 'Water rune', chance: 0.25, qty: [10, 25] }, { item: 'Grave rune', chance: 0.08, qty: [2, 5] });
+addLoot('Cinder Fiend', { item: 'Fire rune', chance: 0.3, qty: [20, 45] }, { item: 'Grave rune', chance: 0.12, qty: [3, 6] }, { item: 'Crimson rune', chance: 0.05, qty: [1, 3] });
+addLoot('Green Dragon', { item: 'Crimson rune', chance: 0.08, qty: [2, 4] });
 
 // Repeatable bounties (the givers stand at points of interest in the wilds)
 export const BOUNTIES = [

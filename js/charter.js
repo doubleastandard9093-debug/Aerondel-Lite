@@ -16,8 +16,8 @@ export const APPROVAL = {
   cunning: { charter: 1, commons: -1, deal: 2, betray: 3 }
 };
 export const STALLS = {
-  charter: [['Steel bar', 5, 450], ['Rune bar', 1, 2400], ['Coal', 20, 300]],
-  commons: [['Grimy ranarr', 3, 600], ['Bread', 10, 120], ['Feather', 50, 150]],
+  charter: [['Steel bar', 5, 450], ['Cobalt bar', 1, 2400], ['Coal', 20, 300]],
+  commons: [['Grimy ravenweed', 3, 600], ['Bread', 10, 120], ['Feather', 50, 150]],
   deal: [['Steel bar', 5, 500], ['Bread', 10, 130], ['Coal', 20, 320]]
 };
 export function normalizeCharter(c) {

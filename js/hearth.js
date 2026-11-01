@@ -3,7 +3,7 @@
 export const DEED_COST = 25000;
 export const ROOMS = [
   { id: 'workshop', name: 'Workshop', gold: 15000, items: [['Oak logs', 20], ['Iron bar', 10]], skills: ['Smithing', 'Crafting', 'Fletching'], desc: '+5% XP in Smithing, Crafting and Fletching', pos: [-6, -4.5], color: 0x8a6a4a },
-  { id: 'garden', name: 'Herb garden', gold: 10000, items: [['Logs', 20]], skills: ['Herblore'], desc: '+5% Herblore XP and a herb harvest every 12 hours', pos: [6, -4.5], color: 0x4a7a3a },
+  { id: 'garden', name: 'Herb garden', gold: 10000, items: [['Logs', 20]], skills: ['Herbalism'], desc: '+5% Herbalism XP and a herb harvest every 12 hours', pos: [6, -4.5], color: 0x4a7a3a },
   { id: 'trophy', name: 'Trophy hall', gold: 30000, items: [['Steel bar', 10]], skills: [], desc: '+2% damage against bosses for each boss trophy you mount', pos: [-6, 4.5], color: 0x7a3a3a },
   { id: 'quarters', name: 'Companion quarters', gold: 20000, items: [['Oak logs', 30]], skills: [], desc: '+10% errand success, and companions gain a Bond point each day they live here', pos: [6, 4.5], color: 0x3a4a7a }
 ];
@@ -30,7 +30,7 @@ export const hasRoom = (h, id) => !!(h && h.deed && h.rooms.includes(id));
 export const hasFurn = (h, id) => !!(h && h.furniture.includes(id));
 export function houseXpBonus(h, skill) {
   if (hasRoom(h, 'workshop') && ROOMS[0].skills.includes(skill)) return 0.05 + (hasFurn(h, 'bench') ? 0.02 : 0) + (hasFurn(h, 'anvil') ? 0.02 : 0);
-  if (hasRoom(h, 'garden') && skill === 'Herblore') return 0.05;
+  if (hasRoom(h, 'garden') && skill === 'Herbalism') return 0.05;
   return 0;
 }
 export function houseBossDamage(h) {

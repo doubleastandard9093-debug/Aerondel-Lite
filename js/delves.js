@@ -10,7 +10,7 @@ export const ROLES = {
 };
 export const DELVES = {
   sewers: { name: 'The Undercroft Sewers', z: DELVE_Z, level: 20, floor: 0x2e3a2c, wall: 0x4a5246,
-    rooms: [[['Zombie', 4]], [['Giant Spider', 3], ['Zombie', 2]], [['Skeleton', 5], ['Moss Giant', 1]]], coins: 600, xp: 2500 },
+    rooms: [[['Zombie', 4]], [['Giant Spider', 3], ['Zombie', 2]], [['Skeleton', 5], ['Bog Giant', 1]]], coins: 600, xp: 2500 },
   keep: { name: 'The Drowned Keep', z: DELVE_Z - 80, level: 35, floor: 0x26323a, wall: 0x3a4a56,
     rooms: [[['Drowned Deckhand', 5]], [['Drowned Gunner', 3], ['Drowned Deckhand', 3]], [['Drowned Gunner', 4], ['Ogre', 2]]], coins: 1400, xp: 6000 }
 };

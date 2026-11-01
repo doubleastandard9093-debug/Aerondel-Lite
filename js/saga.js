@@ -3,7 +3,7 @@
 // a companion who may walk away, and the ending you get). Logic and data only; no new models or textures.
 export const CALLINGS = {
   warden: { name: 'Warden', icon: '🛡️', skills: ['Attack', 'Strength', 'Defence'], desc: 'a shield for the weak; +5% melee XP' },
-  arcanist: { name: 'Arcanist', icon: '🔮', skills: ['Magic', 'Runecrafting'], desc: 'a seeker of old power; +5% Magic and Runecrafting XP' },
+  arcanist: { name: 'Arcanist', icon: '🔮', skills: ['Magic', 'Glyphcraft'], desc: 'a seeker of old power; +5% Magic and Glyphcraft XP' },
   ranger: { name: 'Ranger', icon: '🏹', skills: ['Ranged', 'Agility'], desc: 'a wanderer of the wilds; +5% Ranged and Agility XP' }
 };
 // obj: kill | item | visit. Effects: flag, gold, rep [faction, n], bond (active companion), xp.
@@ -39,7 +39,7 @@ export const CHAPTERS = [
       ['cunning', 'Sell the page to the harbour master.', { gold: 600, flag: 'smuggler', say: 'He pays well, and owes you one.' }]] },
   { n: 5, title: 'The Lantern Archive', req: { total: 140, qp: 12 },
     intro: ['Aldric\'s journal speaks of an archive under Highcrest, sealed with rune-light.'],
-    obj: { kind: 'item', item: 'Rune essence', n: 20, text: 'Bring 20 Rune essence to wake the archive seals' },
+    obj: { kind: 'item', item: 'Glyph essence', n: 20, text: 'Bring 20 Glyph essence to wake the archive seals' },
     varroHelp: 5,
     done: 'The seals open. Aldric\'s last page: he went into the Black Knights\' keep near Whitecairn and never came out.',
     wheel: [['kind', 'Share the archive with the Circle.', { rep: ['circle', 80], say: 'The Arcane Circle names you a friend of the archive.' }],
@@ -47,7 +47,7 @@ export const CHAPTERS = [
       ['cunning', 'Copy the best spells for yourself.', { xp: ['Magic', 1500], say: 'Your mind fills with old patterns.' }]] },
   { n: 6, title: 'Aldric\'s Ember', req: { total: 180, qp: 16 },
     intro: ['Whitecairn. The keep of the Black Knights. Whatever happened to Aldric is inside.'],
-    obj: { kind: 'kill', mon: 'Black Knight', n: 5, text: 'Fight through 5 Black Knights to reach Aldric' },
+    obj: { kind: 'kill', mon: 'Ironveil Knight', n: 5, text: 'Fight through 5 Black Knights to reach Aldric' },
     done: 'Aldric is alive, chained and thin. He smiles. "You came. Now: who did you become?"',
     finale: true }
 ];

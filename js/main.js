@@ -618,7 +618,7 @@ function setting(act) {
 }
 function finishImport(ok) {
   if (ok) { afterLoad(); saveToLocal(skills, player, pm); log('Save imported.', 'game'); }
-  else log('Import failed: that file is not a Gielinor save.', 'warn');
+  else log('Import failed: that file is not a Aerondel save.', 'warn');
 }
 function toggleRun() {
   if (!player.settings.run && player.runEnergy < 1) { log('You have no run energy left.', 'warn'); return; }
@@ -988,14 +988,14 @@ function doThieve(a) {
   markDirty();
 }
 
-// ---- Runecrafting ----
+// ---- Glyphcraft ----
 function doRunecraft(a) {
   const res = craftRunes(a.altar, skills, player);
   stopAction();
   if (res.error) { log(res.error, 'warn'); return; }
   pm.actionAnim = 1; pm.actionKind = 'tool';
   log(`You bind the temple's power into ${res.qty} ${res.item.toLowerCase()}${res.qty > 1 ? 's' : ''}.`, 'skill');
-  giveXP('Runecrafting', res.xp);
+  giveXP('Glyphcraft', res.xp);
   markDirty();
 }
 
@@ -1128,7 +1128,7 @@ const EXAMINE = {
   Harpoon: 'Big fish swim here. (Harpoon: swordfish at 50, shark at 76 Fishing. Needs a harpoon)',
   Merchant: 'A trader of general goods.', 'Bank booth': 'The bank teller will serve you here.',
   Goblin: 'An ugly green creature.', Cow: 'Converts grass to beef.', Guard: 'He tries to keep order around here.',
-  'Hill Giant': 'A very large foe. Drops big bones.', 'Black Knight': 'A sinister knight in black armour.',
+  'Crag Giant': 'A very large foe. Drops big bones.', 'Ironveil Knight': 'A sinister knight in black armour.',
   Furnace: 'Smelts ore into bars.', Anvil: 'Used with a hammer to smith bars into gear.', Range: 'A hot range for cooking food.',
   Fire: 'Hot! You can cook on it.', Altar: 'An altar to the Dawnmother. Pray here to recharge your prayer points.'
 };
@@ -1136,7 +1136,7 @@ function entExamine(ent) {
   if (ent.type === 'building') return `${ent.name}: ${ent.examine}`;
   if (ent.type === 'poi' || ent.type === 'cave') return ent.examine;
   if (ent.type === 'chest') return player.caveLoot ? 'The hoard is empty now. You already took everything.' : ent.examine;
-  if (ent.type === 'forage') return ent.alive ? `A bush heavy with ${ent.item.toLowerCase()}. (Herblore ${ent.level})` : 'This bush has been picked clean. It will grow back soon.';
+  if (ent.type === 'forage') return ent.alive ? `A bush heavy with ${ent.item.toLowerCase()}. (Herbalism ${ent.level})` : 'This bush has been picked clean. It will grow back soon.';
   if (ent.companion) return companionById(ent.companion).examine;
   if (ent.saga) return 'An old chronicler with ink-stained fingers. He writes down the stories worth keeping.';
   if (ent.standing) return 'She keeps the faction ledgers for every town.';
@@ -1144,12 +1144,12 @@ function entExamine(ent) {
   if (ent.type === 'tree' && !ent.alive) return 'This tree has been cut down.';
   if (ent.type === 'rock' && !ent.alive) return 'There is currently no ore available in this rock.';
   if (ent.type === 'fish') return EXAMINE[ent.kind];
-  if (ent.type === 'herb') return `A herb patch growing ${ent.herb.toLowerCase()}. It never runs out. (Herblore ${HERB_LEVEL(ent.herb)})`;
+  if (ent.type === 'herb') return `A herb patch growing ${ent.herb.toLowerCase()}. It never runs out. (Herbalism ${HERB_LEVEL(ent.herb)})`;
   if (ent.type === 'well') return ent.examine;
   if (ent.type === 'sign') return 'A wooden signpost. Read it to see which way the towns are.';
   if (ent.type === 'agility') { const o = AGILITY_OBSTACLES[ent.obstacle]; return `${ent.name}: part of the ${AGILITY_COURSES[o.course].name} (Agility ${o.level}). Do every obstacle in order for a lap bonus.`; }
-  if (ent.type === 'runealtar') { const a = RUNE_ALTARS[ent.altar]; return `A mysterious ${ent.altar.toLowerCase()} altar. Bring ${a.pure ? 'pure' : 'rune'} essence here to craft ${a.rune.toLowerCase()}s. (Runecrafting ${a.level})`; }
-  if (ent.type === 'rock' && ent.ore === 'Essence') return 'Rune essence rock. Mine it for essence (pure essence from Mining 30).';
+  if (ent.type === 'runealtar') { const a = RUNE_ALTARS[ent.altar]; return `A mysterious ${ent.altar.toLowerCase()} altar. Bring ${a.pure ? 'pure' : 'rune'} essence here to craft ${a.rune.toLowerCase()}s. (Glyphcraft ${a.level})`; }
+  if (ent.type === 'rock' && ent.ore === 'Essence') return 'Glyph essence rock. Mine it for essence (clear essence from Mining 30).';
   return EXAMINE[ent.kind] || EXAMINE[ent.name] || `It's a ${ent.name}.`;
 }
 
@@ -1174,7 +1174,7 @@ function optionsFor(ent) {
     case 'tree': return [{ action: 'Chop down', target: ent.name, color: cy, fn: () => startAction({ kind: 'gather', node: ent }) }, ex];
     case 'rock': return [
       { action: 'Mine', target: ent.name, color: cy, fn: () => startAction({ kind: 'gather', node: ent }) },
-      { action: 'Prospect', target: ent.name, color: cy, fn: () => log(ent.ore === 'Essence' ? 'This rock contains rune essence (pure essence from Mining 30).' : ent.alive ? `This rock contains ${ent.ore.toLowerCase()}. (Mining ${ROCKS[ent.ore].level})` : 'There is currently no ore available in this rock.', 'examine') }, ex];
+      { action: 'Prospect', target: ent.name, color: cy, fn: () => log(ent.ore === 'Essence' ? 'This rock contains glyph essence (clear essence from Mining 30).' : ent.alive ? `This rock contains ${ent.ore.toLowerCase()}. (Mining ${ROCKS[ent.ore].level})` : 'There is currently no ore available in this rock.', 'examine') }, ex];
     case 'fish': return [{ action: FISH_SPOTS[ent.kind].verb, target: 'Fishing spot', color: cy, fn: () => startAction({ kind: 'gather', node: ent }) }, ex];
     case 'shop': return [
       { action: 'Trade', target: 'Merchant', color: '#ffff00', fn: () => startAction({ kind: 'shop', node: ent, shop: 'shop' }) },
@@ -1235,7 +1235,7 @@ function onTap(x, y) {
 function onContext(x, y) {
   const hit = pick(x, y, true);
   if (!hit) return;
-  // Like RuneScape, list the options for everything under your finger.
+  // Like the old classics, list the options for everything under your finger.
   const opts = [];
   for (const ent of hit.ents) opts.push(...optionsFor(ent));
   const point = hit.point;
@@ -1304,7 +1304,7 @@ function takeFromPile(pile, only) {
 }
 
 // ---- Gathering ----
-const SKILL_VERB = { Woodcutting: 'You swing your axe at the tree.', Mining: 'You swing your pick at the rock.', Fishing: 'You attempt to catch a fish.', Herblore: 'You start picking herbs.' };
+const SKILL_VERB = { Woodcutting: 'You swing your axe at the tree.', Mining: 'You swing your pick at the rock.', Fishing: 'You attempt to catch a fish.', Herbalism: 'You start picking herbs.' };
 const GOT = item => WOODS.includes(item) ? `You get some ${item.toLowerCase()}.` : ITEMS[item] && ITEMS[item].type === 'grimy' ? `You pick a ${item.toLowerCase()}.` : null;
 const HERB_LEVEL = herb => (ITEMS[herb] && ITEMS[herb].herbLevel) || 1;
 function depleteNode(node, ms) {
@@ -1403,7 +1403,7 @@ function craftOne() {
     giveXP(r.skill, makeXp(r, skills));
     log(`You make ${outQty > 1 ? outQty + ' ' : ''}${output}.${saved ? ' You manage to save your materials!' : ''}${extra ? ' Your perk makes a free extra one!' : ''}`, 'skill');
   }
-  pm.actionAnim = 1; pm.actionKind = ({ Smithing: 'smith', Cooking: 'cook', Fletching: 'craft', Crafting: 'craft', Herblore: 'craft' })[r.skill] || 'tool';
+  pm.actionAnim = 1; pm.actionKind = ({ Smithing: 'smith', Cooking: 'cook', Fletching: 'craft', Crafting: 'craft', Herbalism: 'craft' })[r.skill] || 'tool';
   a.left--;
   a.wait = makeTicks(r, skills) - 1;
   if (a.left <= 0) stopAction();
@@ -1457,7 +1457,7 @@ function lightFire(a) {
   g.userData.entity = fire;
   fires.push(fire); fl.scale.setScalar(0.55); addFire(g, 0.9);
   log('The fire catches and the logs begin to burn.', 'game');
-  // step aside like RuneScape
+  // step aside like the old classics
   for (const [dx, dz] of [[-1, 0], [1, 0], [0, 1], [0, -1]]) if (!blockedAt(x + dx, z + dz)) { walkTo(x + dx, z + dz); break; }
   stopAction();
   markDirty();
@@ -1471,7 +1471,7 @@ function removeFire(f) {
 // ---- Talking ----
 const NPC_FACE = { mizgog: '🧙', betty: '🧙‍♀️', aubury: '🧙', man: '👨', woman: '👩', sailor: '🧑‍✈️', vguard: '💂', warrior: '🤺', wknight: '🤺', paladin: '🛡️', hero: '🦸', cassie: '👩‍🔧', nessa: '🧑‍🌾', horvik: '🧔', gerrant: '🧑‍💼', vshop: '🧑‍💼', cook: '👨‍🍳', priest: '🧔', doric: '🧔‍♂️', captain: '💂‍♀️', farmer: '👨‍🌾', bob: '👷', merchant: '🧑‍💼', ranger: '🧝', knight: '🤺', apothecary: '🧑‍⚕️', merchant2: '🧑‍💼', banker: '🏦' };
 for (const n of QUEST_NPCS) NPC_FACE[n.id] = n.face;
-const SHOP_GREET = { emberfold: 'Welcome to the Emberfold Store! Farm goods, tools and supplies. I buy what you bring in, too.', magic0: 'Runes for beginners! Wind Strike needs an air rune and a mind rune. Open the Combat tab to pick a spell to autocast.', magic: 'Welcome to my emporium. A staff of an element gives you all the runes of that element you need.', runes: 'Runes and essence! Mine rune essence in the rocks just south-east of here, then take it to an altar.', apothecary: 'Herbs, vials and potions! Fill empty vials at the well. Pick grimy herbs from the patches out back, clean them, then mix herb + vial of water + a secondary.' };
+const SHOP_GREET = { emberfold: 'Welcome to the Emberfold Store! Farm goods, tools and supplies. I buy what you bring in, too.', magic0: 'Runes for beginners! Wind Dart needs an air rune and a thought rune. Open the Combat tab to pick a spell to autocast.', magic: 'Welcome to my emporium. A staff of an element gives you all the runes of that element you need.', runes: 'Runes and essence! Mine glyph essence in the rocks just south-east of here, then take it to an altar.', apothecary: 'Herbs, vials and potions! Fill empty vials at the well. Pick grimy herbs from the patches out back, clean them, then mix herb + vial of water + a secondary.' };
 const questHelpers = {
   rewarding: false,
   level: s => (skills[s] ? skills[s].level : 1),
@@ -2278,10 +2278,10 @@ extTick.push(() => {
 extTalk.quirks = { face: '⚗️', talk() {
   const Q = player.quirks, say = t => [['npc', t]], opts = [];
   if (Q.offered) opts.push(['About the quirk on offer...', quirksX.offerScript()]);
-  if (Q.held.length) opts.push([`Brew a remedy (Herblore ${REMEDY.herblore}, ${REMEDY.gold} coins, ${REMEDY.items.map(([i, n]) => n + ' ' + i).join(', ')}).`, [{ choose: [...Q.held.map(id => [`Remove ${quirkById(id).name}.`, [{ run: () => {
-    if (skills.Herblore.level < REMEDY.herblore) return say(`You need Herblore ${REMEDY.herblore} to help me brew it.`);
+  if (Q.held.length) opts.push([`Brew a remedy (Herbalism ${REMEDY.herbalism}, ${REMEDY.gold} coins, ${REMEDY.items.map(([i, n]) => n + ' ' + i).join(', ')}).`, [{ choose: [...Q.held.map(id => [`Remove ${quirkById(id).name}.`, [{ run: () => {
+    if (skills.Herbalism.level < REMEDY.herbalism) return say(`You need Herbalism ${REMEDY.herbalism} to help me brew it.`);
     const e = payCost(REMEDY.gold, REMEDY.items); if (e) return say(e);
-    quirksX.remove(id); giveXP('Herblore', REMEDY.xp); return say(`Drink up. ${quirkById(id).name} fades.`);
+    quirksX.remove(id); giveXP('Herbalism', REMEDY.xp); return say(`Drink up. ${quirkById(id).name} fades.`);
   } }]]), ['Never mind.', []]] }]]);
   opts.push(['Goodbye.', []]);
   const list = Q.held.length ? Q.held.map(id => { const q = quirkById(id); return `${q.name} (${q.down}; ${q.up})`; }).join('; ') : 'none';
@@ -2467,7 +2467,7 @@ function hearthTalk(ent) {
     H.furniture.push(f.id); giveXP(f.skill, f.xp); refreshHearth(); markDirty(); return say(`You make and place the ${f.name}. ${f.desc}.`);
   } }]]), ['Never mind.', []]] }]]);
   if (combatLevel(skills) >= PATH_LEVEL) opts.push(['Study at the lectern (choose or switch your Combat Path).', pathsX.script(true)]);
-  if (hasRoom(H, 'garden')) opts.push(['Harvest the herb garden.', [{ run: () => { const n = takeHarvest(H, Date.now()); if (!n) return say('Nothing is ready yet. The garden gives herbs every 12 hours.'); player.bank['Grimy guam leaf'] = (player.bank['Grimy guam leaf'] || 0) + n; giveXP('Herblore', n * 10); markDirty(); return say(`You pick ${n} Grimy guam leaves. They go to your bank.`); } }]]);
+  if (hasRoom(H, 'garden')) opts.push(['Harvest the herb garden.', [{ run: () => { const n = takeHarvest(H, Date.now()); if (!n) return say('Nothing is ready yet. The garden gives herbs every 12 hours.'); player.bank['Grimy greenwort'] = (player.bank['Grimy greenwort'] || 0) + n; giveXP('Herbalism', n * 10); markDirty(); return say(`You pick ${n} Grimy greenwort leaves. They go to your bank.`); } }]]);
   if (hasRoom(H, 'quarters')) opts.push(['Visit the companion quarters.', [{ run: () => { const n = takeBondDay(H, Date.now()); const rec = COMPANIONS.filter(c => player.companions[c.id].recruited); if (!n || !rec.length) return say(rec.length ? 'Your companions are resting. Come back tomorrow.' : 'The bunks are empty. Recruit a companion first.'); for (const c of rec) addBond(player, c.id, n); markDirty(); return say(`${rec.map(c => c.short).join(', ')} share a meal by the stove. (+${n} Bond each)`); } }]]);
   opts.push(['Goodbye.', []]);
   const rooms = H.rooms.length ? H.rooms.map(id => ROOMS.find(r => r.id === id).name).join(', ') : 'no rooms yet';
@@ -2539,14 +2539,14 @@ function seaTalk(ent) {
 // ---- Hexcraft: Mama Sorrel brews hex runes and sells her wares ----
 function hexerTalk() {
   const brew = (rune, from, xp) => [{ run: () => {
-    const ess = countItem('Rune essence') + countItem('Pure essence'); const src = from === 'Bones' ? countItem('Bones') : grimyHerbs().reduce((n, k) => n + countItem(k), 0);
-    const n = Math.min(ess, src, 10); if (!n) return [['npc', from === 'Bones' ? 'Bring me Bones and Rune essence, child.' : 'Bring me grimy herbs from the bog and Rune essence.']];
-    for (let k = 0; k < n; k++) { if (!removeItem(player, 'Rune essence', 1)) removeItem(player, 'Pure essence', 1); if (from === 'Bones') removeItem(player, 'Bones', 1); else removeItem(player, grimyHerbs()[0], 1); }
-    addItem(player, rune, n * 3); giveXP('Runecrafting', n * xp); giveXP('Magic', n * xp * 0.5); markDirty();
+    const ess = countItem('Glyph essence') + countItem('Clear essence'); const src = from === 'Bones' ? countItem('Bones') : grimyHerbs().reduce((n, k) => n + countItem(k), 0);
+    const n = Math.min(ess, src, 10); if (!n) return [['npc', from === 'Bones' ? 'Bring me Bones and Glyph essence, child.' : 'Bring me grimy herbs from the bog and Glyph essence.']];
+    for (let k = 0; k < n; k++) { if (!removeItem(player, 'Glyph essence', 1)) removeItem(player, 'Clear essence', 1); if (from === 'Bones') removeItem(player, 'Bones', 1); else removeItem(player, grimyHerbs()[0], 1); }
+    addItem(player, rune, n * 3); giveXP('Glyphcraft', n * xp); giveXP('Magic', n * xp * 0.5); markDirty();
     return [['npc', `There: ${n * 3} ${rune}s. Hexes take from the bog and the grave; mind what you curse.`]];
   } }];
   return [['npc', "Ah, a seeker. I am Mama Sorrel. Hexcraft is old magic of bog and bone: rotting, binding, withering and leeching hexes. Open your Spellbook to cast them."],
-    { choose: [["Let's trade.", [{ run: () => invUI.open('hexer') }]], ['Brew Bog runes (Rune essence + grimy herbs).', brew('Bog rune', 'herb', 6)], ['Brew Bone runes (Rune essence + Bones).', brew('Bone rune', 'Bones', 9)], ['Goodbye.', []]] }];
+    { choose: [["Let's trade.", [{ run: () => invUI.open('hexer') }]], ['Brew Bog runes (Glyph essence + grimy herbs).', brew('Bog rune', 'herb', 6)], ['Brew Bone runes (Glyph essence + Bones).', brew('Bone rune', 'Bones', 9)], ['Goodbye.', []]] }];
 }
 // ---- Treasure charts: read one to mark a dig spot; dig there with a Spade ----
 const CHART_SPOTS = { gullrest: [[0.55, 0.2], [-0.5, 0.35], [0.2, 0.6]], brineholt: [[-0.55, -0.45], [0.55, -0.2], [0.35, 0.6]], reef: [[0.6, -0.4], [-0.6, -0.1], [0.3, 0.55]] };
@@ -2723,10 +2723,10 @@ function talkTo(ent) {
 // ---- Wilds: foraging and repeatable bounties ----
 function forage(ent) {
   if (!ent.alive) { log('The bush has been picked clean. Come back later.', 'warn'); return; }
-  if (skills.Herblore.level < ent.level) { log(`You need a Herblore level of ${ent.level} to pick these.`, 'warn'); return; }
+  if (skills.Herbalism.level < ent.level) { log(`You need a Herbalism level of ${ent.level} to pick these.`, 'warn'); return; }
   if (!canAdd(player, ent.item)) { log('Your inventory is too full to hold any more.', 'warn'); return; }
   const n = 1 + (Math.random() < 0.35 ? 1 : 0);
-  addItem(player, ent.item, n); giveXP('Herblore', ent.xp * n);
+  addItem(player, ent.item, n); giveXP('Herbalism', ent.xp * n);
   log(`You pick ${n > 1 ? 'a handful of' : 'some'} ${ent.item.toLowerCase()}.`, 'skill');
   depleteNode(ent, 45000);
   markDirty();
@@ -2788,9 +2788,9 @@ function searchHoard() {
   if (mother && mother.alive) { log('The Brood Mother guards her hoard. Defeat her first!', 'warn'); return; }
   player.caveLoot = true;
   player.gold += 2500;
-  for (const [it, q] of [['Uncut ruby', 1], ['Uncut diamond', 1], ['Mithril bar', 5], ['Coal', 10]]) if (ITEMS[it]) giveItem(it, q);
+  for (const [it, q] of [['Uncut ruby', 1], ['Uncut diamond', 1], ['Bluesteel bar', 5], ['Coal', 10]]) if (ITEMS[it]) giveItem(it, q);
   giveXP('Mining', 800); giveXP('Thieving', 300);
-  log("You search the Brood Mother's hoard and find 2,500 coins, an uncut ruby, an uncut diamond, mithril bars and coal!", 'loot', '#ffd700');
+  log("You search the Brood Mother's hoard and find 2,500 coins, an uncut ruby, an uncut diamond, bluesteel bars and coal!", 'loot', '#ffd700');
   markDirty();
 }
 function updateCave(dt) {
@@ -2947,7 +2947,7 @@ function playerAttack(mon, now) {
     const pp = pm.mesh.position; burst('dust', pp.x, pp.y + 1.2, pp.z, 6);
   }
   { const hb = huntBonus(mon); if (hb) for (const sw of swings) sw.dmg = (sw.dmg || 0) + hb; } // Hunt task / Drowned Crew bonuses
-  // Dark bow: fires extra arrows every shot.
+  // Dusk bow: fires extra arrows every shot.
   const ge = gearEffects(player);
   if (ranged && ge.multiArrow) for (let i = 1; i < ge.multiArrow; i++) if (useArrow()) swings.push({ ...base });
   // Double Shot perk: a free second arrow now and then.
@@ -3148,7 +3148,7 @@ function gameTick(now) {
   companionAssist(now);
   wildsTick();
   for (const f of extTick) f(now);
-  // Hitpoint regen (faster with Hitpoints perks and Rapid Heal) and run energy
+  // Hitpoint regen (faster with Hitpoints perks and Swift Mending) and run energy
   if (player.hp < player.maxHp && player.hp > 0) {
     let rate = 1 + perk(skills, 'Hitpoints', 'regen') + prayerFx(player, 'regen') + regenBonus(player);
     if (player.hp < player.maxHp * 0.3) rate *= 1 + perk(skills, 'Hitpoints', 'lowRegen'); // Second Wind
@@ -3434,14 +3434,14 @@ function afterLoad() {
 }
 
 if (loaded) {
-  log('Welcome back to Gielinor.', 'game');
+  log('Welcome back to Aerondel.', 'game');
 } else {
-  // Fresh start: a small starter kit like RuneScape's tutorial gear.
+  // Fresh start: a small starter kit like the old classics' tutorial gear.
   addItem(player, 'Bronze sword', 1);
   addItem(player, 'Wooden shield', 1);
   addItem(player, 'Cooked shrimp', 3);
   player.gold = 25;
-  log('Welcome to Gielinor.', 'game');
+  log('Welcome to Aerondel.', 'game');
   log('You have been given a sword, a shield and some food. Tap them to equip or eat.', 'game');
   log('Your starter tools are on your toolbelt (Worn Equipment tab). Talk to the townsfolk for quests.', 'game');
 }

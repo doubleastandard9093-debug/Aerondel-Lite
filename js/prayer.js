@@ -6,26 +6,26 @@ import { questFx } from './quests.js';
 // fx: att/str/def/rng = level boost, regen = extra HP regen speed, saveMat = chance to keep
 // materials when making things, gather = extra gathering success and XP, protect = melee damage cut.
 export const PRAYERS = [
-  { id: 'thick',    name: 'Thick Skin',           level: 1,  icon: '🛡️', drain: 0.17, group: 'def', fx: { def: 0.05 }, desc: '+5% Defence' },
-  { id: 'burst',    name: 'Burst of Strength',    level: 4,  icon: '💪', drain: 0.17, group: 'str', fx: { str: 0.05 }, desc: '+5% Strength' },
-  { id: 'clarity',  name: 'Clarity of Thought',   level: 7,  icon: '🎯', drain: 0.17, group: 'att', fx: { att: 0.05 }, desc: '+5% Attack' },
-  { id: 'sharp',    name: 'Sharp Eye',            level: 8,  icon: '👁️', drain: 0.17, group: 'rng', fx: { rng: 0.05 }, desc: '+5% Ranged' },
-  { id: 'rock',     name: 'Rock Skin',            level: 10, icon: '🪨', drain: 0.33, group: 'def', fx: { def: 0.10 }, desc: '+10% Defence' },
-  { id: 'superhuman', name: 'Superhuman Strength', level: 13, icon: '🦾', drain: 0.33, group: 'str', fx: { str: 0.10 }, desc: '+10% Strength' },
-  { id: 'reflexes', name: 'Improved Reflexes',    level: 16, icon: '⚡', drain: 0.33, group: 'att', fx: { att: 0.10 }, desc: '+10% Attack' },
-  { id: 'hawk',     name: 'Hawk Eye',             level: 19, icon: '🦅', drain: 0.33, group: 'rng', fx: { rng: 0.10 }, desc: '+10% Ranged' },
-  { id: 'rapidheal', name: 'Rapid Heal',          level: 22, icon: '💗', drain: 0.12, group: 'heal', fx: { regen: 1 }, desc: 'Hitpoints regenerate twice as fast' },
+  { id: 'thick',    name: 'Hardened Hide',           level: 1,  icon: '🛡️', drain: 0.17, group: 'def', fx: { def: 0.05 }, desc: '+5% Defence' },
+  { id: 'burst',    name: 'Surge of Might',    level: 4,  icon: '💪', drain: 0.17, group: 'str', fx: { str: 0.05 }, desc: '+5% Strength' },
+  { id: 'clarity',  name: 'Clear Mind',   level: 7,  icon: '🎯', drain: 0.17, group: 'att', fx: { att: 0.05 }, desc: '+5% Attack' },
+  { id: 'sharp',    name: 'Keen Sight',            level: 8,  icon: '👁️', drain: 0.17, group: 'rng', fx: { rng: 0.05 }, desc: '+5% Ranged' },
+  { id: 'rock',     name: 'Stone Hide',            level: 10, icon: '🪨', drain: 0.33, group: 'def', fx: { def: 0.10 }, desc: '+10% Defence' },
+  { id: 'superhuman', name: "Titan's Might", level: 13, icon: '🦾', drain: 0.33, group: 'str', fx: { str: 0.10 }, desc: '+10% Strength' },
+  { id: 'reflexes', name: 'Quickened Wits',    level: 16, icon: '⚡', drain: 0.33, group: 'att', fx: { att: 0.10 }, desc: '+10% Attack' },
+  { id: 'hawk',     name: 'Falcon Sight',             level: 19, icon: '🦅', drain: 0.33, group: 'rng', fx: { rng: 0.10 }, desc: '+10% Ranged' },
+  { id: 'rapidheal', name: 'Swift Mending',          level: 22, icon: '💗', drain: 0.12, group: 'heal', fx: { regen: 1 }, desc: 'Hitpoints regenerate twice as fast' },
   { id: 'provident', name: 'Provident Hands',     level: 25, icon: '🤲', drain: 0.25, group: 'hands', fx: { saveMat: 0.1 }, desc: '10% chance to keep materials when smithing, crafting, fletching or cooking' },
-  { id: 'steel',    name: 'Steel Skin',           level: 28, icon: '⛓️', drain: 0.5,  group: 'def', fx: { def: 0.15 }, desc: '+15% Defence' },
-  { id: 'ultimate', name: 'Ultimate Strength',    level: 31, icon: '🔥', drain: 0.5,  group: 'str', fx: { str: 0.15 }, desc: '+15% Strength' },
-  { id: 'incredible', name: 'Incredible Reflexes', level: 34, icon: '🌟', drain: 0.5,  group: 'att', fx: { att: 0.15 }, desc: '+15% Attack' },
-  { id: 'eagle',    name: 'Eagle Eye',            level: 37, icon: '🏹', drain: 0.5,  group: 'rng', fx: { rng: 0.15 }, desc: '+15% Ranged' },
+  { id: 'steel',    name: 'Iron Hide',           level: 28, icon: '⛓️', drain: 0.5,  group: 'def', fx: { def: 0.15 }, desc: '+15% Defence' },
+  { id: 'ultimate', name: 'Colossus Might',    level: 31, icon: '🔥', drain: 0.5,  group: 'str', fx: { str: 0.15 }, desc: '+15% Strength' },
+  { id: 'incredible', name: 'Lightning Wits', level: 34, icon: '🌟', drain: 0.5,  group: 'att', fx: { att: 0.15 }, desc: '+15% Attack' },
+  { id: 'eagle',    name: 'Raptor Sight',            level: 37, icon: '🏹', drain: 0.5,  group: 'rng', fx: { rng: 0.15 }, desc: '+15% Ranged' },
   { id: 'bounty',   name: "Nature's Bounty",      level: 40, icon: '🌿', drain: 0.4,  group: 'gather', fx: { gather: 0.1 }, desc: '+10% gathering success and XP' },
-  { id: 'protectm', name: 'Protect from Magic',   level: 37, icon: '🔮', drain: 0.5,  group: 'protect', fx: {}, desc: 'Bosses: take 60% less damage while they use magic' },
-  { id: 'protectr', name: 'Protect from Missiles', level: 40, icon: '🏹', drain: 0.5,  group: 'protect', fx: {}, desc: 'Bosses: take 60% less damage while they use ranged' },
-  { id: 'protect',  name: 'Protect from Melee',   level: 43, icon: '⚔️', drain: 0.5,  group: 'protect', fx: { protect: 0.4 }, desc: 'Take 40% less damage from monsters', quest: 'fallen' }
+  { id: 'protectm', name: 'Ward against Magic',   level: 37, icon: '🔮', drain: 0.5,  group: 'protect', fx: {}, desc: 'Bosses: take 60% less damage while they use magic' },
+  { id: 'protectr', name: 'Ward against Missiles', level: 40, icon: '🏹', drain: 0.5,  group: 'protect', fx: {}, desc: 'Bosses: take 60% less damage while they use ranged' },
+  { id: 'protect',  name: 'Ward against Melee',   level: 43, icon: '⚔️', drain: 0.5,  group: 'protect', fx: { protect: 0.4 }, desc: 'Take 40% less damage from monsters', quest: 'fallen' }
 ];
-// Ranged prayers can't be combined with attack/strength prayers (like RuneScape).
+// Ranged prayers can't be combined with attack/strength prayers (like the old classics).
 const CLASH = { rng: ['att', 'str'], att: ['rng'], str: ['rng'] };
 
 export function prayerById(id) { return PRAYERS.find(p => p.id === id); }
@@ -52,7 +52,7 @@ export function prayerBonus(player) {
   for (const item of Object.values(player.equipment || {})) if (item && ITEMS[item]) b += ITEMS[item].prayer || 0;
   return b;
 }
-// Like RuneScape: each prayer bonus point makes prayers last ~3.3% longer.
+// Like the old classics: each prayer bonus point makes prayers last ~3.3% longer.
 // Prayer perks and quest bonuses cut the drain further (never below 40%).
 export function drainPerTick(player, skills) {
   let d = 0;

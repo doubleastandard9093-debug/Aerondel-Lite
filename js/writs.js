@@ -3,12 +3,12 @@
 // and need some real play between rolls, so nudging the device clock doesn't farm writs. Logic and UI only.
 export const WRIT_FACTIONS = ['watch', 'mariners', 'circle', 'lantern'];
 export const WRIT_POOL = {
-  watch: [['kill', 'Goblin', 12], ['kill', 'Bandit', 6], ['kill', 'Hill Giant', 4], ['kill', 'Wolf', 8], ['act', 'Defence', 40], ['kill', 'Black Knight', 3]],
+  watch: [['kill', 'Goblin', 12], ['kill', 'Bandit', 6], ['kill', 'Crag Giant', 4], ['kill', 'Wolf', 8], ['act', 'Defence', 40], ['kill', 'Ironveil Knight', 3]],
   mariners: [['act', 'Fishing', 25], ['act', 'Cooking', 25], ['kill', 'Drowned Deckhand', 5], ['act', 'Ranged', 40], ['kill', 'Drowned Gunner', 3]],
-  circle: [['act', 'Magic', 40], ['act', 'Runecrafting', 20], ['act', 'Herblore', 15], ['kill', 'Skeleton', 6], ['kill', 'Zombie', 8]],
-  lantern: [['act', 'Prayer', 15], ['act', 'Smithing', 25], ['act', 'Mining', 30], ['kill', 'Moss Giant', 4], ['kill', 'Giant Spider', 6]]
+  circle: [['act', 'Magic', 40], ['act', 'Glyphcraft', 20], ['act', 'Herbalism', 15], ['kill', 'Skeleton', 6], ['kill', 'Zombie', 8]],
+  lantern: [['act', 'Prayer', 15], ['act', 'Smithing', 25], ['act', 'Mining', 30], ['kill', 'Bog Giant', 4], ['kill', 'Giant Spider', 6]]
 };
-export const WEEKLY_POOL = [['kill', 'Grumsh', 1], ['kill', 'Captain Saltgrave', 1], ['kill', 'Lesser Demon', 5], ['kill', 'Ogre', 10]];
+export const WEEKLY_POOL = [['kill', 'Grumsh', 1], ['kill', 'Captain Saltgrave', 1], ['kill', 'Cinder Fiend', 5], ['kill', 'Ogre', 10]];
 export const WRIT_REWARD = { rep: 20, gold: 150, weeklyRep: 80, weeklyGold: 2000, weeklyTokens: 10 };
 export const DAY_MS = 86400000, MIN_PLAY_TICKS = 600; // ~6 minutes of play between rolls
 export const dayNo = now => Math.floor(now / DAY_MS);

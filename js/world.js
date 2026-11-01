@@ -70,7 +70,7 @@ export const BUILDINGS = [
 // Guilds: walk-in halls that check your level at the door. Contents are created in createWorld.
 export const GUILDS = [
   { name: 'Mining Guild', skill: 'Mining', level: 60, x: 20, z: -62, w: 12, d: 10, wall: 0x7a7468, roof: 0x4a4a52,
-    rocks: [['Coal', 4], ['Mithril', 2], ['Adamantite', 2], ['Runite', 1]], stations: ['furnace', 'anvil'], bank: true },
+    rocks: [['Coal', 4], ['Bluesteel', 2], ['Verdite', 2], ['Cobalt', 1]], stations: ['furnace', 'anvil'], bank: true },
   { name: 'Cooking Guild', skill: 'Cooking', level: 32, x: 0, z: 60, w: 9, d: 8, wall: 0xd8d0c0, roof: 0x8a3a2a, stations: ['range', 'range'], bank: true },
   { name: 'Crafting Guild', skill: 'Crafting', level: 40, x: -22, z: 60, w: 9, d: 8, wall: 0xb89a6a, roof: 0x3a5a3a, stations: ['furnace', 'anvil'], bank: true }
 ];
@@ -385,7 +385,7 @@ export function createWorld(scene) {
     pendingTrees.push(ent);
     return ent;
   }
-  const ORE_COLOR = { Copper: 0xd0803a, Tin: 0xd8d8d0, Iron: 0x8a4a32, Coal: 0x1a1a1a, Mithril: 0x5a6ad8, Adamantite: 0x3aa860, Runite: 0x40c8e0, Dragon: 0xd03030, Essence: 0xd8e0f0 };
+  const ORE_COLOR = { Copper: 0xd0803a, Tin: 0xd8d8d0, Iron: 0x8a4a32, Coal: 0x1a1a1a, Bluesteel: 0x5a6ad8, Verdite: 0x3aa860, Cobalt: 0x40c8e0, Emberite: 0xd03030, Essence: 0xd8e0f0 };
   function createRock(x, z, ore) {
     if (!rockGeoCache[ore]) rockGeoCache[ore] = rockGeometry(ORE_COLOR[ore] ?? 0x888888, makeRng((ore || 'x').length * 53 + 11));
     if (!emptyRockGeoCache[ore]) emptyRockGeoCache[ore] = emptyRockGeometry(makeRng((ore || 'x').length * 17 + 3));
@@ -848,7 +848,7 @@ export function createWorld(scene) {
     return tag(g, { mesh: g, type: 'well', name: 'Well', examine: 'The town well. Use it to fill empty vials with water.', alive: true, x, z, radius: 0.8 });
   }
 
-  // Herb patch (Herblore): a raised dirt bed with leafy herbs. Never runs out. One draw call.
+  // Herb patch (Herbalism): a raised dirt bed with leafy herbs. Never runs out. One draw call.
   const HERB_TINT = [0x4a8a2a, 0x5a9a3a, 0x3a7a3a, 0x6a8a2a, 0x2a6a2a, 0x7a9a3a, 0x4a7a4a, 0x3a8a5a, 0x5a7a2a, 0x8aaa3a, 0x2a5a2a, 0x6a6a2a, 0x3a5a4a];
   function createHerbPatch(x, z, herb, tintIdx = 0) {
     const g = new THREE.Group();
@@ -885,17 +885,17 @@ export function createWorld(scene) {
     switch (typeName) {
       case 'Goblin': return [[prim.cone(0.07, 0.3, 5), skin, 0.3, 1.8, 0, 0, 0, -1.2], [prim.cone(0.07, 0.3, 5), skin, -0.3, 1.8, 0, 0, 0, 1.2],
         [prim.sphere(0.07, 6, 4), skin, 0, 1.7, 0.27], [prim.box(0.06, 0.55, 0.08), 0x6a6a70, 0.44, 0.75, 0.25, 1.2, 0, 0]];
-      case 'Hill Giant': case 'Moss Giant': case 'Ogre': case 'Ice Giant': case 'Grumsh': {
+      case 'Crag Giant': case 'Bog Giant': case 'Ogre': case 'Ice Giant': case 'Grumsh': {
         const out = [[prim.cyl(0.08, 0.16, 1.0, 8), 0x5a3a1a, 0.48, 0.75, 0.3, 0.5], [blob(0.18, 0.24, 0.18, { detail: 1, lump: 0.3, seed: 1 }), 0x4a2e14, 0.48, 0.32, 0.55]];
         if (typeName === 'Grumsh') out.push([prim.cyl(0.26, 0.22, 0.14, 10), 0xd4af37, 0, 1.97, 0, 0, 0, 0, 0], ...[0, 1, 2, 3, 4].map(i => [prim.cone(0.04, 0.12, 4), 0xd4af37, Math.cos(i * 1.257) * 0.22, 2.08, Math.sin(i * 1.257) * 0.22, 0, 0, 0, 0]));
-        if (typeName === 'Moss Giant') out.push([blob(0.28, 0.12, 0.28, { detail: 1, lump: 0.4, seed: 3 }), 0x3a6a1a, 0, 1.94, 0]);
+        if (typeName === 'Bog Giant') out.push([blob(0.28, 0.12, 0.28, { detail: 1, lump: 0.4, seed: 3 }), 0x3a6a1a, 0, 1.94, 0]);
         if (typeName === 'Ice Giant') out.push([prim.cone(0.06, 0.25, 5), 0xd8f0ff, 0.12, 2.0, 0], [prim.cone(0.06, 0.3, 5), 0xd8f0ff, -0.1, 2.02, 0.05]);
         return out;
       }
       case 'Dark Archer': return [[hairCapG(0.29), 0x1e2a1e, 0, 1.76, -0.02, -0.15], [prim.torusArc(0.55), 0x5a3a1a, -0.48, 1.0, 0.25], [prim.cyl(0.08, 0.08, 0.55, 8), 0x3a2a1a, 0.15, 1.15, -0.25, 0.3]];
-      case 'Black Knight': return [[hairCapG(0.3), 0x2a2a34, 0, 1.74, 0, 0, 0, 0, 0.1], [prim.box(0.32, 0.05, 0.05), 0x111111, 0, 1.76, 0.27], [prim.cone(0.06, 0.25, 5), 0x2a2a34, 0, 2.08, 0],
+      case 'Ironveil Knight': return [[hairCapG(0.3), 0x2a2a34, 0, 1.74, 0, 0, 0, 0, 0.1], [prim.box(0.32, 0.05, 0.05), 0x111111, 0, 1.76, 0.27], [prim.cone(0.06, 0.25, 5), 0x2a2a34, 0, 2.08, 0],
         [prim.box(0.06, 1.0, 0.13), 0x8a8a94, 0.46, 0.85, 0.35, 0.4, 0, 0, 0.05], [prim.box(0.26, 0.05, 0.08), 0x3a3a44, 0.46, 0.4, 0.2, 0.4], [prim.cyl(0.3, 0.3, 0.06, 12), 0x24242c, -0.46, 1.0, 0.1, 0, 0, Math.PI / 2]];
-      case 'Lesser Demon': return [[prim.cone(0.07, 0.35, 6), 0x2a1a1a, 0.15, 2.02, 0, -0.3, 0, -0.3], [prim.cone(0.07, 0.35, 6), 0x2a1a1a, -0.15, 2.02, 0, -0.3, 0, 0.3],
+      case 'Cinder Fiend': return [[prim.cone(0.07, 0.35, 6), 0x2a1a1a, 0.15, 2.02, 0, -0.3, 0, -0.3], [prim.cone(0.07, 0.35, 6), 0x2a1a1a, -0.15, 2.02, 0, -0.3, 0, 0.3],
         [prim.wing(1), 0x5a0a0a, 0.2, 1.3, -0.25], [prim.wing(-1), 0x5a0a0a, -0.2, 1.3, -0.25], [prim.cone(0.06, 0.8, 6), c, 0, 0.7, -0.35, -2.2]];
       case 'Bandit': return [[prim.box(0.42, 0.1, 0.05), 0x2a2a2a, 0, 1.76, 0.22], [prim.box(0.05, 0.7, 0.1), 0xa0a0a8, 0.46, 0.8, 0.3, 0.4, 0, 0, 0.05]];
       case 'Skeleton': return [[prim.sphere(0.06, 6, 4), 0x111111, 0.09, 1.76, 0.2, 0, 0, 0, 0], [prim.sphere(0.06, 6, 4), 0x111111, -0.09, 1.76, 0.2, 0, 0, 0, 0], [prim.box(0.05, 0.8, 0.1), 0x8a8a8a, 0.46, 0.85, 0.3, 0.4]];
@@ -1048,7 +1048,7 @@ export function createWorld(scene) {
   }
 
   // ---- Rune altars: a ring of standing stones around a glowing altar ----
-  const ALTAR_GLOW = { Air: 0xe8f4ff, Mind: 0xffa040, Water: 0x40a0ff, Earth: 0xa07a40, Fire: 0xff5020, Body: 0x7090ff, Chaos: 0xffd030, Death: 0xf0f0f0, Blood: 0xd01818 };
+  const ALTAR_GLOW = { Air: 0xe8f4ff, Mind: 0xffa040, Water: 0x40a0ff, Earth: 0xa07a40, Fire: 0xff5020, Body: 0x7090ff, Havoc: 0xffd030, Death: 0xf0f0f0, Blood: 0xd01818 };
   function createRuneAltar(x, z, altar) {
     const g = new THREE.Group();
     const parts = [[prim.cyl(2.6, 2.8, 0.15, 24), 0x7a746a, 0, 0.07, 0, 0, 0, 0, 0.2], [prim.box(1.3, 0.8, 1.0), 0x9a948a, 0, 0.45, 0, 0, 0, 0, 0.25]];
@@ -1112,8 +1112,8 @@ export function createWorld(scene) {
   nodes.push(createNpc(-1.8, 13, 'captain', 'Captain Rhea', { body: 0x8a2a2a, legs: 0x3a3a4a, hat: 0x9a9aa8, hatH: 0.28, skin: 0xc89a74 }, 0, 0));
   nodes.push(createNpc(-16, 2, 'ranger', 'Ranger Wyn', { body: 0x2a5a2a, legs: 0x3a2a1a, hat: 0x1e4a1e, hatH: 0.2, skin: 0xc89a74 }, -20, 2));
   nodes.push(createNpc(1.8, -17, 'knight', 'Sir Calder', { body: 0xb0b0c0, legs: 0x8a8a9a, hat: 0xc0c0d0, hatH: 0.3, apron: 0x2a4aa0 }, 0, -17));
-  // Larkhaven herb patches + the apothecary (Herblore shop)
-  ['Guam leaf', 'Marrentill', 'Tarromin', 'Harralander'].forEach((h, i) => nodes.push(createHerbPatch(0.6 + i * 2, -14, h, i)));
+  // Larkhaven herb patches + the apothecary (Herbalism shop)
+  ['Greenwort', 'Marshmint', 'Tallowroot', 'Harrowbloom'].forEach((h, i) => nodes.push(createHerbPatch(0.6 + i * 2, -14, h, i)));
   nodes.push(Object.assign(createNpc(1.2, -12, 'apothecary', 'Apothecary Lin', { body: 0x4a7a5a, legs: 0x3a3a2a, hat: 0x2a5a3a, hatH: 0.22, apron: 0xe0e0d0 }, 1.2, -14), { shop: 'apothecary' }));
   nodes.push(createNpc(-10.8, -16, 'farmer', 'Farmer Gil', { body: 0x6a8a3a, legs: 0x4a5a8a, hat: 0xd8c070, hatW: 0.8, hatH: 0.12 }, 0, 0));
   nodes.push(createNpc(LAKE.x + Math.cos(-0.9) * (LAKE.r + 1), LAKE.z + Math.sin(-0.9) * (LAKE.r + 1), 'fisherman', 'Fisherman Fred', { body: 0x4a6a8a, legs: 0x3a3a2a, hat: 0x2a4a6a, hatH: 0.2, skin: 0xc89a74 }, LAKE.x, LAKE.z)); // on the lakeshore facing the water
@@ -1165,7 +1165,7 @@ export function createWorld(scene) {
   townsfolk(-52.5, -89, 'paladin', 'Paladin', { body: 0xd8c070, legs: 0xb0b0c0, hat: 0xd8c070, hatH: 0.3 }, { thieve: 'Paladin', say: 'Only the nimble fingered dare try my purse.' }, -60, -80);
   townsfolk(-68, -89, 'hero', 'Hero', { body: 0x8a1a1a, legs: 0x3a3a4a, hat: 0xd4af37, hatH: 0.18, beard: 0x6a4a2a }, { thieve: 'Hero', say: 'I have slain dragons in the far north-east.' }, -60, -80);
   townsfolk(-63, -76, 'man', 'Man', MAN, { thieve: 'Man', say: 'Welcome to Whitecairn, the white city.' }, -60, -80);
-  townsfolk(-56.5, -70, 'woman', 'Woman', WOMAN, { thieve: 'Woman', say: 'The Mind altar is north-east of the castle.' }, -60, -80);
+  townsfolk(-56.5, -70, 'woman', 'Woman', WOMAN, { thieve: 'Woman', say: 'The Thought altar is north-east of the castle.' }, -60, -80);
   nodes.push(createBank(-56, -75));
   // Farmers can be pickpocketed too
   for (const n of nodes) if (n.npc === 'farmer' || n.npc === 'farmer2') n.thieve = 'Farmer';
@@ -1184,7 +1184,7 @@ export function createWorld(scene) {
 
   // ---- Rune altars and the essence mines ----
   for (const [altar, x, z] of [['Air', -26, 34], ['Mind', -40, -102], ['Water', -104, 76], ['Earth', 100, -66], ['Fire', 143, -72], ['Body', -28, -64],
-    ['Chaos', -44, 100], ['Death', 98, -126], ['Blood', -128, -134]]) if (RUNE_ALTARS[altar]) nodes.push(createRuneAltar(x, z, altar));
+    ['Havoc', -44, 100], ['Death', 98, -126], ['Blood', -128, -134]]) if (RUNE_ALTARS[altar]) nodes.push(createRuneAltar(x, z, altar));
   for (let i = 0; i < 5; i++) { const p = place(132, -22, 4.5, 1.0); if (p) nodes.push(createRock(p.x, p.z, 'Essence')); }
 
   // ---- Trees around the new towns ----
@@ -1207,15 +1207,15 @@ export function createWorld(scene) {
   for (let i = 0; i < 4; i++) { const p = place(31, 4, 5, 2); if (p) nodes.push(createTree(p.x, p.z, 'Maple')); }
   for (let i = 0; i < 3; i++) { const p = place(-31, -1, 4, 2.2); if (p) nodes.push(createTree(p.x, p.z, 'Yew')); }
   for (let i = 0; i < 2; i++) { const p = place(10, -33, 3, 2); if (p) nodes.push(createTree(p.x, p.z, 'Magic')); }
-  const mine = [['Copper', 4], ['Tin', 4], ['Iron', 3], ['Coal', 3], ['Mithril', 2], ['Adamantite', 1]];
+  const mine = [['Copper', 4], ['Tin', 4], ['Iron', 3], ['Coal', 3], ['Bluesteel', 2], ['Verdite', 1]];
   for (const [ore, n] of mine) for (let i = 0; i < n; i++) { const p = place(22, 20, 5.5, 1.0); if (p) nodes.push(createRock(p.x, p.z, ore)); }
-  for (const [ore, n] of [['Dragon', 1], ['Runite', 1], ['Adamantite', 1], ['Mithril', 1], ['Coal', 2]]) for (let i = 0; i < n; i++) { const p = place(-9, -28, 3, 1.0); if (p) nodes.push(createRock(p.x, p.z, ore)); }
+  for (const [ore, n] of [['Emberite', 1], ['Cobalt', 1], ['Verdite', 1], ['Bluesteel', 1], ['Coal', 2]]) for (let i = 0; i < n; i++) { const p = place(-9, -28, 3, 1.0); if (p) nodes.push(createRock(p.x, p.z, ore)); }
   const spots = [['Net', 3.6], ['Net', 4.3], ['Net', 5.0], ['Lure', -0.6], ['Lure', 0.2], ['Cage', 1.2], ['Harpoon', 2.0]];
   for (const [kind, a] of spots) {
     nodes.push(createFish(LAKE.x + Math.cos(a) * (LAKE.r - 0.6), LAKE.z + Math.sin(a) * (LAKE.r - 0.6), kind));
   }
-  // Wild herb patches further out (higher herbs need higher Herblore)
-  for (const [h, x, z, ti] of [['Ranarr weed', -27, -8, 4], ['Toadflax', 30, -16, 5], ['Irit leaf', -12, -32, 6], ['Avantoe', 35, 12, 7]]) {
+  // Wild herb patches further out (higher herbs need higher Herbalism)
+  for (const [h, x, z, ti] of [['Ravenweed', -27, -8, 4], ['Toadflax', 30, -16, 5], ['Ironleaf', -12, -32, 6], ['Amberleaf', 35, 12, 7]]) {
     const p = place(x, z, 4, 1.2); if (p) nodes.push(createHerbPatch(p.x, p.z, h, ti));
   }
   createTower(0, 29);
@@ -1253,8 +1253,8 @@ export function createWorld(scene) {
   for (let i = 0; i < 4; i++) monsters.push(createMonster('Cow', -18 + (rng() - 0.5) * 8, -16 + (rng() - 0.5) * 6, 3.5, field));
   monsters.push(createMonster('Guard', -2, 25, 2.5));
   monsters.push(createMonster('Guard', 2.5, 25, 2.5));
-  for (const [x, z] of [[-3, -31], [1.5, -33], [-1, -28.5]]) monsters.push(createMonster('Hill Giant', x, z, 3));
-  for (const [x, z] of [[-16, -32], [-18, -35]]) monsters.push(createMonster('Black Knight', x, z, 2.5));
+  for (const [x, z] of [[-3, -31], [1.5, -33], [-1, -28.5]]) monsters.push(createMonster('Crag Giant', x, z, 3));
+  for (const [x, z] of [[-16, -32], [-18, -35]]) monsters.push(createMonster('Ironveil Knight', x, z, 2.5));
   for (const [x, z] of [[-34, 9], [-36, 4.5], [-32.5, 5]]) monsters.push(createMonster('Dark Archer', x, z, 2));
   // New monsters near Larkhaven (more in the far wilderness)
   for (const [x, z] of [[38, -8], [40, -12], [36, -14]]) monsters.push(createMonster('Wolf', x, z, 3));
@@ -1264,12 +1264,12 @@ export function createWorld(scene) {
 
   // Monsters of the wider world (most were defined but never placed before)
   for (const [x, z] of [[-52, 86], [-46, 92], [-54, 95]]) monsters.push(createMonster('Bandit', x, z, 3));
-  for (const [x, z] of [[-108, 38], [-113, 45], [-104, 47]]) monsters.push(createMonster('Moss Giant', x, z, 3));
+  for (const [x, z] of [[-108, 38], [-113, 45], [-104, 47]]) monsters.push(createMonster('Bog Giant', x, z, 3));
   for (const [x, z] of [[-116, 96], [-110, 104]]) monsters.push(createMonster('Ice Giant', x, z, 3));
   for (const [x, z] of [[136, -8], [139, -16]]) monsters.push(createMonster('Ice Giant', x, z, 3));
   for (const [x, z] of [[-96, -112], [-102, -107], [-100, -119]]) monsters.push(createMonster('Ogre', x, z, 3));
   monsters.push(createMonster('Grumsh', -112, -124, 3));
-  for (const [x, z] of [[112, -100], [123, -97]]) monsters.push(createMonster('Lesser Demon', x, z, 3));
+  for (const [x, z] of [[112, -100], [123, -97]]) monsters.push(createMonster('Cinder Fiend', x, z, 3));
   for (const [x, z] of [[113, -121], [128, -117], [120, -130]]) monsters.push(createMonster('Green Dragon', x, z, 3));
   monsters.push(createMonster('Scorchwing', 134, -136, 3));
   for (const [x, z] of [[-30, -56], [-24, -48]]) monsters.push(createMonster('Wolf', x, z, 3));
@@ -1437,7 +1437,7 @@ export function createWorld(scene) {
     }
     // 6b) The cavern: rock shell (inside faces only, so the camera can look in from above),
     // a stony floor, stalactites and stalagmites, glowing crystals and torches, webs,
-    // spiders, coal / iron / mithril seams, and the spider queen's hoard at the back.
+    // spiders, coal / iron / bluesteel seams, and the spider queen's hoard at the back.
     { const { x: cx, z: cz, r: R } = CAVE; flat(cx, cz, R + 8);
       const rockC = new THREE.Color(0x6a6058), rc = new THREE.Color();
       const shellGeo = () => { const g = new THREE.SphereGeometry(R, 56, 22, 0, Math.PI * 2, 0, Math.PI / 2); g.deleteAttribute('uv'); const q = g.attributes.position;
@@ -1488,7 +1488,7 @@ export function createWorld(scene) {
       ex.add(new THREE.Mesh(prim.cyl(1.0, 1.0, 0.2, 10), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })));
       nodes.push(tag(ex, { mesh: ex, type: 'cave', name: 'Rope (exit)', examine: 'A rope leads back up to daylight.', dest: CAVE.outside, alive: true, x: cx, z: cz + R - 3, radius: 1.2 }));
       // seams of ore along the walls
-      for (const [ore, a] of [['Coal', 3.6], ['Coal', 3.85], ['Coal', 4.1], ['Iron', 5.0], ['Iron', 5.25], ['Mithril', 0.4], ['Mithril', 0.7]]) nodes.push(createRock(cx + Math.cos(a) * (R - 3.4), cz + Math.sin(a) * (R - 3.4), ore));
+      for (const [ore, a] of [['Coal', 3.6], ['Coal', 3.85], ['Coal', 4.1], ['Iron', 5.0], ['Iron', 5.25], ['Bluesteel', 0.4], ['Bluesteel', 0.7]]) nodes.push(createRock(cx + Math.cos(a) * (R - 3.4), cz + Math.sin(a) * (R - 3.4), ore));
       // spiders, with a bigger brood mother near the hoard
       for (const [x, z] of [[-5, -3], [5, -2], [-2, 4], [6, 6]]) monsters.push(createMonster('Giant Spider', cx + x, cz + z, 2.5, { minX: cx - R + 3, maxX: cx + R - 3, minZ: cz - R + 3, maxZ: cz + R - 3 }));
       { const q = createMonster('Giant Spider', cx, cz - 9, 1.5, { minX: cx - 4, maxX: cx + 4, minZ: cz - 12, maxZ: cz - 6 }); q.variant = 'Brood Mother'; q.mesh.scale.multiplyScalar(1.4); q.maxHp = q.hp = Math.round(q.hp * 2); q.level = (q.level || 1) + 15; monsters.push(q); }
@@ -1515,8 +1515,8 @@ export function createWorld(scene) {
         occupied.push({ x, z, r: 1 }); nodes.push(bush(x, z, wr() < 0.35 ? 'White berries' : 'Redberries')); break;
       }
     }
-    for (const [x, z] of [[-150, 185], [-140, 195], [-160, 200]]) monsters.push(createMonster('Moss Giant', x, z, 4));
-    for (const [x, z] of [[230, -60], [238, -52]]) monsters.push(createMonster('Hill Giant', x, z, 4));
+    for (const [x, z] of [[-150, 185], [-140, 195], [-160, 200]]) monsters.push(createMonster('Bog Giant', x, z, 4));
+    for (const [x, z] of [[230, -60], [238, -52]]) monsters.push(createMonster('Crag Giant', x, z, 4));
     for (const [x, z] of [[-245, -120], [-250, -130]]) monsters.push(createMonster('Dark Archer', x, z, 3));
     // 9) A wandering merchant who walks between the camps
     { const m = npcAt(-170, -146, 'pedlar', 'Wandering Pedlar', { body: 0x8a6a2a, legs: 0x4a3a2a, hat: 0x5a3a1a, hatW: 0.7, hatH: 0.1 }, null, { shop: 'shop' });

@@ -1,12 +1,12 @@
-export const SKILLS = ["Attack","Strength","Defence","Hitpoints","Ranged","Magic","Prayer","Agility","Thieving","Mining","Woodcutting","Fishing","Smithing","Crafting","Cooking","Fletching","Herblore","Runecrafting"];
+export const SKILLS = ["Attack","Strength","Defence","Hitpoints","Ranged","Magic","Prayer","Agility","Thieving","Mining","Woodcutting","Fishing","Smithing","Crafting","Cooking","Fletching","Herbalism","Glyphcraft"];
 
 export const SKILL_ICONS = {
   Attack: "⚔️", Strength: "💪", Defence: "🛡️", Hitpoints: "❤️", Ranged: "🏹", Magic: "🔮", Prayer: "🙏",
   Agility: "🏃", Thieving: "🦹", Mining: "⛏️", Woodcutting: "🪓", Fishing: "🎣", Smithing: "🔨",
-  Crafting: "🧶", Cooking: "🍳", Fletching: "🪶", Herblore: "🌿", Runecrafting: "💠"
+  Crafting: "🧶", Cooking: "🍳", Fletching: "🪶", Herbalism: "🌿", Glyphcraft: "💠"
 };
 
-// v13: OSRS-shaped exponential curve (l + 300*2^(l/7)) / 4, scaled to 30%. Level 99 is about 3.9M XP.
+// v13: classic-shaped exponential curve (l + 300*2^(l/7)) / 4, scaled to 30%. Level 99 is about 3.9M XP.
 export const XP_SCALE = 0.3;
 export function xpForLevel(level) {
   if (level <= 1) return 0;
@@ -117,7 +117,7 @@ export const FX_LABEL = {
   agilityXp: v => `+${P(v)} Agility XP`, failLess: v => `${P(v)} less chance to fail obstacles`,
   thieveXp: v => `+${P(v)} Thieving XP`, lootChance: v => `+${P(v)} chance of better loot`,
   dodgeMs: v => `+${Math.round(v)} ms dodge i-frames`, rareDrop: v => `+${P(v)} rare drop chance`, magicAdren: v => `+${P(v)} adrenaline from Magic skills`,
-  rcXp: v => `+${P(v)} Runecrafting XP`, runeDouble: v => `${P(v)} chance of double runes`
+  rcXp: v => `+${P(v)} Glyphcraft XP`, runeDouble: v => `${P(v)} chance of double runes`
 };
 export const PERK_MULT = 5;
 const FLAGS = new Set(["fastMake", "lowRegen"]);
@@ -173,12 +173,12 @@ export const PERKS = {
     25: ["Quick Hands", { fastMake: 1 }], 50: ["Masterwork", { doubleMake: 0.08 }], 75: ["Thrifty", { saveMat: 0.05 }], 99: ["Crafting Mastery", { xpBonus: 0.05, doubleMake: 0.05 }] }),
   Cooking: build(["Careful Cook", { burnLess: 0.02 }, "Hearty Portions", { healBonus: 0.01 }], {
     25: ["Double Cook", { doubleMake: 0.08 }], 50: ["Quick Chef", { fastMake: 1 }], 75: ["Gourmet", { healBonus: 0.1 }], 99: ["Cooking Mastery", { burnLess: 1 }] }),
-  Herblore: build(["Green Fingers", { double: 0.01 }, "Steeped", { potionTime: 0.01 }], {
-    25: ["Quick Picker", { fastGather: 0.08 }], 50: ["Potion Master", { doubleMake: 0.08 }], 75: ["Lasting Brews", { potionTime: 0.1 }], 99: ["Herblore Mastery", { xpBonus: 0.05, doubleMake: 0.05 }] }),
+  Herbalism: build(["Green Fingers", { double: 0.01 }, "Steeped", { potionTime: 0.01 }], {
+    25: ["Quick Picker", { fastGather: 0.08 }], 50: ["Potion Master", { doubleMake: 0.08 }], 75: ["Lasting Brews", { potionTime: 0.1 }], 99: ["Herbalism Mastery", { xpBonus: 0.05, doubleMake: 0.05 }] }),
   Fletching: build(["Whittler", { extraArrows: 1 }, "Careful Cuts", { saveMat: 0.01 }], {
     25: ["Quick Knife", { fastMake: 1 }], 50: ["Twin Bows", { doubleMake: 0.08 }], 75: ["Arrowsmith", { extraArrows: 3 }], 99: ["Fletching Mastery", { xpBonus: 0.05, doubleMake: 0.05 }] }),
-  Runecrafting: build(["Rune Focus", { rcXp: 0.01 }, "Efficient", { runeDouble: 0.01 }], {
-    25: ["Better Runes", { rcXp: 0.05 }], 50: ["Double Runes", { runeDouble: 0.1 }], 75: ["Master Runecrafter", { rcXp: 0.05 }], 99: ["Runecrafting Mastery", { runeDouble: 0.1, rcXp: 0.05 }] })
+  Glyphcraft: build(["Rune Focus", { rcXp: 0.01 }, "Efficient", { runeDouble: 0.01 }], {
+    25: ["Better Runes", { rcXp: 0.05 }], 50: ["Double Runes", { runeDouble: 0.1 }], 75: ["Master Glyphcrafter", { rcXp: 0.05 }], 99: ["Glyphcraft Mastery", { runeDouble: 0.1, rcXp: 0.05 }] })
 };
 
 export function setPerkBoost(skills, boosts) {
@@ -188,10 +188,10 @@ export function setPerkBoost(skills, boosts) {
 // [from, to, key, per 10 levels]
 export const SYNERGY = [
   ['Mining', 'Smithing', 'saveBar', 0.002], ['Fishing', 'Cooking', 'burnLess', 0.01], ['Woodcutting', 'Fletching', 'saveMat', 0.004],
-  ['Herblore', 'Hitpoints', 'healBonus', 0.005], ['Cooking', 'Hitpoints', 'regen', 0.01], ['Prayer', 'Magic', 'runeSave', 0.004],
-  ['Runecrafting', 'Magic', 'magicDmg', 0.003], ['Thieving', 'Ranged', 'ammoSave', 0.004], ['Fletching', 'Ranged', 'racc', 0.002],
+  ['Herbalism', 'Hitpoints', 'healBonus', 0.005], ['Cooking', 'Hitpoints', 'regen', 0.01], ['Prayer', 'Magic', 'runeSave', 0.004],
+  ['Glyphcraft', 'Magic', 'magicDmg', 0.003], ['Thieving', 'Ranged', 'ammoSave', 0.004], ['Fletching', 'Ranged', 'racc', 0.002],
   ['Smithing', 'Defence', 'dr', 0.002], ['Agility', 'Attack', 'quick', 0.003], ['Strength', 'Mining', 'speed', 0.003],
-  ['Strength', 'Woodcutting', 'speed', 0.003], ['Crafting', 'Runecrafting', 'runeDouble', 0.003], ['Magic', 'Runecrafting', 'rcXp', 0.004],
+  ['Strength', 'Woodcutting', 'speed', 0.003], ['Crafting', 'Glyphcraft', 'runeDouble', 0.003], ['Magic', 'Glyphcraft', 'rcXp', 0.004],
   ['Attack', 'Thieving', 'thieveXp', 0.004], ['Agility', 'Combat', 'dodgeMs', 12], ['Thieving', 'Combat', 'rareDrop', 0.02],
   ['Prayer', 'Combat', 'magicAdren', 0.04], ['Defence', 'Agility', 'failLess', 0.004], ['Hitpoints', 'Prayer', 'drainLess', 0.004]
 ];

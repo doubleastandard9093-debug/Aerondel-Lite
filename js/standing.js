@@ -6,13 +6,13 @@ import { TOWNS } from './world.js';
 export const FACTIONS = [
   { id: 'watch', name: 'Larkhaven Watch', icon: '🛡️', towns: ['Larkhaven', 'Emberfold', 'Wilds'], skills: ['Attack', 'Defence', 'Strength', 'Hitpoints'] },
   { id: 'mariners', name: 'Saltreach Mariners', icon: '⚓', towns: ['Saltreach'], skills: ['Fishing', 'Cooking', 'Ranged'] },
-  { id: 'circle', name: 'Highcrest Arcane Circle', icon: '🔮', towns: ['Highcrest'], skills: ['Magic', 'Runecrafting', 'Herblore'] },
+  { id: 'circle', name: 'Highcrest Arcane Circle', icon: '🔮', towns: ['Highcrest'], skills: ['Magic', 'Glyphcraft', 'Herbalism'] },
   { id: 'drowned', name: 'Drowned Crew', icon: '☠️', towns: [], skills: ['Agility', 'Thieving'], desc: 'How much the Drowned Crew fear you. Kill them, sink their ships and take Drowned tasks from Huntmaster Corvane.' },
   { id: 'lantern', name: 'Order of the White Lantern', icon: '🏮', towns: ['Whitecairn'], skills: ['Prayer', 'Smithing', 'Mining'] }
 ];
 export const TIERS = [[0, 'Unknown'], [100, 'Friendly'], [300, 'Trusted'], [700, 'Honoured'], [1500, 'Exalted']];
 // One-time Quartermaster rewards for reaching each tier (index 1..4) with any faction.
-export const TIER_REWARDS = [null, { gold: 250 }, { gold: 600, item: ['Steel bar', 5] }, { gold: 1200, item: ['Pure essence', 50] }, { gold: 3000, item: ['Iron bar', 20] }];
+export const TIER_REWARDS = [null, { gold: 250 }, { gold: 600, item: ['Steel bar', 5] }, { gold: 1200, item: ['Clear essence', 50] }, { gold: 3000, item: ['Iron bar', 20] }];
 export const QUEST_REP = 40, BOUNTY_REP = 25;
 
 export function factionById(id) { return FACTIONS.find(f => f.id === id); }

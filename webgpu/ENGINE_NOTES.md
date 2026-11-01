@@ -1,6 +1,6 @@
 # Engine notes: Three.js (TSL) vs Babylon.js vs PlayCanvas for the WebGPU release
 
-*Written October 2026 for Gielinor-Lite. Three.js r180 is pinned in `webgpu/index.html`.*
+*Written October 2026 for Aerondel-Lite. Three.js r180 is pinned in `webgpu/index.html`.*
 
 ## What the project needs
 - One shared codebase: the root WebGL game and `webgpu/` share about 25k lines of game logic, world gen, models and UI (`js/*.js`). `webgpu/tools/build-main.mjs` rebuilds the WebGPU entry point from the root one.

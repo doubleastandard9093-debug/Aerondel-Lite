@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 export const BOSS = { slamEvery: 9, slamWarn: 3, slamR: 3.2, slamPct: 0.3, switchEvery: 14, enrageAt: 0.3, enrageHit: 1.3, protectBoss: 0.6 };
 export const STYLES = ['melee', 'ranged', 'magic'];
-export const STYLE_PRAYER = { melee: 'Protect from Melee', ranged: 'Protect from Missiles', magic: 'Protect from Magic' };
+export const STYLE_PRAYER = { melee: 'Ward against Melee', ranged: 'Ward against Missiles', magic: 'Ward against Magic' };
 
 export function createBossMech(scene, getQuality) {
   const ringMat = new THREE.MeshBasicMaterial({ color: 0xff3020, transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false });
