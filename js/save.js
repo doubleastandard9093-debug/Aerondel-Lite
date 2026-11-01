@@ -163,10 +163,10 @@ export function migrateSave(saved) {
   if (fromVersion < 6) notes.push('New: Herblore and potions, endless trees, rocks and fishing spots, and 5x level bonuses. See Settings → What\'s new.');
   if (fromVersion < 5) notes.push('New: perks every 5 levels, gear bonuses with jewellery, capes and armour sets, and lasting quest bonuses. See Settings → What\'s new.');
   // v7: Magic, Agility, Thieving and Runecrafting (normalizeSkills starts them at level 1).
-  if (fromVersion < 7) notes.push('New skills: Magic, Agility, Thieving and Runecrafting, plus the towns of Port Sarim, Varrock and Falador. See Settings → What\'s new.');
+  if (fromVersion < 7) notes.push('New skills: Magic, Agility, Thieving and Runecrafting, plus the towns of Saltreach, Highcrest and Whitecairn. See Settings → What\'s new.');
   // v8: 100 new quests. Anyone who had finished all 22 earlier quests keeps the Quest point cape.
   if (fromVersion < 8) {
-    const OLD22 = ['cook', 'fallen', 'doric', 'goblins', 'hides', 'tools', 'supply', 'archers', 'honour', 'fishing', 'ashford_help', 'eastern_guards', 'herbs_for_wren', 'smith_order', 'eastern_feast', 'scout_report', 'miner_tools', 'sister_prayers', 'trader_supplies', 'knight_honour_east', 'angler_catch', 'carpenter_wood'];
+    const OLD22 = ['cook', 'fallen', 'doric', 'goblins', 'hides', 'tools', 'supply', 'archers', 'honour', 'fishing', 'emberfold_help', 'eastern_guards', 'herbs_for_wren', 'smith_order', 'eastern_feast', 'scout_report', 'miner_tools', 'sister_prayers', 'trader_supplies', 'knight_honour_east', 'angler_catch', 'carpenter_wood'];
     if (OLD22.every(id => p.quests[id] && p.quests[id].stage === 'done') && !p.questCapeLegacy) { p.questCapeLegacy = true; notes.push('You keep your Quest point cape, even with the new quests.'); }
     notes.push('New: 100 new quests across every town and the wilds. Look for blue dots on the minimap. See Settings → What\'s new.');
   }
@@ -180,8 +180,8 @@ export function migrateSave(saved) {
   if (fromVersion < 10) notes.push('New: Bonds & Choices. Recruit Sworn Companions, earn faction Standing and send errands (press B). See Settings → What\'s new.');
   // v11 (The Wanderer's Saga): your story, calling and choices.
   p.saga = normalizeSaga(p.saga);
-  if (fromVersion < 11) notes.push('New: The Wanderer\'s Saga. Talk to Chronicler Corwin in Brightwater to begin your story.');
-  // v12 (Sails of Sarim): your ship, crew, officers, treasure charts and card-table record.
+  if (fromVersion < 11) notes.push('New: The Wanderer\'s Saga. Talk to Chronicler Corwin in Larkhaven to begin your story.');
+  // v12 (Sails of Saltreach): your ship, crew, officers, treasure charts and card-table record.
   p.vessel = normalizeVessel(p.vessel);
   // v13: shop stock bought down and gear wear.
   p.shopState = normalizeShopState(p.shopState); p.wear = normalizeWear(p.wear);
@@ -204,8 +204,8 @@ export function migrateSave(saved) {
   p.siege = normalizeSiege(p.siege, Math.floor(Date.now() / 604800000));
   if (fromVersion < 16) notes.push('New: Wanderer\'s Horizons part 2. Combat Paths, Delves of Three and the Stable Codex. See Settings → What\'s new.');
   if (fromVersion < 15) notes.push('New: Wanderer\'s Horizons part 1. Silver Tongue checks, Quirks, Daily Writs and Stillwatch. See Settings → What\'s new.');
-  if (fromVersion < 14) notes.push('New: Hearth & Arena. Deedwarden Oswin behind Brightwater sells a Hearthstead deed. See Settings → What\'s new.');
-  if (fromVersion < 12) notes.push('New: Sails of Sarim. See the Shipwright on the Port Sarim docks for a ship, then sail the Sound. Cutlasses, flintlocks, Hexcraft and card tables too. Press M for the world map.');
+  if (fromVersion < 14) notes.push('New: Hearth & Arena. Deedwarden Oswin behind Larkhaven sells a Hearthstead deed. See Settings → What\'s new.');
+  if (fromVersion < 12) notes.push('New: Sails of Saltreach. See the Shipwright on the Saltreach docks for a ship, then sail the Sound. Cutlasses, flintlocks, Hexcraft and card tables too. Press M for the world map.');
   if (!p.activeCompanion || !p.companions[p.activeCompanion] || !p.companions[p.activeCompanion].recruited) p.activeCompanion = null;
   { const r = p.rep && typeof p.rep === 'object' ? p.rep : {}; p.rep = {}; for (const k of Object.keys(r)) { const v = Math.floor(Number(r[k]) || 0); if (v > 0) p.rep[k] = Math.min(99999, v); } }
   p.errands = Array.isArray(p.errands) ? p.errands.filter(e => e && typeof e === 'object' && typeof e.id === 'string' && typeof e.comp === 'string').slice(0, 8) : [];

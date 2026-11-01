@@ -58,7 +58,7 @@ import { TASK, HUNT_SHOP, normalizeTasks, assignTask, taskKill, taskLabel, isDro
 import { SEA, SARIM_DOCK, HULLS, OFFICERS, CREW_COST, CREW_MAX, ISLANDS, islandAt, normalizeVessel, inSound } from '../../js/sea.js';
 import { createSailing } from '../../js/sailing.js';
 import { createCards } from '../../js/cards.js';
-let sailing = null; // Sails of Sarim runtime (set up after the player loads)
+let sailing = null; // Sails of Saltreach runtime (set up after the player loads)
 import { CALLINGS, CHAPTERS, ENDINGS, normalizeSaga, currentChapter, sagaXpBonus, objNeed, endingTone } from '../../js/saga.js';
 import { STEEDS, steedById, normalizeSteeds, grantSteeds, buildSteed, buildBulwarkArmor, poseSteed, ROAD_BONUS, BULWARK } from '../../js/steeds.js';
 import { createFlow, flowOnSkillHit, flowDecay, tryDodge, dodging, FLOW, FINISHER, flowPerfectDodge } from '../../js/flow.js';
@@ -278,7 +278,7 @@ const invUI = createInventoryUI({
     const t = TOOL_TYPES.find(x => x.id === type);
     const owned = Object.keys(player.tools || {}).filter(i => toolType(i) === type);
     const best = bestTool(player, skills, type);
-    if (!owned.length) log(`${t.name}: none on your toolbelt. Bob's Tool Shop sells one.`, 'examine');
+    if (!owned.length) log(`${t.name}: none on your toolbelt. Tobin's Tool Shop sells one.`, 'examine');
     else log(`${t.name}: using ${best || 'nothing (level too low)'}. Owned: ${owned.join(', ')}.`, 'examine');
   },
   prayerToggle(id) {
@@ -1092,7 +1092,7 @@ const EXAMINE = {
   Goblin: 'An ugly green creature.', Cow: 'Converts grass to beef.', Guard: 'He tries to keep order around here.',
   'Hill Giant': 'A very large foe. Drops big bones.', 'Black Knight': 'A sinister knight in black armour.',
   Furnace: 'Smelts ore into bars.', Anvil: 'Used with a hammer to smith bars into gear.', Range: 'A hot range for cooking food.',
-  Fire: 'Hot! You can cook on it.', Altar: 'An altar to Saradomin. Pray here to recharge your prayer points.'
+  Fire: 'Hot! You can cook on it.', Altar: 'An altar to the Dawnmother. Pray here to recharge your prayer points.'
 };
 function entExamine(ent) {
   if (ent.type === 'building') return `${ent.name}: ${ent.examine}`;
@@ -1433,7 +1433,7 @@ function removeFire(f) {
 // ---- Talking ----
 const NPC_FACE = { mizgog: '🧙', betty: '🧙‍♀️', aubury: '🧙', man: '👨', woman: '👩', sailor: '🧑‍✈️', vguard: '💂', warrior: '🤺', wknight: '🤺', paladin: '🛡️', hero: '🦸', cassie: '👩‍🔧', nessa: '🧑‍🌾', horvik: '🧔', gerrant: '🧑‍💼', vshop: '🧑‍💼', cook: '👨‍🍳', priest: '🧔', doric: '🧔‍♂️', captain: '💂‍♀️', farmer: '👨‍🌾', bob: '👷', merchant: '🧑‍💼', ranger: '🧝', knight: '🤺', apothecary: '🧑‍⚕️', merchant2: '🧑‍💼', banker: '🏦' };
 for (const n of QUEST_NPCS) NPC_FACE[n.id] = n.face;
-const SHOP_GREET = { ashford: 'Welcome to the Ashford Store! Farm goods, tools and supplies. I buy what you bring in, too.', magic0: 'Runes for beginners! Wind Strike needs an air rune and a mind rune. Open the Combat tab to pick a spell to autocast.', magic: 'Welcome to my emporium. A staff of an element gives you all the runes of that element you need.', runes: 'Runes and essence! Mine rune essence in the rocks just south-east of here, then take it to an altar.', apothecary: 'Herbs, vials and potions! Fill empty vials at the well. Pick grimy herbs from the patches out back, clean them, then mix herb + vial of water + a secondary.' };
+const SHOP_GREET = { emberfold: 'Welcome to the Emberfold Store! Farm goods, tools and supplies. I buy what you bring in, too.', magic0: 'Runes for beginners! Wind Strike needs an air rune and a mind rune. Open the Combat tab to pick a spell to autocast.', magic: 'Welcome to my emporium. A staff of an element gives you all the runes of that element you need.', runes: 'Runes and essence! Mine rune essence in the rocks just south-east of here, then take it to an altar.', apothecary: 'Herbs, vials and potions! Fill empty vials at the well. Pick grimy herbs from the patches out back, clean them, then mix herb + vial of water + a secondary.' };
 const questHelpers = {
   rewarding: false,
   level: s => (skills[s] ? skills[s].level : 1),
@@ -1461,7 +1461,7 @@ const standTiers = {};
 function refreshStanding(announce) {
   for (const f of FACTIONS) {
     const t = tierOf(repOf(player, f.id));
-    if (announce && standTiers[f.id] !== undefined && t > standTiers[f.id]) log(`Your standing with the ${f.name} is now ${TIERS[t][1]}! Visit Quartermaster Odile in Falador for a reward.`, 'skill', '#ffd700');
+    if (announce && standTiers[f.id] !== undefined && t > standTiers[f.id]) log(`Your standing with the ${f.name} is now ${TIERS[t][1]}! Visit Quartermaster Odile in Whitecairn for a reward.`, 'skill', '#ffd700');
     standTiers[f.id] = t;
   }
 }
@@ -1571,7 +1571,7 @@ function companionAssist(now) {
   e.mesh.rotation.y = Math.atan2(mp.x - e.mesh.position.x, mp.z - e.mesh.position.z);
   if (mon.hp <= 0) killMonster(mon, now);
 }
-// ---- Sails of Sarim: your ship, the Shipwright, harbours, Drowned Crew rewards ----
+// ---- Sails of Saltreach: your ship, the Shipwright, harbours, Drowned Crew rewards ----
 player.vessel = normalizeVessel(player.vessel);
 sailing = createSailing({
   scene, pm, player, log: (m, k) => log(m, k), quality: () => gfx.quality, burst, markDirty: () => markDirty(),
@@ -1592,7 +1592,7 @@ function seaMarks() {
   const p = pm.mesh.position, out = [];
   for (const c of player.vessel.charts) { const i = ISLANDS.find(x => x.id === c.isl); out.push({ x: c.x, z: c.z, label: `Treasure: dig on ${i ? i.name : 'an island'} (X marks the spot)` }); }
   if (inSound(p.x, p.z)) for (const i of ISLANDS) out.push({ x: i.dock.x, z: i.dock.z, label: `${i.name}${i.port ? ' (port)' : ' (Drowned Crew)'}` });
-  else if (player.vessel.hull || player.vessel.charts.length) out.push({ x: SARIM_DOCK.x, z: SARIM_DOCK.z, label: 'Port Sarim docks: set sail' });
+  else if (player.vessel.hull || player.vessel.charts.length) out.push({ x: SARIM_DOCK.x, z: SARIM_DOCK.z, label: 'Saltreach docks: set sail' });
   return out;
 }
 const shipName = () => HULLS[player.vessel.hull - 1].name;
@@ -1626,7 +1626,7 @@ function shipwrightTalk() {
   return out;
 }
 function countItem(it) { return player.inventory[it] || 0; }
-// ---- Hunt tasks (tasks.js): Huntmaster Corvane, Port Sarim ----
+// ---- Hunt tasks (tasks.js): Huntmaster Corvane, Saltreach ----
 player.tasks = normalizeTasks(player.tasks);
 player.house = normalizeHouse(player.house);
 player.arena = normalizeArena(player.arena);
@@ -1657,7 +1657,7 @@ const quirksX = {
   bump(k, n = 1) { const Q = player.quirks; Q.counters[k] = (Q.counters[k] || 0) + n; },
   offerDue() {
     const Q = player.quirks, id = dueQuirk(Q); if (!id) return null; Q.offered = id; const q = quirkById(id); markDirty();
-    log(`A Quirk is on offer: ${q.name}. Talk to the prompt or open it from Apothecary Ysolde in Brightwater.`, 'game', '#e0b0ff');
+    log(`A Quirk is on offer: ${q.name}. Talk to the prompt or open it from Apothecary Ysolde in Larkhaven.`, 'game', '#e0b0ff');
     if (!monsters.some(m => m.alive && m.state === 'fight')) ui.dialogue(`Quirk: ${q.name}`, '🩹', quirksX.offerScript(), () => markDirty());
     return id;
   },
@@ -1671,7 +1671,7 @@ const quirksX = {
   remove(id) { const Q = player.quirks; Q.held = Q.held.filter(x => x !== id); Q.removed++; Q.declined.push(id); markDirty(); }
 };
 EXT.quirks = quirksX;
-// ---- Daily Writs and the Weekly Hearthboard (Writkeeper Maelis, Brightwater) ----
+// ---- Daily Writs and the Weekly Hearthboard (Writkeeper Maelis, Larkhaven) ----
 player.writs = normalizeWrits(player.writs);
 const writsX = {
   roll(force = true) { const r = maybeRoll(player.writs, Date.now(), force); if (r) markDirty(); return r; },
@@ -1873,7 +1873,7 @@ const codexX = {
     player.codex.looks[slot] = item; applyEquipmentLook(pm, lookEquip()); markDirty(); return true;
   },
   script() {
-    const say = t => [['npc', t]], C = player.codex, near = Object.entries(TOWNS).filter(([n, t]) => ROOSTS.includes(n) && Math.hypot(pm.mesh.position.x - t.x, pm.mesh.position.z - t.z) < 40).map(([n]) => n)[0] || 'Brightwater';
+    const say = t => [['npc', t]], C = player.codex, near = Object.entries(TOWNS).filter(([n, t]) => ROOSTS.includes(n) && Math.hypot(pm.mesh.position.x - t.x, pm.mesh.position.z - t.z) < 40).map(([n]) => n)[0] || 'Larkhaven';
     if (!C.skyrook) return [['npc', 'Hale, roostmaster. Every rider keeps a Stable Codex: your steeds, your flyers, your looks. Here, take a Skyrook chick. It is grown by morning, which is to say now.'], { run: () => { C.skyrook = true; markDirty(); log('New mount: Skyrook. Fly between town roosts from Roostmaster Hale.', 'skill'); return say('Mind the beak.'); } }];
     const opts = ROOSTS.filter(n => n !== near).map(n => [`Fly to ${n}.`, [{ run: () => { codexX.fly(near, n); return []; } }]]);
     const seen = C.seen.filter(i => ITEMS[i]);
@@ -2041,20 +2041,20 @@ EXT.skywing = skyX;
 EXT.quick.fly = () => skyX.toggle(); EXT.quick.climb = () => skyX.climb(); EXT.quick.dive = () => skyX.dive();
 extFrame.push((dt, now) => { if (!skyS.on || !skyS.mesh) return; const p = pm.mesh.position; skyS.mesh.position.set(p.x, p.y - 1.2, p.z); skyS.mesh.rotation.y = pm.mesh.rotation.y; for (const [i, w] of skyS.mesh.userData.wings.entries()) w.rotation.z = Math.sin(now / 160) * 0.45 * (i ? -1 : 1); });
 extDeath.push(() => { if (skyS.on) skyX.toggle(false); });
-// ---- Charter vs Commons: the hamlet of Wellmere and its contested spring ----
+// ---- Charter vs Commons: the hamlet of Thistlewell and its contested spring ----
 player.charter = normalizeCharter(player.charter);
 const hamlet = { G: null, charter: null, commons: null, ruin: null };
 function buildHamlet() {
-  if (hamlet.G) return; const G = new THREE.Group(); G.name = 'wellmere'; G.position.set(HAMLET.x, terrainHeight(HAMLET.x, HAMLET.z), HAMLET.z); scene.add(G); hamlet.G = G;
+  if (hamlet.G) return; const G = new THREE.Group(); G.name = 'thistlewell'; G.position.set(HAMLET.x, terrainHeight(HAMLET.x, HAMLET.z), HAMLET.z); scene.add(G); hamlet.G = G;
   const wall = plainMat(0x9a8a6a), roof = plainMat(0x6a3a2a);
   for (const [x, z] of [[-9, -6], [9, -6], [-9, 7], [9, 7]]) { const h = new THREE.Mesh(new THREE.BoxGeometry(5, 3, 4), wall); h.position.set(x, 1.5, z); G.add(h); const r = new THREE.Mesh(new THREE.ConeGeometry(3.8, 2, 4), roof); r.position.set(x, 4, z); r.rotation.y = Math.PI / 4; G.add(r); }
   const well = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.3, 1, 12), plainMat(0x7a7a80)); well.position.y = 0.5; G.add(well);
   const water = new THREE.Mesh(new THREE.CircleGeometry(1, 12), plainMat(0x3a6a9a)); water.rotation.x = -Math.PI / 2; water.position.y = 1.02; G.add(water);
-  hamlet.charter = new THREE.Group(); hamlet.charter.name = 'wellmere-charter'; const post = new THREE.Mesh(new THREE.BoxGeometry(3, 2.2, 2), plainMat(0x5a4a7a)); post.position.set(0, 1.1, -12); hamlet.charter.add(post);
-  for (const x of [-3, 3]) { const g = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 1.8, 6), plainMat(0x3a3a5a)); g.position.set(x, 0.9, 4); g.name = 'wellmere-guard'; hamlet.charter.add(g); }
-  hamlet.commons = new THREE.Group(); hamlet.commons.name = 'wellmere-commons';
+  hamlet.charter = new THREE.Group(); hamlet.charter.name = 'thistlewell-charter'; const post = new THREE.Mesh(new THREE.BoxGeometry(3, 2.2, 2), plainMat(0x5a4a7a)); post.position.set(0, 1.1, -12); hamlet.charter.add(post);
+  for (const x of [-3, 3]) { const g = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 1.8, 6), plainMat(0x3a3a5a)); g.position.set(x, 0.9, 4); g.name = 'thistlewell-guard'; hamlet.charter.add(g); }
+  hamlet.commons = new THREE.Group(); hamlet.commons.name = 'thistlewell-commons';
   for (let i = 0; i < 6; i++) { const b = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.4, 1), plainMat(0x4a7a3a)); b.position.set(-5 + i * 2, 0.2, 12); hamlet.commons.add(b); }
-  hamlet.ruin = new THREE.Group(); hamlet.ruin.name = 'wellmere-ruin'; for (const [x, z] of [[-4, -2], [5, 3]]) { const d = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.5, 1.2), plainMat(0x3a3028)); d.position.set(x, 0.25, z); d.rotation.y = x; hamlet.ruin.add(d); }
+  hamlet.ruin = new THREE.Group(); hamlet.ruin.name = 'thistlewell-ruin'; for (const [x, z] of [[-4, -2], [5, 3]]) { const d = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.5, 1.2), plainMat(0x3a3028)); d.position.set(x, 0.25, z); d.rotation.y = x; hamlet.ruin.add(d); }
   G.add(hamlet.charter, hamlet.commons, hamlet.ruin); refreshHamlet();
 }
 function refreshHamlet() {
@@ -2066,17 +2066,17 @@ const charterX = {
   score: kind => checkScore(kind, skills, player),
   resolve(side) {
     const C = player.charter; if (C.side || !SIDES[side]) return false;
-    if (side === 'deal' && !resolveCheck(player.tongue, 'wellmere_deal', 'persuade', DEAL_NEED, skills, player)) { log(`They won't listen. (Persuade ${charterX.score('persuade')}/${DEAL_NEED})`, 'warn'); markDirty(); return false; }
-    if (side === 'betray' && !resolveCheck(player.tongue, 'wellmere_betray', 'lie', BETRAY_NEED, skills, player)) { log(`Neither side believes you. (Lie ${charterX.score('lie')}/${BETRAY_NEED})`, 'warn'); markDirty(); return false; }
+    if (side === 'deal' && !resolveCheck(player.tongue, 'thistlewell_deal', 'persuade', DEAL_NEED, skills, player)) { log(`They won't listen. (Persuade ${charterX.score('persuade')}/${DEAL_NEED})`, 'warn'); markDirty(); return false; }
+    if (side === 'betray' && !resolveCheck(player.tongue, 'thistlewell_betray', 'lie', BETRAY_NEED, skills, player)) { log(`Neither side believes you. (Lie ${charterX.score('lie')}/${BETRAY_NEED})`, 'warn'); markDirty(); return false; }
     C.side = side; const S = SIDES[side];
     if (side === 'charter') { C.rep.charter += 200; C.rep.commons -= 200; addRep(player, S.boon, S.rep); }
     else if (side === 'commons') { C.rep.commons += 200; C.rep.charter -= 200; addRep(player, S.boon, S.rep); }
     else if (side === 'deal') { C.rep.charter += 120; C.rep.commons += 120; addRep(player, 'watch', S.rep); addRep(player, 'lantern', S.rep); }
     else { C.rep.charter -= 300; C.rep.commons -= 300; addItem(player, 'Coins', S.coins); }
-    if (player.saga && player.saga.flags) player.saga.flags['wellmere_' + side] = true;
+    if (player.saga && player.saga.flags) player.saga.flags['thistlewell_' + side] = true;
     const id = player.activeCompanion, d = id && companionById(id);
     if (d && APPROVAL[d.likes]) { const n = APPROVAL[d.likes][side]; addBond(player, id, n); log(`${d.short} ${n > 0 ? 'approves' : 'disapproves'} (${n > 0 ? '+' : ''}${n} Bond).`, n > 0 ? 'skill' : 'warn'); }
-    log(side === 'betray' ? `You sell the spring deeds to both sides and pocket ${S.coins} coins. Wellmere empties.` : `Wellmere's spring goes to ${S.short}. The hamlet will remember.`, 'loot', '#ffd700');
+    log(side === 'betray' ? `You sell the spring deeds to both sides and pocket ${S.coins} coins. Thistlewell empties.` : `Thistlewell's spring goes to ${S.short}. The hamlet will remember.`, 'loot', '#ffd700');
     refreshStanding(true); refreshHamlet(); markDirty(); return true;
   },
   stall() { return (STALLS[player.charter.side] || []).filter(([i]) => ITEMS[i]); },
@@ -2092,13 +2092,13 @@ const charterX = {
     if (C.side) {
       if (C.side === 'betray') return say('...');
       const opts = charterX.stall().map(([it, n, c], i) => [`Buy ${n} ${it} (${c} coins)`, [{ run: () => { charterX.buy(i); return []; } }]]); opts.push(['Goodbye.', []]);
-      return [['npc', who === 'charter' ? `Brannoch, factor. ${C.side === 'deal' ? 'The Accord holds. Trade is good for everyone.' : 'The Charter runs Wellmere now. Our guards keep the spring.'}` : `Ysmay, elder. ${C.side === 'deal' ? 'The Accord holds. The spring is shared.' : 'The Commons keep the spring for all who work.'}`], { choose: opts }];
+      return [['npc', who === 'charter' ? `Brannoch, factor. ${C.side === 'deal' ? 'The Accord holds. Trade is good for everyone.' : 'The Charter runs Thistlewell now. Our guards keep the spring.'}` : `Ysmay, elder. ${C.side === 'deal' ? 'The Accord holds. The spring is shared.' : 'The Commons keep the spring for all who work.'}`], { choose: opts }];
     }
     const pers = checkLabel('persuade', DEAL_NEED, skills, player, 'Share the spring: water for the Commons, trade rights for the Charter.');
     const lie = checkLabel('lie', BETRAY_NEED, skills, player, 'Sell each side a forged deed to the spring.');
     const opts = [[who === 'charter' ? 'Side with the Charter.' : 'Side with the Commons.', [{ run: () => { charterX.resolve(who); return []; } }]],
       [pers, [{ run: () => { charterX.resolve('deal'); return []; } }]], [lie, [{ run: () => { charterX.resolve('betray'); return []; } }]], ['Think it over.', []]];
-    return [['npc', who === 'charter' ? 'Brannoch, factor of the Wellmere Charter. That spring was bought fair. The Commons squat on it and call it theirs. Help me keep order and the Watch will hear of it.' : 'Ysmay, elder of the Commons. We dug that spring with our own hands. The Charter wants to sell our water back to us. Stand with us.'], { choose: opts }];
+    return [['npc', who === 'charter' ? 'Brannoch, factor of the Thistlewell Charter. That spring was bought fair. The Commons squat on it and call it theirs. Help me keep order and the Watch will hear of it.' : 'Ysmay, elder of the Commons. We dug that spring with our own hands. The Charter wants to sell our water back to us. Stand with us.'], { choose: opts }];
   }
 };
 EXT.charter = charterX;
@@ -2218,7 +2218,7 @@ function pathSelfSkill(id, cd) {
 }
 extKill.push(mon => writsX.progress('kill', mon.name));
 extXp.push(skill => { if (player.writs.daily.length) writsX.progress('act', skill); return 1; });
-extTick.push(() => { player.writs.playTicks++; if (tick % 100 === 5) { const r = writsX.roll(false); if (r === 'daily') log('New Daily Writs are up on Writkeeper Maelis\'s board in Brightwater.', 'game'); } });
+extTick.push(() => { player.writs.playTicks++; if (tick % 100 === 5) { const r = writsX.roll(false); if (r === 'daily') log('New Daily Writs are up on Writkeeper Maelis\'s board in Larkhaven.', 'game'); } });
 extTalk.writs = { face: '📜', talk() {
   writsX.roll(false); const W = player.writs;
   const lines = WRIT_FACTIONS.map(fid => `${factionById(fid).icon} ${factionById(fid).name}: ${W.daily.filter(w => w.fac === fid).map(writLabel).join('; ')}`);
@@ -2373,7 +2373,7 @@ function buildHearth() {
   const stone = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.6, 1.1, 8), plainMat(0x8a8aa0)); stone.position.y = 0.55;
   hearthNodes.stone = instNode(G, HEARTH.stone.x, HEARTH.stone.z, stone, { type: 'hearth', hearth: 'stone', name: 'Hearthstone', examine: 'The heart of your Hearthstead. Use it to build rooms and furniture.' });
   const door = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.4, 0.3), plainMat(0x4a3220)); door.position.y = 1.2;
-  hearthNodes.door = instNode(G, HEARTH.door.x, HEARTH.door.z, door, { type: 'cave', verb: 'Leave', name: 'Door (exit)', examine: 'Back out to Brightwater.', dest: { x: -14, z: 22 }, leave: 'You step out of your Hearthstead.' });
+  hearthNodes.door = instNode(G, HEARTH.door.x, HEARTH.door.z, door, { type: 'cave', verb: 'Leave', name: 'Door (exit)', examine: 'Back out to Larkhaven.', dest: { x: -14, z: 22 }, leave: 'You step out of your Hearthstead.' });
   hearthDyn = new THREE.Group(); G.add(hearthDyn);
   refreshHearth();
 }
@@ -2415,7 +2415,7 @@ function payCost(gold, items) {
 function hearthTalk(ent) {
   const H = player.house, say = t => [['npc', t]];
   if (ent.hearth === 'agent') {
-    if (!H.deed) return [['npc', `Oswin, deedwarden. There's a plot behind Brightwater going spare: walls, a floor, room for a workshop, a garden, a trophy hall and quarters for your companions. The deed is ${DEED_COST.toLocaleString()} coins.`],
+    if (!H.deed) return [['npc', `Oswin, deedwarden. There's a plot behind Larkhaven going spare: walls, a floor, room for a workshop, a garden, a trophy hall and quarters for your companions. The deed is ${DEED_COST.toLocaleString()} coins.`],
       { choose: [[`Buy the deed (${DEED_COST.toLocaleString()} coins).`, [{ run: () => { if (player.gold < DEED_COST) return say(`${DEED_COST.toLocaleString()} coins, friend.`); player.gold -= DEED_COST; H.deed = true; markDirty(); log('You now own a Hearthstead.', 'loot', '#ffd700'); return say('Signed and sealed. Talk to me any time and I\'ll walk you home.'); } }]], ['Not today.', []]] }];
     return [['npc', 'Your Hearthstead is waiting.'], { choose: [['Take me home.', [{ run: () => { setTimeout(enterHearth, 50); return []; } }]], ['Goodbye.', []]] }];
   }
@@ -2439,7 +2439,7 @@ function huntKill(name) {
   const T = player.tasks, r = taskKill(T, name); if (!r) return;
   const c = T.cur;
   if (!r.done) { if (c.got % 5 === 0 || c.n - c.got <= 3) log(`Hunt task: ${c.got}/${c.n} ${c.mon}.`, 'game'); markDirty(); return; }
-  log(`Hunt task complete! +${r.pts} Hunt points (${T.points} total, streak ${T.streak}). See Huntmaster Corvane in Port Sarim for another.`, 'loot');
+  log(`Hunt task complete! +${r.pts} Hunt points (${T.points} total, streak ${T.streak}). See Huntmaster Corvane in Saltreach for another.`, 'loot');
   if (isDrowned(name)) gainRep('drowned', TASK.drownedRep);
   T.cur = null; markDirty();
 }
@@ -2484,7 +2484,7 @@ function harbourTalk(ent) {
   const v = player.vessel, i = islandAt(ent.x, ent.z, 4);
   const opts = [];
   if (sailing.moored) opts.push(['Ready my ship.', [{ run: () => { sailing.reboard(); return []; } }]]);
-  opts.push(['Ferry me back to Port Sarim (30 coins).', [{ run: () => { if (player.gold < 30) return [['npc', "Thirty coins, or swim."]]; player.gold -= 30; setTimeout(() => sailing.homeToSarim('The harbour launch drops you on the Port Sarim docks. Your ship is towed home.'), 0); return []; } }]]);
+  opts.push(['Ferry me back to Saltreach (30 coins).', [{ run: () => { if (player.gold < 30) return [['npc', "Thirty coins, or swim."]]; player.gold -= 30; setTimeout(() => sailing.homeToSarim('The harbour launch drops you on the Saltreach docks. Your ship is towed home.'), 0); return []; } }]]);
   opts.push(['Goodbye.', []]);
   return [['npc', `Welcome to ${i ? i.name : 'port'}. ${i ? i.desc : ''} Mind the Drowned Crew south at Wreckers' Reef.`], { choose: opts }];
 }
@@ -2581,7 +2581,7 @@ function sagaTalk() {
   const take = { run: () => { if (ch.obj.kind === 'item') removeItem(player, ch.obj.item, need); } };
   if (ch.finale) {
     const t = endingTone(sg), e = ENDINGS[t];
-    const extra = [sg.flags.mercy && 'The goblin you once let go slips through the bars and picks Aldric\'s lock.', sg.flags.varro && 'Varro is there too, holding the door. "I said I owed you."', sg.flags.ashfordFriend && 'Ashford sends blankets and bread for the road home.'].filter(Boolean);
+    const extra = [sg.flags.mercy && 'The goblin you once let go slips through the bars and picks Aldric\'s lock.', sg.flags.varro && 'Varro is there too, holding the door. "I said I owed you."', sg.flags.ashfordFriend && 'Emberfold sends blankets and bread for the road home.'].filter(Boolean);
     return [take, ['npc', ch.done], ...extra.map(x => ['npc', x]), ['npc', e.say], { run: () => {
       sg.title = e.title; sg.choices.push({ ch: ch.n, tone: t }); sg.ch++; sg.active = false; sg.prog = 0;
       player.gold += 2000; const c = CALLINGS[sg.calling]; if (c) giveXP(c.skills[0], 5000);
@@ -2672,7 +2672,7 @@ function talkTo(ent) {
   } else if (ent.shop) {
     script = [['npc', SHOP_GREET[ent.shop] || 'Welcome! Have a look at my wares.'], { choose: [["Let's trade.", [{ run: () => invUI.open(ent.shop) }]], ['No thanks.', []]] }];
   } else if (ent.npc === 'bob') script = [
-    ['npc', "Welcome to Bob's Brilliant Tools! Axes, pickaxes, fishing gear: it all goes straight on your toolbelt."],
+    ['npc', "Welcome to Tobin's Trusty Tools! Axes, pickaxes, fishing gear: it all goes straight on your toolbelt."],
     { choose: [['Let\'s trade.', [{ run: () => { invUI.open('tools'); } }]], ['Just looking.', [['npc', 'Better tools gather faster. Come back any time!']]]] }
   ];
   else script = [
@@ -2837,7 +2837,7 @@ function useArrow() {
 function useAbility(id) {
   const a = abilityById(id);
   if (!a) return;
-  if (!abilityUnlocked(skills, a)) { log(a.path ? `${a.name} needs the ${CPATHS[a.path].name} Path (Pathwarden Idris in Falador).` : `You need ${a.skill} level ${a.level} to use ${a.name}.`, 'warn'); return; }
+  if (!abilityUnlocked(skills, a)) { log(a.path ? `${a.name} needs the ${CPATHS[a.path].name} Path (Pathwarden Idris in Whitecairn).` : `You need ${a.skill} level ${a.level} to use ${a.name}.`, 'warn'); return; }
   const left = (cooldowns[id] || 0) - tick;
   if (left > 0) { log(`${a.name} is recharging (${Math.ceil(left * 0.6)}s).`, 'warn'); return; }
   const ranged = isRangedWeapon(player.equipment.weapon);
@@ -2895,7 +2895,7 @@ function playerAttack(mon, now) {
   else if (special === 'snipe') swings.push({ acc: base.acc + 0.3, dmg: base.dmg + 1.0 });
   else if (special === 'volley') { swings.push({ ...base, acc: base.acc - 0.15 }); for (let i = 0; i < 2; i++) if (useArrow()) swings.push({ ...base, acc: base.acc - 0.15 }); }
   else swings.push(base);
-  // Sails of Sarim styles. Cutlass: every 3rd swing on the same foe adds a quick flurry cut.
+  // Sails of Saltreach styles. Cutlass: every 3rd swing on the same foe adds a quick flurry cut.
   // Flintlock: slow but steady at close range; silver shot bites the undead.
   const wInfo = ITEMS[player.equipment.weapon] || {};
   if (wInfo.cutlass && !ranged) {
@@ -3233,7 +3233,7 @@ function updateAction() {
     stopAction();
     pm.actionAnim = 1; pm.actionKind = 'tool';
     const got = rechargePrayer(player, skills);
-    log(got > 0 ? 'You pray to Saradomin. You recharge your prayer points.' : 'You already have full prayer points.', 'game');
+    log(got > 0 ? 'You pray to the Dawnmother. You recharge your prayer points.' : 'You already have full prayer points.', 'game');
     for (const m of onPray(player)) log(m, 'game');
     markDirty();
   } else if (a.kind === 'station') {

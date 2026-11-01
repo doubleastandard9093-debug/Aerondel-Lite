@@ -1,10 +1,10 @@
-// Charter vs Commons: the frontier hamlet of Wellmere. The Wellmere Charter (merchants) and the Commons
+// Charter vs Commons: the frontier hamlet of Thistlewell. The Thistlewell Charter (merchants) and the Commons
 // (a breakaway commune) both claim the same spring. Side with one, broker a deal (Persuade), or betray both (Lie).
 // The outcome is permanent: it changes who lives there, what is sold, and how your companion feels.
-export const HAMLET = { x: 40, z: 90, name: 'Wellmere' };
+export const HAMLET = { x: 40, z: 90, name: 'Thistlewell' };
 export const SIDES = {
-  charter: { name: 'Wellmere Charter', short: 'the Charter', boon: 'watch', rep: 80 },
-  commons: { name: 'Wellmere Commons', short: 'the Commons', boon: 'lantern', rep: 80 },
+  charter: { name: 'Thistlewell Charter', short: 'the Charter', boon: 'watch', rep: 80 },
+  commons: { name: 'Thistlewell Commons', short: 'the Commons', boon: 'lantern', rep: 80 },
   deal: { name: 'the Spring Accord', short: 'both sides', rep: 40 },
   betray: { name: 'betrayal', short: 'no one', coins: 5000 }
 };

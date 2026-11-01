@@ -1,4 +1,4 @@
-// Sails of Sarim: tavern card tables at Brineholt's Salted Lantern. Played for in-game coins only.
+// Sails of Saltreach: tavern card tables at Brineholt's Salted Lantern. Played for in-game coins only.
 // "Twenty-One Tides" (blackjack-style) and "Crown & Anchor" (five-card draw, poker-style). DOM only, no textures.
 export const SUITS = ['⚓', '🐚', '☠', '🧭'];
 const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];

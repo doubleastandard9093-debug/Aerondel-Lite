@@ -1,11 +1,11 @@
 // Stable Codex: one list of every mount you've earned, Skyrook flights between towns, and a wardrobe of looks.
-export const ROOSTS = ['Brightwater', 'Ashford', 'Port Sarim', 'Varrock', 'Falador'];
+export const ROOSTS = ['Larkhaven', 'Emberfold', 'Saltreach', 'Highcrest', 'Whitecairn'];
 export const FLIGHT = { speed: 34, height: 26, minMs: 2500 };
 export const MOUNTS = [
   { id: 'stag', name: 'Fernback Stag', kind: 'steed', how: 'Agility 10' },
   { id: 'boar', name: 'Ironbristle Boar', kind: 'steed', how: 'Agility 30' },
   { id: 'skywing', name: 'Skywing', kind: 'flyer', how: 'Agility 70 and Exalted with a faction' },
-  { id: 'skyrook', name: 'Skyrook', kind: 'flyer', how: 'Visit Roostmaster Hale at Brightwater' }
+  { id: 'skyrook', name: 'Skyrook', kind: 'flyer', how: 'Visit Roostmaster Hale at Larkhaven' }
 ];
 export const LOOK_SLOTS = ['head', 'body', 'legs', 'shield', 'cape'];
 export function normalizeCodex(c) {

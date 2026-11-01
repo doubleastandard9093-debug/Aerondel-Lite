@@ -1,4 +1,4 @@
-// Hunt tasks (Slayer-style): Huntmaster Corvane in Port Sarim assigns kill tasks.
+// Hunt tasks (Slayer-style): Huntmaster Corvane in Saltreach assigns kill tasks.
 // Finishing tasks earns Hunt points for his shop; points also buy skips, blocks and longer tasks.
 // Drowned Crew tasks raise your standing with the Drowned Crew (how much they fear you), which unlocks reef rewards.
 import { MONSTER_TYPES } from './gameplay.js';

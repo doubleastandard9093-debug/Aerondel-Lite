@@ -15,11 +15,11 @@ export function createBondsUI({ getData, onAct }) {
       ${c.recruited ? `<div class="b-s">${c.perks.map(p => `<span class="${c.bond >= p.at ? 'on' : ''}">${p.at}: ${esc(p.desc)}</span>`).join('<br>')}</div>
       <div class="b-row">${c.away ? `<span class="b-s">On an errand, back in ${left(c.away - now)}</span>` : `<button data-a="follow" data-c="${c.id}">${c.active ? 'Send home' : 'Follow me'}</button>`}</div><div class="b-s">Crew: ${esc(c.crewText || 'no errands yet')}</div>` : `<div class="b-s">${esc(c.task)}</div>`}</div>`).join('');
     else if (tab === 'rep') body = d.factions.map(f => `<div class="b-card"><div class="b-h"><span>${f.icon} ${esc(f.name)}</span><span>${esc(f.tierName)}</span></div>
-      <div class="b-bar"><i style="width:${f.pct}%"></i></div><div class="b-s">${f.rep}${f.next ? ` / ${f.next}` : ' (max)'} · +${f.tier}% XP in ${esc(f.skills.join(', '))}</div></div>`).join('') + '<div class="b-s">Quests in a town (+40), bounties (+25) and errands raise standing. Claim tier rewards from Quartermaster Odile in Falador.</div>';
+      <div class="b-bar"><i style="width:${f.pct}%"></i></div><div class="b-s">${f.rep}${f.next ? ` / ${f.next}` : ' (max)'} · +${f.tier}% XP in ${esc(f.skills.join(', '))}</div></div>`).join('') + '<div class="b-s">Quests in a town (+40), bounties (+25) and errands raise standing. Claim tier rewards from Quartermaster Odile in Whitecairn.</div>';
     else if (tab === 'saga') {
       const g = d.saga, c = g.ch;
       body = `<div class="b-card"><div class="b-h"><span>📖 The Wanderer's Saga</span><span>${g.done}/${g.total}</span></div><div class="b-bar"><i style="width:${Math.round(g.done / g.total * 100)}%"></i></div>
-        <div class="b-s">${g.calling ? `${g.calling.icon} ${esc(g.calling.name)}: ${esc(g.calling.desc)}` : 'Talk to Chronicler Corwin in Brightwater to begin.'}${g.title ? `<br>Known as <b>${esc(g.title)}</b>` : ''}</div></div>`;
+        <div class="b-s">${g.calling ? `${g.calling.icon} ${esc(g.calling.name)}: ${esc(g.calling.desc)}` : 'Talk to Chronicler Corwin in Larkhaven to begin.'}${g.title ? `<br>Known as <b>${esc(g.title)}</b>` : ''}</div></div>`;
       if (c) body += `<div class="b-card"><div class="b-h"><span>Chapter ${c.n}: ${esc(c.title)}</span></div><div class="b-s">${c.active ? `${esc(c.obj)}: ${Math.min(c.prog, c.need)}/${c.need}` : c.gate ? esc(c.gate) : 'Ready. Talk to Corwin.'}</div></div>`;
       body += g.choices.map(x => `<div class="b-s">Ch ${x.ch} ${esc(x.title || '')}: you were <b>${esc(x.tone)}</b></div>`).join('');
     }

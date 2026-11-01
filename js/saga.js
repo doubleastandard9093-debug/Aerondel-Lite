@@ -1,4 +1,4 @@
-// The Wanderer's Saga: a six-chapter personal story told by Chronicler Corwin in Brightwater.
+// The Wanderer's Saga: a six-chapter personal story told by Chronicler Corwin in Larkhaven.
 // You pick a calling, your choices are remembered, and they come back later (discounts, a spared bandit,
 // a companion who may walk away, and the ending you get). Logic and data only; no new models or textures.
 export const CALLINGS = {
@@ -9,14 +9,14 @@ export const CALLINGS = {
 // obj: kill | item | visit. Effects: flag, gold, rep [faction, n], bond (active companion), xp.
 export const CHAPTERS = [
   { n: 1, title: 'The Ember Letter', req: { total: 0, qp: 0 },
-    intro: ['A letter came for you, sealed with an ember. It is from Aldric, the one who taught you to hold a blade.', '"If you read this, I am gone. Something stirs under Falador. Find your calling, and follow the road I left."'],
-    obj: { kind: 'kill', mon: 'Goblin', n: 5, text: 'Drive off 5 Goblins troubling the Brightwater farms' },
+    intro: ['A letter came for you, sealed with an ember. It is from Aldric, the one who taught you to hold a blade.', '"If you read this, I am gone. Something stirs under Whitecairn. Find your calling, and follow the road I left."'],
+    obj: { kind: 'kill', mon: 'Goblin', n: 5, text: 'Drive off 5 Goblins troubling the Larkhaven farms' },
     done: 'One of the goblins you beat is caught alive, clutching a scrap of Aldric\'s cloak.',
     wheel: [['kind', 'Let it go. It\'s only scared.', { flag: 'mercy', say: 'It bows and scurries off. Somewhere, someone will remember that.' }],
       ['firm', 'Hand it to the Watch.', { rep: ['watch', 40], say: 'The Watch thanks you. The goblin will face a fair hearing.' }],
       ['cunning', 'Tell me where you found that cloak.', { gold: 100, flag: 'clue', say: 'It squeaks out "ash town" and a purse of stolen coin.' }]] },
-  { n: 2, title: 'Ashes at Ashford', req: { total: 50, qp: 2 },
-    intro: ['Aldric passed through Ashford before it burned. The refugees there are sleeping in the cold.'],
+  { n: 2, title: 'Ashes at Emberfold', req: { total: 50, qp: 2 },
+    intro: ['Aldric passed through Emberfold before it burned. The refugees there are sleeping in the cold.'],
     obj: { kind: 'item', item: 'Cowhide', n: 5, text: 'Bring 5 Cowhide for the refugees\' tents' },
     done: 'The refugees stare at the hides. Their elder asks what you want for them.',
     wheel: [['kind', 'Nothing. Keep warm.', { flag: 'ashfordFriend', say: 'Word spreads. Merchants everywhere give you 5% off from now on.' }],
@@ -25,12 +25,12 @@ export const CHAPTERS = [
   { n: 3, title: 'The Bandit Road', req: { total: 80, qp: 5 },
     intro: ['Varro\'s bandits hold the road west. Aldric\'s satchel is with them.'],
     obj: { kind: 'kill', mon: 'Bandit', n: 6, text: 'Break Varro\'s gang: defeat 6 Bandits' },
-    done: 'Varro kneels in the dirt and hands back Aldric\'s satchel. Inside: a map of the Port Sarim docks.',
+    done: 'Varro kneels in the dirt and hands back Aldric\'s satchel. Inside: a map of the Saltreach docks.',
     wheel: [['kind', 'Go, and do better.', { flag: 'varro', say: '"I owe you my life," Varro says. "I won\'t forget it."' }],
       ['firm', 'You\'ll answer to the Watch.', { rep: ['watch', 80], say: 'Captain Brann locks him up with a nod of respect for you.' }],
       ['cunning', 'Work for me now.', { flag: 'varro', gold: 200, say: 'Varro grins and tosses you his share of the loot. "Boss."' }]] },
   { n: 4, title: 'Salt and Smoke', req: { total: 110, qp: 8 },
-    intro: ['The map leads to a wreck off Port Sarim, where the drowned dead walk the hold.'],
+    intro: ['The map leads to a wreck off Saltreach, where the drowned dead walk the hold.'],
     obj: { kind: 'kill', mon: 'Skeleton', n: 8, text: 'Clear 8 Skeletons from the wreck-haunted shore' },
     done: 'Among the bones is Aldric\'s journal. The Mariners want it for their records, but it names their harbour master as a smuggler.',
     companionTest: true,
@@ -38,15 +38,15 @@ export const CHAPTERS = [
       ['firm', 'Arrest the harbour master. Now.', { rep: ['mariners', 30], gold: 300, say: 'The docks go quiet as he is led away.' }],
       ['cunning', 'Sell the page to the harbour master.', { gold: 600, flag: 'smuggler', say: 'He pays well, and owes you one.' }]] },
   { n: 5, title: 'The Lantern Archive', req: { total: 140, qp: 12 },
-    intro: ['Aldric\'s journal speaks of an archive under Varrock, sealed with rune-light.'],
+    intro: ['Aldric\'s journal speaks of an archive under Highcrest, sealed with rune-light.'],
     obj: { kind: 'item', item: 'Rune essence', n: 20, text: 'Bring 20 Rune essence to wake the archive seals' },
     varroHelp: 5,
-    done: 'The seals open. Aldric\'s last page: he went into the Black Knights\' keep near Falador and never came out.',
+    done: 'The seals open. Aldric\'s last page: he went into the Black Knights\' keep near Whitecairn and never came out.',
     wheel: [['kind', 'Share the archive with the Circle.', { rep: ['circle', 80], say: 'The Arcane Circle names you a friend of the archive.' }],
       ['firm', 'Seal it again. Some things should stay buried.', { rep: ['lantern', 60], say: 'The White Lantern approves.' }],
       ['cunning', 'Copy the best spells for yourself.', { xp: ['Magic', 1500], say: 'Your mind fills with old patterns.' }]] },
   { n: 6, title: 'Aldric\'s Ember', req: { total: 180, qp: 16 },
-    intro: ['Falador. The keep of the Black Knights. Whatever happened to Aldric is inside.'],
+    intro: ['Whitecairn. The keep of the Black Knights. Whatever happened to Aldric is inside.'],
     obj: { kind: 'kill', mon: 'Black Knight', n: 5, text: 'Fight through 5 Black Knights to reach Aldric' },
     done: 'Aldric is alive, chained and thin. He smiles. "You came. Now: who did you become?"',
     finale: true }

@@ -79,7 +79,7 @@ XBOW_METALS.forEach((m, t) => {
   def(`${m} throwing axe`, { type: 'weapon', thrown: true, ranged: [5, 9, 13, 19, 26, 36][t], rstr: [3, 6, 9, 14, 20, 30][t], speed: 4, tier: t, metal: m, req: { Ranged: TIER_REQ[t] }, value: [14, 35, 80, 200, 500, 1300][t] });
 });
 
-// ---- Sails of Sarim: cutlasses (fast, combo-building blades) and flintlocks (slow, heavy shots) ----
+// ---- Sails of Saltreach: cutlasses (fast, combo-building blades) and flintlocks (slow, heavy shots) ----
 METALS.slice(0, 6).forEach((m, t) => def(`${m} cutlass`, { type: 'weapon', cutlass: true, atk: [5, 8, 13, 18, 25, 34][t], str: [3, 5, 9, 13, 19, 28][t], speed: 3, tier: t, metal: m, req: { Attack: TIER_REQ[t] }, value: [40, 130, 340, 900, 2100, 5600][t] }));
 ['Iron', 'Steel', 'Mithril', 'Adamant'].forEach((m, t) => def(`${m} flintlock`, { type: 'weapon', pistol: true, ranged: [24, 34, 46, 60][t], speed: 7, tier: t + 1, metal: m, req: { Ranged: [10, 20, 30, 40][t] }, value: [240, 640, 1600, 4200][t] }));
 def('Lead shot', { type: 'ammo', count: 10, rstr: 22, shot: true, value: 5 });
@@ -165,7 +165,7 @@ for (const [h, lvl, , v] of HERBS) {
   def(grimyOf(h), { type: 'grimy', clean: h, herbLevel: lvl, value: Math.max(1, Math.round(v * 0.8)) });
 }
 export const SECONDARIES = ['Eye of newt', 'Unicorn horn dust', 'Limpwurt root', 'Chocolate dust', 'White berries', 'Snape grass', 'Goat horn dust',
-  'Red spider eggs', 'Wine of zamorak', 'Dragon scale dust'];
+  'Red spider eggs', 'Wine of the pyre', 'Dragon scale dust'];
 SECONDARIES.forEach((n, i) => def(n, { type: 'secondary', value: [3, 15, 10, 10, 20, 15, 18, 25, 40, 60][i] }));
 def('Vial', { type: 'vial', value: 1 });
 def('Vial of water', { type: 'vial', value: 2 });
@@ -184,7 +184,7 @@ export const POTION_RECIPES = [
   ['Super strength', 'Kwuarm', 'Limpwurt root', 55, 125, 160, '#e03a3a'],
   ['Super restore', 'Snapdragon', 'Red spider eggs', 63, 142.5, 250, '#e06ab0'],
   ['Super defence', 'Cadantine', 'White berries', 66, 150, 200, '#3ae07a'],
-  ['Ranging potion', 'Dwarf weed', 'Wine of zamorak', 72, 162.5, 220, '#3a9ae0'],
+  ['Ranging potion', 'Dwarf weed', 'Wine of the pyre', 72, 162.5, 220, '#3a9ae0'],
   ['Super combat potion', 'Torstol', 'Dragon scale dust', 90, 150, 600, '#3a8a3a']
 ];
 for (const [n, , , , , v] of POTION_RECIPES) def(n, { type: 'potion', value: v });
@@ -289,7 +289,7 @@ const WOOD_TINT = ['', '#c49a5a40', '#7a9a4a40', '#c0702a40', '#4a6a3a50', '#3a5
 const UNIQUE_ICON = { 'Venom dagger': '🗡️', 'Vampyric blade': '🗡️', 'Granite maul': '🔨', 'Dragon dagger': '🗡️', 'Dragon longsword': '⚔️', 'Dark bow': '🏹',
   'Obsidian cape': '🧣', 'Berserker ring': '💍', 'Ring of recoil': '💍', "Hunter's ring": '💍', "Duellist's cape": '🧣', "Victor's band": '💍', 'Reefward amulet': '📿', "Saltgrave's signet": '💍', "Captain's cutlass": '🗡️', 'Highcrag warhammer': '🔨', "Herbalist's amulet": '📿' };
 const SECOND_ICON = { 'Eye of newt': '👁️', 'Unicorn horn dust': '🦄', 'Limpwurt root': '🥕', 'Chocolate dust': '🍫', 'White berries': '🫐', 'Snape grass': '🌱',
-  'Goat horn dust': '🐐', 'Red spider eggs': '🔴', 'Wine of zamorak': '🍷', 'Dragon scale dust': '🐉' };
+  'Goat horn dust': '🐐', 'Red spider eggs': '🔴', 'Wine of the pyre': '🍷', 'Dragon scale dust': '🐉' };
 export function iconFor(item) {
   if (FIXED_ICONS[item]) return FIXED_ICONS[item];
   const info0 = ITEMS[item];

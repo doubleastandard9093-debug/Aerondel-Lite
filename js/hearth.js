@@ -1,4 +1,4 @@
-// Hearthstead: an instanced home plot behind Brightwater. Buy a deed, build four rooms, then
+// Hearthstead: an instanced home plot behind Larkhaven. Buy a deed, build four rooms, then
 // place furniture made with Crafting or Smithing. Rooms give small lasting perks. Logic and data only.
 export const DEED_COST = 25000;
 export const ROOMS = [

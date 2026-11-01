@@ -17,11 +17,11 @@ export const QUEST_CHECKS = {
   aldo_giant: ['intimidate', 40, 'Tell Aldo the giant is worth more than he offers'],
   mara_silk: ['lie', 35, 'Say the spiders took your last pair of gloves'],
   grell_hound: ['persuade', 40, 'Promise Grell you will look after the hound'],
-  red_grog: ['intimidate', 35, 'Stare down Redbeard over the price of grog'],
+  red_grog: ['intimidate', 35, 'Stare down Saltbeard over the price of grog'],
   red_crew: ['lie', 50, 'Pretend to be a navy recruiter to rattle the press gang'],
-  wydin_spice: ['persuade', 40, 'Win a merchant\'s discount from Wydin'],
+  wydin_spice: ['persuade', 40, 'Win a merchant\'s discount from Wendric'],
   brice_customs: ['lie', 55, 'Bluff the customs ledger in your favour'],
-  thurgo_steel: ['persuade', 50, 'Flatter Thurgo\'s smithing until he adds a bar'],
+  thurgo_steel: ['persuade', 50, 'Flatter Durgan\'s smithing until he adds a bar'],
   velma_brew: ['intimidate', 55, 'Refuse to drink anything until she pays first']
 };
 export const QUEST_PRIZE = { goldPer: 12, xp: 150 };

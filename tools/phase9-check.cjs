@@ -17,7 +17,7 @@ const [,,path='',tier='low',sz='390x844',savef]=process.argv;const [w,h]=sz.spli
   if(!startSide){o.script=E.extTalk.charter.talk(g.nodes.find(n=>n.npc==='ysmay')).length===2;
    o.deal=C.resolve('deal');o.once=C.resolve('charter')===false;o.both=P.charter.rep.charter>0&&P.charter.rep.commons>0;
    o.stall=C.stall().length>0;}else{o.script=o.deal=o.once=o.both=o.stall=true;}
-  let hiC=0;g.scene.traverse(x=>{if(/wellmere/.test(x.name)&&/high/.test(x.name))hiC++;});o.hiC=hiC;
+  let hiC=0;g.scene.traverse(x=>{if(/thistlewell/.test(x.name)&&/high/.test(x.name))hiC++;});o.hiC=hiC;
   // Warband Siege
   if(E.siege){const W=E.siege;o.enter=W.enter();await S(800);o.inSiege=g.pm.mesh.position.x<-700;
    o.friendCap=W.friends().length<=8&&W.friends().length>=4;o.hostCap=W.hostiles().length<=10;

@@ -44,7 +44,7 @@ function finish(player, quest, g) {
 
 export const QUESTS = [
   {
-    id: 'cook', name: "Cook's Assistant", giver: 'cook', points: 1, start: 'Talk to the Cook in the cookhouse, south-west of the town square.',
+    id: 'cook', name: "A Cake for the Lark Fair", giver: 'cook', points: 1, start: 'Talk to the Cook in the cookhouse, south-west of the town square.',
     rewards: ['300 Cooking XP', '100 coins', 'Cooked lobster sold at the General Store'],
     bonus: { desc: '+5% Cooking XP and burn food 5% less often', fx: { 'xp.Cooking': 0.05, burnLess: 0.05 } },
     journal(player) {
@@ -93,9 +93,9 @@ export const QUESTS = [
     reward(g) { g.xp('Prayer', 1250); g.give('Cooked trout', 10); },
     talk(player, g) {
       const st = q(player, 'fallen');
-      if (st.stage === 'done') return [['npc', 'The dead sleep soundly thanks to you. May Saradomin guard you in battle.']];
+      if (st.stage === 'done') return [['npc', 'The dead sleep soundly thanks to you. May the Dawnmother guard you in battle.']];
       if (st.stage === 0) return [
-        ['npc', 'Welcome, child. Restless spirits stir around Brightwater. Too many have fallen unburied.'],
+        ['npc', 'Welcome, child. Restless spirits stir around Larkhaven. Too many have fallen unburied.'],
         ['npc', 'Bury the bones of 5 fallen creatures, then pray at my altar. I will teach you a prayer of protection.'],
         { choose: [
           ['I will help the dead rest.', [{ run: () => setQ(player, 'fallen', { stage: 1, buried: 0 }) }, ['npc', 'Tap bones in your pack to bury them. Go with peace.']]],
@@ -112,21 +112,21 @@ export const QUESTS = [
     }
   },
   {
-    id: 'doric', name: "Doric's Quest", giver: 'doric', points: 1, start: 'Talk to Doric at the smithy, south-east of the town square.',
+    id: 'doric', name: "Bruna's Quest", giver: 'doric', points: 1, start: 'Talk to Bruna at the smithy, south-east of the town square.',
     rewards: ['400 Mining XP', '180 coins', 'Mithril and adamant tools sold at the Tool Shop'],
     bonus: { desc: '+5% Mining and Smithing XP', fx: { 'xp.Mining': 0.05, 'xp.Smithing': 0.05 } },
     journal(player) {
       const s = q(player, 'doric').stage;
       if (s === 0) return [{ text: this.start }];
       const h = i => player.inventory[i] || 0;
-      return [{ text: `Bring Doric 4 Copper ore (${h('Copper ore')}), 4 Tin ore (${h('Tin ore')}) and 2 Iron ore (${h('Iron ore')}).`, done: s === 'done' }];
+      return [{ text: `Bring Bruna 4 Copper ore (${h('Copper ore')}), 4 Tin ore (${h('Tin ore')}) and 2 Iron ore (${h('Iron ore')}).`, done: s === 'done' }];
     },
     reward(g) { g.xp('Mining', 2000); g.gold(900); },
     talk(player, g) {
       const s = q(player, 'doric').stage;
-      if (s === 'done') return [['npc', "Bob's selling my mithril and adamant tools now. Tell him Doric sent you!"]];
+      if (s === 'done') return [['npc', "Tobin's selling my mithril and adamant tools now. Tell him Bruna sent you!"]];
       if (s === 0) return [
-        ['npc', "Hello traveller. I'm Doric, the town smith. I'm short of ore for a big order."],
+        ['npc', "Hello traveller. I'm Bruna, the town smith. I'm short of ore for a big order."],
         ['npc', "Bring me 4 Copper ore, 4 Tin ore and 2 Iron ore and I'll make it worth your while. The mine's south-east."],
         { choose: [
           ["Sure, I'll mine some.", [{ run: () => setQ(player, 'doric', { stage: 1 }) }, ['npc', "Grand! You'll need a pickaxe on your toolbelt."]]],
@@ -136,7 +136,7 @@ export const QUESTS = [
       if (g.has('Copper ore', 4) && g.has('Tin ore', 4) && g.has('Iron ore', 2)) return [
         ['player', "Here's your ore."],
         { run: () => { g.take('Copper ore', 4); g.take('Tin ore', 4); g.take('Iron ore', 2); } },
-        ['npc', "Lovely stuff! With this I can finish those mithril and adamant tools. I'll send them to Bob's Tool Shop."],
+        ['npc', "Lovely stuff! With this I can finish those mithril and adamant tools. I'll send them to Tobin's Tool Shop."],
         { run: () => finish(player, this, g) }
       ];
       return [['npc', '4 Copper, 4 Tin and 2 Iron ore. The mine is south-east of town.']];
@@ -223,14 +223,14 @@ export const QUESTS = [
     }
   },
   {
-    id: 'tools', name: 'Tools of the Trade', giver: 'bob', points: 1, start: "Talk to Bob at Bob's Brilliant Tools, north-east of the square.",
+    id: 'tools', name: 'Tools of the Trade', giver: 'bob', points: 1, start: "Talk to Tobin at Tobin's Trusty Tools, north-east of the square.",
     rewards: ['300 Smithing XP', '300 Woodcutting XP', '150 coins'],
     bonus: { desc: '+3% success when mining, woodcutting and fishing', fx: { gather: 0.03 } },
     journal(player) {
       const s = q(player, 'tools').stage;
       if (s === 0) return [{ text: this.start }];
       const h = i => player.inventory[i] || 0;
-      return [{ text: `Bring Bob 3 Iron bars (${h('Iron bar')}) and 5 Oak logs (${h('Oak logs')}) for new tool handles.`, done: s === 'done' }];
+      return [{ text: `Bring Tobin 3 Iron bars (${h('Iron bar')}) and 5 Oak logs (${h('Oak logs')}) for new tool handles.`, done: s === 'done' }];
     },
     reward(g) { g.xp('Smithing', 1500); g.xp('Woodcutting', 1500); g.gold(750); },
     talk(player, g) {
@@ -313,7 +313,7 @@ export const QUESTS = [
     }
   },
   {
-    id: 'honour', name: "Knight's Honour", giver: 'knight', points: 2, start: 'Talk to Sir Vyvin on the north road, past the church.',
+    id: 'honour', name: "Knight's Honour", giver: 'knight', points: 2, start: 'Talk to Sir Calder on the north road, past the church.',
     rewards: ['1000 Defence XP', '500 Attack XP', 'Amulet of glory'],
     bonus: { desc: 'Take 3% less damage, +30 max hitpoints, +10% damage against black knights', fx: { dr: 0.03, maxHp: 30, 'dmgVs.Black Knight': 0.1 } },
     journal(player) {
@@ -321,18 +321,18 @@ export const QUESTS = [
       if (st.stage === 0) return [{ text: this.start }];
       return [
         { text: `Defeat 2 Black Knights in the northern hills (${Math.min(2, st.kills || 0)}/2).`, done: st.stage === 'done' || st.stage >= 2 },
-        { text: `Bring Sir Vyvin a Steel full helm as proof of your skill (have ${player.inventory['Steel full helm'] || 0}).`, done: st.stage === 'done' }
+        { text: `Bring Sir Calder a Steel full helm as proof of your skill (have ${player.inventory['Steel full helm'] || 0}).`, done: st.stage === 'done' }
       ];
     },
     reward(g) { g.xp('Defence', 5000); g.xp('Attack', 2500); g.give('Amulet of glory', 1); },
     talk(player, g) {
       const st = q(player, 'honour');
-      if (st.stage === 'done') return [['npc', 'Brightwater is proud of you, knight.']];
+      if (st.stage === 'done') return [['npc', 'Larkhaven is proud of you, knight.']];
       if (st.stage === 0) return [
         ['npc', 'The Black Knights dishonour the northern hills. A true knight would stand against them.'],
         ['npc', 'Defeat 2 of them, then bring me a Steel full helm, smithed or won, and I will name you a knight.'],
         { choose: [
-          ['I accept.', [{ run: () => setQ(player, 'honour', { stage: 1, kills: 0 }) }, ['npc', 'For Brightwater!']]],
+          ['I accept.', [{ run: () => setQ(player, 'honour', { stage: 1, kills: 0 }) }, ['npc', 'For Larkhaven!']]],
           ['Not today.', [['npc', 'Honour can wait, but not forever.']]]
         ] }
       ];
@@ -340,10 +340,10 @@ export const QUESTS = [
       if (g.has('Steel full helm', 1)) return [
         ['player', 'I defeated them, and here is a steel helm.'],
         { run: () => g.take('Steel full helm', 1) },
-        ['npc', 'Kneel... Rise, a knight of Brightwater! Wear this amulet with pride.'],
+        ['npc', 'Kneel... Rise, a knight of Larkhaven! Wear this amulet with pride.'],
         { run: () => finish(player, this, g) }
       ];
-      return [['npc', 'Now bring me a Steel full helm. Doric can show you the anvil.']];
+      return [['npc', 'Now bring me a Steel full helm. Bruna can show you the anvil.']];
     }
   },
   {
@@ -378,23 +378,23 @@ export const QUESTS = [
     }
   },
   {
-    id: 'ashford_help', name: 'Ashford\'s Plea', giver: 'mayor', points: 1, start: 'Talk to Mayor Aldric in Ashford, far to the east.',
+    id: 'emberfold_help', name: 'Emberfold\'s Plea', giver: 'mayor', points: 1, start: 'Talk to Mayor Aldric in Emberfold, far to the east.',
     rewards: ['2000 XP in any skill', '1000 coins', 'Steel pickaxe'],
     bonus: { desc: '+3% XP in all skills', fx: { 'xp.*': 0.03 } },
     journal(player) {
-      const s = q(player, 'ashford_help').stage;
+      const s = q(player, 'emberfold_help').stage;
       if (s === 0) return [{ text: this.start }];
       return [{ text: 'Bring the Mayor 10 Copper ore, 10 Tin ore and 5 Iron ore from the eastern mines.', done: s === 'done' }];
     },
     reward(g) { g.xp('Mining', 2000); g.gold(1000); g.tool('Steel pickaxe'); },
     talk(player, g) {
-      const s = q(player, 'ashford_help').stage;
-      if (s === 'done') return [['npc', 'Ashford thrives again thanks to your ore!']];
+      const s = q(player, 'emberfold_help').stage;
+      if (s === 'done') return [['npc', 'Emberfold thrives again thanks to your ore!']];
       if (s === 0) return [
-        ['npc', 'Traveller! Ashford\'s mines are short-staffed and the store shelves are bare.'],
+        ['npc', 'Traveller! Emberfold\'s mines are short-staffed and the store shelves are bare.'],
         ['npc', 'Bring me 10 Copper, 10 Tin and 5 Iron ore. The mines lie further east.'],
         { choose: [
-          ['I will help Ashford.', [{ run: () => setQ(player, 'ashford_help', { stage: 1 }) }, ['npc', 'Thank you. The path east leads to the mines.']]],
+          ['I will help Emberfold.', [{ run: () => setQ(player, 'emberfold_help', { stage: 1 }) }, ['npc', 'Thank you. The path east leads to the mines.']]],
           ['Not today.', [['npc', 'We can wait a little longer.']]]
         ] }
       ];
@@ -408,13 +408,13 @@ export const QUESTS = [
     }
   },
   {
-    id: 'eastern_guards', name: 'Guard Duty', giver: 'guard2', points: 1, start: 'Talk to Guard Captain Ryn in Ashford.',
+    id: 'eastern_guards', name: 'Guard Duty', giver: 'guard2', points: 1, start: 'Talk to Guard Captain Ryn in Emberfold.',
     rewards: ['2500 Attack XP', '2500 Strength XP', 'Steel full helm'],
     bonus: { desc: '+5% damage against goblins', fx: { 'dmgVs.Goblin': 0.05 } },
     journal(player) {
       const st = q(player, 'eastern_guards');
       if (st.stage === 0) return [{ text: this.start }];
-      return [{ text: `Defeat 8 goblins near Ashford (${Math.min(8, st.kills || 0)}/8).`, done: st.stage === 'done' }];
+      return [{ text: `Defeat 8 goblins near Emberfold (${Math.min(8, st.kills || 0)}/8).`, done: st.stage === 'done' }];
     },
     reward(g) { g.xp('Attack', 2500); g.xp('Strength', 2500); g.give('Steel full helm', 1); },
     talk(player, g) {
@@ -437,7 +437,7 @@ export const QUESTS = [
     }
   },
   {
-    id: 'herbs_for_wren', name: 'Herb Gathering', giver: 'herbalist', points: 1, start: 'Talk to Herbalist Wren near Ashford.',
+    id: 'herbs_for_wren', name: 'Herb Gathering', giver: 'herbalist', points: 1, start: 'Talk to Herbalist Wren near Emberfold.',
     rewards: ['1800 Crafting XP', '800 coins', '50 Feathers'],
     bonus: { desc: '+5% Crafting XP', fx: { 'xp.Crafting': 0.05 } },
     journal(player) {
@@ -467,7 +467,7 @@ export const QUESTS = [
     }
   },
   {
-    id: 'smith_order', name: 'Torin\'s Order', giver: 'smith2', points: 1, start: 'Talk to Smith Torin in Ashford Smithy.',
+    id: 'smith_order', name: 'Torin\'s Order', giver: 'smith2', points: 1, start: 'Talk to Smith Torin in Emberfold Smithy.',
     rewards: ['2000 Smithing XP', '1200 coins', 'Mithril bar'],
     bonus: { desc: '+5% Smithing XP', fx: { 'xp.Smithing': 0.05 } },
     journal(player) {
@@ -497,7 +497,7 @@ export const QUESTS = [
     }
   },
   {
-    id: 'eastern_feast', name: 'Eastern Feast', giver: 'cook2', points: 1, start: 'Talk to Chef Bran in Ashford.',
+    id: 'eastern_feast', name: 'Eastern Feast', giver: 'cook2', points: 1, start: 'Talk to Chef Bran in Emberfold.',
     rewards: ['1500 Cooking XP', '600 coins', '10 Cooked lobster'],
     bonus: { desc: '+5% Cooking XP', fx: { 'xp.Cooking': 0.05 } },
     journal(player) {
@@ -527,7 +527,7 @@ export const QUESTS = [
     }
   },
   {
-    id: 'scout_report', name: 'Scout\'s Report', giver: 'ranger2', points: 1, start: 'Talk to Scout Vey near Ashford.',
+    id: 'scout_report', name: 'Scout\'s Report', giver: 'ranger2', points: 1, start: 'Talk to Scout Vey near Emberfold.',
     rewards: ['2200 Ranged XP', '900 coins', 'Archer ring'],
     bonus: { desc: '+2 ranged max hit', fx: { rmaxHit: 2 } },
     journal(player) {
@@ -543,7 +543,7 @@ export const QUESTS = [
         ['npc', 'Dark archers have moved further east. I need them dealt with.'],
         ['npc', 'Defeat 4 Dark Archers.'],
         { choose: [
-          ['I will hunt them.', [{ run: () => setQ(player, 'scout_report', { stage: 1, kills: 0 }) }, ['npc', 'They are west of Ashford, past the yews.']]],
+          ['I will hunt them.', [{ run: () => setQ(player, 'scout_report', { stage: 1, kills: 0 }) }, ['npc', 'They are west of Emberfold, past the yews.']]],
           ['Too dangerous.', [['npc', 'Come back when ready.']]]
         ] }
       ];
@@ -586,7 +586,7 @@ export const QUESTS = [
     }
   },
   {
-    id: 'sister_prayers', name: 'Rest for the East', giver: 'priest2', points: 1, start: 'Talk to Sister Lira in Ashford.',
+    id: 'sister_prayers', name: 'Rest for the East', giver: 'priest2', points: 1, start: 'Talk to Sister Lira in Emberfold.',
     rewards: ['1500 Prayer XP', '500 coins', 'Holy symbol'],
     bonus: { desc: 'Prayers drain 3% slower', fx: { drainLess: 0.03 } },
     journal(player) {
@@ -597,7 +597,7 @@ export const QUESTS = [
     reward(g) { g.xp('Prayer', 1500); g.gold(500); g.give('Holy symbol', 1); },
     talk(player, g) {
       const st = q(player, 'sister_prayers');
-      if (st.stage === 'done') return [['npc', 'The spirits of the east rest easier. May Saradomin bless you.']];
+      if (st.stage === 'done') return [['npc', 'The spirits of the east rest easier. May the Dawnmother bless you.']];
       if (st.stage === 0) return [
         ['npc', 'Restless spirits trouble the eastern roads. Help lay them to rest.'],
         ['npc', 'Bury 8 bones, then return to me.'],
@@ -615,7 +615,7 @@ export const QUESTS = [
     }
   },
   {
-    id: 'trader_supplies', name: 'Supply the Store', giver: 'merchant2', points: 1, start: 'Talk to Trader Mira in Ashford Store.',
+    id: 'trader_supplies', name: 'Supply the Store', giver: 'merchant2', points: 1, start: 'Talk to Trader Mira in Emberfold Store.',
     rewards: ['1200 Fletching XP', '1500 coins', 'Amulet of strength'],
     bonus: { desc: 'Shops pay 5% more', fx: { sellBonus: 0.05 } },
     journal(player) {
@@ -645,7 +645,7 @@ export const QUESTS = [
     }
   },
   {
-    id: 'knight_honour_east', name: 'Eastern Honour', giver: 'knight2', points: 2, start: 'Talk to Sir Elric near Ashford.',
+    id: 'knight_honour_east', name: 'Eastern Honour', giver: 'knight2', points: 2, start: 'Talk to Sir Elric near Emberfold.',
     rewards: ['3000 Defence XP', '2000 Attack XP', 'Amulet of glory'],
     bonus: { desc: 'Take 2% less damage', fx: { dr: 0.02 } },
     journal(player) {
@@ -659,12 +659,12 @@ export const QUESTS = [
     reward(g) { g.xp('Defence', 3000); g.xp('Attack', 2000); g.give('Amulet of glory', 1); },
     talk(player, g) {
       const st = q(player, 'knight_honour_east');
-      if (st.stage === 'done') return [['npc', 'Ashford is proud to call you an ally.']];
+      if (st.stage === 'done') return [['npc', 'Emberfold is proud to call you an ally.']];
       if (st.stage === 0) return [
         ['npc', 'Black Knights threaten the eastern approaches. Prove your honour.'],
         ['npc', 'Defeat 3 Black Knights, then bring a Mithril full helm.'],
         { choose: [
-          ['I accept the challenge.', [{ run: () => setQ(player, 'knight_honour_east', { stage: 1, kills: 0 }) }, ['npc', 'For Brightwater and Ashford!']]],
+          ['I accept the challenge.', [{ run: () => setQ(player, 'knight_honour_east', { stage: 1, kills: 0 }) }, ['npc', 'For Larkhaven and Emberfold!']]],
           ['Not yet.', [['npc', 'Honour waits for the ready.']]]
         ] }
       ];
@@ -679,7 +679,7 @@ export const QUESTS = [
     }
   },
   {
-    id: 'angler_catch', name: 'Tess\'s Catch', giver: 'angler', points: 1, start: 'Talk to Angler Tess near Ashford.',
+    id: 'angler_catch', name: 'Tess\'s Catch', giver: 'angler', points: 1, start: 'Talk to Angler Tess near Emberfold.',
     rewards: ['1600 Fishing XP', '600 coins', 'Fly fishing rod'],
     bonus: { desc: '+5% Fishing XP', fx: { 'xp.Fishing': 0.05 } },
     journal(player) {
@@ -709,7 +709,7 @@ export const QUESTS = [
     }
   },
   {
-    id: 'carpenter_wood', name: 'Olan\'s Timber', giver: 'carpenter', points: 1, start: 'Talk to Carpenter Olan in Ashford.',
+    id: 'carpenter_wood', name: 'Olan\'s Timber', giver: 'carpenter', points: 1, start: 'Talk to Carpenter Olan in Emberfold.',
     rewards: ['1400 Woodcutting XP', '500 coins', '50 Oak logs'],
     bonus: { desc: '+3% woodcutting success', fx: { gather: 0.03 } },
     journal(player) {
@@ -743,10 +743,10 @@ export const QUESTS = [
 // The 100 data-driven quests (quests2.js / questdata*.js).
 const LIB = { q, setQ, finish: (p, qd, g) => finish(p, qd, g), isDone: (p, id) => isDone(p, id), questName: id => (questById(id) || { name: id }).name, get NPC_INFO() { return NPC_INFO; } };
 for (const qd of QUEST_DATA) QUESTS.push(buildQuest(qd, LIB));
-const OLD_TOWN = { ashford_help: 'Ashford', eastern_guards: 'Ashford', herbs_for_wren: 'Ashford', smith_order: 'Ashford', eastern_feast: 'Ashford', scout_report: 'Ashford', miner_tools: 'Ashford', sister_prayers: 'Ashford', trader_supplies: 'Ashford', knight_honour_east: 'Ashford', angler_catch: 'Ashford', carpenter_wood: 'Ashford' };
-for (const x of QUESTS) { if (!x.town) x.town = OLD_TOWN[x.id] || 'Brightwater'; if (!x.diff) x.diff = x.points > 1 ? 'Intermediate' : 'Novice'; }
+const OLD_TOWN = { emberfold_help: 'Emberfold', eastern_guards: 'Emberfold', herbs_for_wren: 'Emberfold', smith_order: 'Emberfold', eastern_feast: 'Emberfold', scout_report: 'Emberfold', miner_tools: 'Emberfold', sister_prayers: 'Emberfold', trader_supplies: 'Emberfold', knight_honour_east: 'Emberfold', angler_catch: 'Emberfold', carpenter_wood: 'Emberfold' };
+for (const x of QUESTS) { if (!x.town) x.town = OLD_TOWN[x.id] || 'Larkhaven'; if (!x.diff) x.diff = x.points > 1 ? 'Intermediate' : 'Novice'; }
 export const QUEST_POINTS_TOTAL = QUESTS.reduce((t, x) => t + x.points, 0);
-export const QUEST_TOWNS = ['Brightwater', 'Ashford', 'Port Sarim', 'Varrock', 'Falador', 'Wilds'];
+export const QUEST_TOWNS = ['Larkhaven', 'Emberfold', 'Saltreach', 'Highcrest', 'Whitecairn', 'Wilds'];
 
 export function questById(id) { return QUESTS.find(x => x.id === id); }
 // One NPC can give several quests: the one in progress, else the first one you can start, else the next locked one.
@@ -770,7 +770,7 @@ export function onKill(player, monName) {
   const out = [];
   for (const [id, mon, need, returnTo] of [
     ['archers', 'Dark Archer', 3, 'Ranger Wyn'],
-    ['honour', 'Black Knight', 2, 'Sir Vyvin'],
+    ['honour', 'Black Knight', 2, 'Sir Calder'],
     ['eastern_guards', 'Goblin', 8, 'Guard Captain Ryn'],
     ['scout_report', 'Dark Archer', 4, 'Scout Vey'],
     ['knight_honour_east', 'Black Knight', 3, 'Sir Elric']
@@ -821,30 +821,30 @@ export function onPray(player) {
 
 // Plain talk lines for town NPCs that don't give quests.
 export const NPC_INFO = {
-  cook: { name: 'Cook', examine: 'The head cook of Brightwater.' },
-  priest: { name: 'Father Elric', examine: 'A kindly priest of Saradomin.' },
-  doric: { name: 'Doric', examine: 'A dwarven smith with strong arms.' },
-  captain: { name: 'Captain Rhea', examine: 'Captain of the Brightwater guard.' },
+  cook: { name: 'Cook', examine: 'The head cook of Larkhaven.' },
+  priest: { name: 'Father Elric', examine: 'A kindly priest of the Dawnmother.' },
+  doric: { name: 'Bruna', examine: 'A dwarven smith with strong arms.' },
+  captain: { name: 'Captain Rhea', examine: 'Captain of the Larkhaven guard.' },
   farmer: { name: 'Farmer Gil', examine: 'He smells faintly of cow.' },
-  bob: { name: 'Bob', examine: 'An expert on axes, pickaxes and other tools.' },
+  bob: { name: 'Tobin', examine: 'An expert on axes, pickaxes and other tools.' },
   ranger: { name: 'Ranger Wyn', examine: 'A sharp-eyed ranger of the western woods.' },
-  knight: { name: 'Sir Vyvin', examine: 'A knight in shining armour.' },
+  knight: { name: 'Sir Calder', examine: 'A knight in shining armour.' },
   merchant: { name: 'Merchant', examine: 'A trader of general goods.' },
   banker: { name: 'Banker', examine: 'Good with money.' },
   fisherman: { name: 'Fisherman Fred', examine: 'An old fisherman who knows the lake well.' },
-  mayor: { name: 'Mayor Aldric', examine: 'Mayor of Ashford, worried about the eastern farms.' },
-  merchant2: { name: 'Trader Mira', examine: 'A shrewd trader from Ashford.' },
-  smith2: { name: 'Smith Torin', examine: 'Ashford\'s blacksmith, always short of ore.' },
+  mayor: { name: 'Mayor Aldric', examine: 'Mayor of Emberfold, worried about the eastern farms.' },
+  merchant2: { name: 'Trader Mira', examine: 'A shrewd trader from Emberfold.' },
+  smith2: { name: 'Smith Torin', examine: 'Emberfold\'s blacksmith, always short of ore.' },
   farmer2: { name: 'Farmer Elara', examine: 'Tends the eastern fields.' },
-  guard2: { name: 'Guard Captain Ryn', examine: 'Keeps the peace in Ashford.' },
-  priest2: { name: 'Sister Lira', examine: 'A priestess of Saradomin in Ashford.' },
-  ranger2: { name: 'Scout Vey', examine: 'Scouts the woods east of Ashford.' },
-  cook2: { name: 'Chef Bran', examine: 'Cooks for the Ashford inn.' },
+  guard2: { name: 'Guard Captain Ryn', examine: 'Keeps the peace in Emberfold.' },
+  priest2: { name: 'Sister Lira', examine: 'A priestess of the Dawnmother in Emberfold.' },
+  ranger2: { name: 'Scout Vey', examine: 'Scouts the woods east of Emberfold.' },
+  cook2: { name: 'Chef Bran', examine: 'Cooks for the Emberfold inn.' },
   miner: { name: 'Miner Kael', examine: 'Works the eastern mines.' },
   angler: { name: 'Angler Tess', examine: 'Fishes the eastern streams.' },
-  knight2: { name: 'Sir Elric', examine: 'A knight stationed near Ashford.' },
+  knight2: { name: 'Sir Elric', examine: 'A knight stationed near Emberfold.' },
   herbalist: { name: 'Herbalist Wren', examine: 'Gathers herbs in the east.' },
-  carpenter: { name: 'Carpenter Olan', examine: 'Builds and repairs in Ashford.' }
+  carpenter: { name: 'Carpenter Olan', examine: 'Builds and repairs in Emberfold.' }
 };
 
 for (const n of QUEST_NPCS) NPC_INFO[n.id] = { name: n.name, examine: n.examine };

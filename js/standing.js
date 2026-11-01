@@ -1,14 +1,14 @@
 // Standing: reputation with four factions. Quests, bounties and errands raise it.
-// Each tier gives +1% XP in the faction's skills, and the Falador Quartermaster hands out a one-time reward per tier.
+// Each tier gives +1% XP in the faction's skills, and the Whitecairn Quartermaster hands out a one-time reward per tier.
 import { QUEST_DATA } from './quests2.js';
 import { TOWNS } from './world.js';
 
 export const FACTIONS = [
-  { id: 'watch', name: 'Brightwater Watch', icon: '🛡️', towns: ['Brightwater', 'Ashford', 'Wilds'], skills: ['Attack', 'Defence', 'Strength', 'Hitpoints'] },
-  { id: 'mariners', name: 'Sarim Mariners', icon: '⚓', towns: ['Port Sarim'], skills: ['Fishing', 'Cooking', 'Ranged'] },
-  { id: 'circle', name: 'Varrock Arcane Circle', icon: '🔮', towns: ['Varrock'], skills: ['Magic', 'Runecrafting', 'Herblore'] },
+  { id: 'watch', name: 'Larkhaven Watch', icon: '🛡️', towns: ['Larkhaven', 'Emberfold', 'Wilds'], skills: ['Attack', 'Defence', 'Strength', 'Hitpoints'] },
+  { id: 'mariners', name: 'Saltreach Mariners', icon: '⚓', towns: ['Saltreach'], skills: ['Fishing', 'Cooking', 'Ranged'] },
+  { id: 'circle', name: 'Highcrest Arcane Circle', icon: '🔮', towns: ['Highcrest'], skills: ['Magic', 'Runecrafting', 'Herblore'] },
   { id: 'drowned', name: 'Drowned Crew', icon: '☠️', towns: [], skills: ['Agility', 'Thieving'], desc: 'How much the Drowned Crew fear you. Kill them, sink their ships and take Drowned tasks from Huntmaster Corvane.' },
-  { id: 'lantern', name: 'Order of the White Lantern', icon: '🏮', towns: ['Falador'], skills: ['Prayer', 'Smithing', 'Mining'] }
+  { id: 'lantern', name: 'Order of the White Lantern', icon: '🏮', towns: ['Whitecairn'], skills: ['Prayer', 'Smithing', 'Mining'] }
 ];
 export const TIERS = [[0, 'Unknown'], [100, 'Friendly'], [300, 'Trusted'], [700, 'Honoured'], [1500, 'Exalted']];
 // One-time Quartermaster rewards for reaching each tier (index 1..4) with any faction.
@@ -18,7 +18,7 @@ export const QUEST_REP = 40, BOUNTY_REP = 25;
 export function factionById(id) { return FACTIONS.find(f => f.id === id); }
 export function factionForTown(town) { return FACTIONS.find(f => f.towns.includes(town)) || null; }
 export function factionNear(x, z) {
-  let best = 'Brightwater', bd = Infinity;
+  let best = 'Larkhaven', bd = Infinity;
   for (const [n, t] of Object.entries(TOWNS)) { const d = Math.hypot(t.x - x, t.z - z); if (d < bd) { bd = d; best = n; } }
   return factionForTown(best);
 }

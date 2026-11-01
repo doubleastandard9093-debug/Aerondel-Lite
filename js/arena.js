@@ -7,7 +7,7 @@ export const ARENA_RULES = { start: 1000, k: 32, winTokens: 10, lossTokens: 2, w
 export const ARENA_SHOP = [
   { id: 'cape', name: "Duellist's cape", cost: 60, item: "Duellist's cape", desc: 'A cape for proven fighters (+4 attack, +4 defence).' },
   { id: 'band', name: "Victor's band", cost: 120, item: "Victor's band", desc: 'A ring for ladder champions (+6 strength).', rank: 3 },
-  { id: 'watch', name: 'Commendation to the Watch', cost: 25, rep: ['watch', 100], desc: '+100 Brightwater Watch standing.' },
+  { id: 'watch', name: 'Commendation to the Watch', cost: 25, rep: ['watch', 100], desc: '+100 Larkhaven Watch standing.' },
   { id: 'tutor', name: 'Sparring lessons', cost: 15, xp: 2500, desc: '2,500 XP in your lowest combat skill.' }
 ];
 export const weekNo = now => Math.floor(now / WEEK_MS);

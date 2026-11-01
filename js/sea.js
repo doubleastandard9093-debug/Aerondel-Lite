@@ -1,11 +1,11 @@
-// Sails of Sarim: the open sea (the Sarim Sound), its islands, and your ship.
-// The Sound lies past the world's south edge; you reach it from the Port Sarim docks.
+// Sails of Saltreach: the open sea (the Saltreach Sound), its islands, and your ship.
+// The Sound lies past the world's south edge; you reach it from the Saltreach docks.
 // Data and cheap geometry only. Low: one merged hull mesh, no sails cloth, no wake. High adds sails and a wake.
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 export const SEA = { x: 0, z: 1000, r: 170, z0: 760 };          // anything with z > z0 is the Sound
-export const SARIM_DOCK = { x: -80, z: 76 };                       // where you board in Port Sarim
+export const SARIM_DOCK = { x: -80, z: 76 };                       // where you board in Saltreach
 export const SEA_ENTRY = { x: -40, z: 870, yaw: 0 };               // where the ship appears in the Sound
 export const ISLANDS = [
   { id: 'gullrest', name: 'Gullrest', x: -70, z: 960, r: 26, port: true, dock: { x: -70, z: 932 }, desc: 'A fishing port of stilt houses and gull cries.' },

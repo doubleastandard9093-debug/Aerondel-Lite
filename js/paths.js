@@ -1,6 +1,6 @@
 // Combat Paths: at combat level 30 pick Bulwark (tank), Mender (healer/support) or Striker (damage). Each Path adds
 // two Path skills to your bar and a passive; every 10 combat levels (30-90) opens a talent row with a 1-of-3 pick.
-// Switch for free at your Hearthstead lectern or with Pathwarden Idris in Falador. Logic and UI only.
+// Switch for free at your Hearthstead lectern or with Pathwarden Idris in Whitecairn. Logic and UI only.
 export const PATH_LEVEL = 30;
 export const PATHS = {
   bulwark: { name: 'Bulwark', icon: '🛡️', role: 'tank', desc: 'Take 10% less damage. Skills: Challenge, Stalwart Wall.', red: 0.10, skills: ['challenge', 'wall'] },

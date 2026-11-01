@@ -10,7 +10,7 @@ import { prim, col, place as put, setMat, woodAxis, bake } from '../../js/models
 
 const Q = new URLSearchParams(location.search);
 const TIMBER = 0x4a3020, SHUTTER = [0x3c5a3a, 0x5a2e24, 0x2e4256, 0x5a4630], STONE = 0x8a8478, POT = 0x8a4a32;
-const BIG = /Bank|Church|Smithy|Palace|Castle|Armoury|Emporium|Rune Shop|Store|Inn|Tavern|Weaponsmith/;
+const BIG = /Bank|Church|Chapel|Smithy|Palace|Castle|Lantern Keep|Armoury|Emporium|Rune Shop|Store|Inn|Tavern|Weaponsmith/;
 
 function detailFor(b) {
   const inn = b.inner, w = inn.maxX - inn.minX, d = inn.maxZ - inn.minZ, h = 2.7, base = 0.55, name = b.name || '';

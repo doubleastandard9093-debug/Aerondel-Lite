@@ -294,7 +294,7 @@ export function rollVariant(typeName, t, seed) {
 }
 const NAMED = {
   Goblin: ['Snaggletooth', 'Grubfoot', 'Nix'], Wolf: ['Scarface', 'Old Grey', 'Fang'], Cow: ['Old Bessie', 'Daisy'], 'Giant Spider': ['Widowmaker'],
-  'Hill Giant': ['Big Bob'], Zombie: ['Shambling Sid'], Skeleton: ['Rattlebones'], Bandit: ['One-Eye Jack'], 'Moss Giant': ['Mossback'], Ogre: ['Gutbelly']
+  'Hill Giant': ['Big Tobin'], Zombie: ['Shambling Sid'], Skeleton: ['Rattlebones'], Bandit: ['One-Eye Jack'], 'Moss Giant': ['Mossback'], Ogre: ['Gutbelly']
 };
 export function namedVariant(typeName, seed) {
   const list = NAMED[typeName]; if (!list) return null;

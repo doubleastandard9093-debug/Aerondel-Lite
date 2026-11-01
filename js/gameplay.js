@@ -26,7 +26,7 @@ export const ROCKS = {
   Adamantite: { level: 70, xp: 95,   item: 'Adamantite ore', respawn: 50000 },
   Runite:     { level: 85, xp: 125,  item: 'Runite ore',     respawn: 90000 },
   Dragon:     { level: 95, xp: 180,  item: 'Dragon ore',     respawn: 120000 },
-  // Rune essence rocks (Varrock mine and a pair near Brightwater): Pure essence from Mining 30.
+  // Rune essence rocks (Highcrest mine and a pair near Larkhaven): Pure essence from Mining 30.
   Essence:    { level: 1,  xp: 5,    item: 'Rune essence',   respawn: 1000, pureAt: 30, pure: 'Pure essence' }
 };
 // Herb patches: pick grimy herbs. Never run out.
@@ -187,7 +187,7 @@ export const MONSTER_TYPES = {
   // Hearth & Arena: a Proving Grounds duellist (stats are replaced per duel to copy your loadout)
   Duellist:      { name: 'Duellist', level: 30, hp: 300, maxHit: 30, att: 25, def: 25, speed: 4, color: 0x6a2a2a, scale: 1.0, skin: 0xc89a74, arena: true, respawn: 1e12 },
   'Ashen raider': { name: 'Ashen raider', level: 40, hp: 420, maxHit: 38, att: 32, def: 28, speed: 4, color: 0x3a3a3a, scale: 1.0, skin: 0xb88a64, wilds: true, respawn: 1e12 },
-  // Sails of Sarim: the Drowned Crew of Wreckers' Reef (undead; silver shot bites them harder)
+  // Sails of Saltreach: the Drowned Crew of Wreckers' Reef (undead; silver shot bites them harder)
   'Drowned Deckhand': { name: 'Drowned Deckhand', level: 24, hp: 240, maxHit: 26, att: 20, def: 16, speed: 4, color: 0x3a5a5a, scale: 1.0, skin: 0x7aa898, undead: true, drowned: true },
   'Drowned Gunner':   { name: 'Drowned Gunner', level: 34, hp: 320, maxHit: 34, att: 28, def: 20, speed: 5, color: 0x4a3a2a, scale: 1.05, skin: 0x6a9a8a, ranged: true, range: 6, undead: true, drowned: true },
   'Captain Saltgrave':{ name: 'Captain Saltgrave', title: 'Captain Saltgrave of the Drowned Crew', level: 72, hp: 1500, maxHit: 64, att: 56, def: 48, speed: 4, color: 0x2a1a3a, scale: 1.35, skin: 0x5a8a7a, boss: true, respawn: 180000, undead: true, drowned: true }
@@ -413,7 +413,7 @@ export const LOOT_TABLES = {
   ],
   Bandit: [
     { item: 'Bones', chance: 1 }, { item: 'Coins', chance: 0.9, qty: [20, 80] }, { item: 'Chocolate dust', chance: 0.15 }, { item: 'Unicorn horn dust', chance: 0.08 },
-    { herbs: MID_HERBS, chance: 0.2 }, { item: 'Wine of zamorak', chance: 0.03 }, { item: 'Steel arrows', chance: 0.15, qty: [5, 15] },
+    { herbs: MID_HERBS, chance: 0.2 }, { item: 'Wine of the pyre', chance: 0.03 }, { item: 'Steel arrows', chance: 0.15, qty: [5, 15] },
     { item: 'Ring of recoil', chance: 1 / 60 }, { item: "Captain's cutlass", chance: 1 / 400 }
   ],
   'Moss Giant': [
@@ -434,7 +434,7 @@ export const LOOT_TABLES = {
     { herbs: HIGH_HERBS, chance: 0.3 }, { item: 'Rune arrows', chance: 0.1, qty: [5, 15] }, { item: 'Dragon dagger', chance: 1 / 40 }, { item: 'Dragon longsword', chance: 1 / 120 }
   ],
   'Lesser Demon': [
-    { item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.9, qty: [100, 350] }, { item: 'Wine of zamorak', chance: 0.3 },
+    { item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.9, qty: [100, 350] }, { item: 'Wine of the pyre', chance: 0.3 },
     { herbs: HIGH_HERBS, chance: 0.35 }, { item: 'Rune full helm', chance: 0.02 }, { item: 'Obsidian cape', chance: 1 / 100 }, { item: 'Dark bow', chance: 1 / 120 }
   ],
   Grumsh: [
@@ -492,7 +492,7 @@ export const LOOT_TABLES = {
     { item: 'Warrior ring', chance: 0.01 }
   ],
   'Black Knight': [
-    { item: 'Bones', chance: 1 }, { herbs: MID_HERBS, chance: 0.2 }, { item: 'Wine of zamorak', chance: 0.05 },
+    { item: 'Bones', chance: 1 }, { herbs: MID_HERBS, chance: 0.2 }, { item: 'Wine of the pyre', chance: 0.05 },
     { item: 'Coins', chance: 0.8, qty: [30, 120] },
     { item: 'Steel arrows', chance: 0.12, qty: [5, 15] },
     { item: 'Mithril bar', chance: 0.05 },
@@ -602,14 +602,14 @@ export const WEAPON_STOCK = [
 // Every shop in the game. NPC/stall entities carry shop: '<id>'.
 export const SHOPS = {
   shop: { title: "Merchant's General Store", stock: SHOP_STOCK },
-  tools: { title: "Bob's Brilliant Tools", stock: TOOL_STOCK },
+  tools: { title: "Tobin's Trusty Tools", stock: TOOL_STOCK },
   herb: { title: "Mira's Remedies", stock: HERB_STOCK },
   herb2: { title: "Nessa's Herb Stall", stock: HERB_STOCK },
   armour: { title: 'Saltmere Armoury', stock: ARMOUR_STOCK },
   weapons: { title: 'Highcrag Weaponsmith', stock: WEAPON_STOCK },
   general2: { title: 'Saltmere General Store', stock: SHOP_STOCK },
   general3: { title: 'Highcrag Trading Post', stock: SHOP_STOCK },
-  apothecary: { title: 'Brightwater Apothecary', stock: HERB_STOCK },
+  apothecary: { title: 'Larkhaven Apothecary', stock: HERB_STOCK },
   chandlery: { title: 'Gullrest Chandlery', stock: [
     { item: 'Bronze cutlass', price: 50 }, { item: 'Iron cutlass', price: 160 }, { item: 'Steel cutlass', price: 420 }, { item: 'Mithril cutlass', price: 1100 },
     { item: 'Iron flintlock', price: 300 }, { item: 'Steel flintlock', price: 800 }, { item: 'Lead shot', price: 6 }, { item: 'Silver shot', price: 24 },
@@ -714,7 +714,7 @@ export const SPELLS = [
   { id: 'water_wave',   name: 'Water Wave',   level: 65, maxHit: 180, xp: 37.5, icon: '💧', runes: { 'Air rune': 5, 'Water rune': 7, 'Blood rune': 1 } },
   { id: 'earth_wave',   name: 'Earth Wave',   level: 70, maxHit: 190, xp: 40,   icon: '🪨', runes: { 'Air rune': 5, 'Earth rune': 7, 'Blood rune': 1 } },
   { id: 'fire_wave',    name: 'Fire Wave',    level: 75, maxHit: 200, xp: 42.5, icon: '🔥', runes: { 'Air rune': 5, 'Fire rune': 7, 'Blood rune': 1 } },
-  // Hexcraft (Sails of Sarim): swamp-and-bone hexes taught by Mama Sorrel. Each lands an effect as well as damage.
+  // Hexcraft (Sails of Saltreach): swamp-and-bone hexes taught by Mama Sorrel. Each lands an effect as well as damage.
   { id: 'hex_rot',   name: 'Rotting Hex',  level: 12, maxHit: 50,  xp: 12, icon: '🪲', hex: 'rot',   school: 'Hexcraft', runes: { 'Bog rune': 1, 'Mind rune': 1 }, about: 'rots the target for 4 extra hits over time' },
   { id: 'hex_bind',  name: 'Binding Hex',  level: 25, maxHit: 40,  xp: 18, icon: '🪢', hex: 'bind',  school: 'Hexcraft', runes: { 'Bog rune': 2, 'Bone rune': 1 }, about: 'roots the target so it cannot strike for 4 ticks' },
   { id: 'hex_wither',name: 'Withering Hex',level: 38, maxHit: 70,  xp: 26, icon: '🥀', hex: 'wither',school: 'Hexcraft', runes: { 'Bone rune': 2, 'Bog rune': 1 }, about: 'the target hits 30% softer for 20 seconds' },
@@ -797,29 +797,29 @@ export function castSpell(spell, skills, player, mon, rng = Math.random) {
 // ===========================================================================
 // course: { name, level, lapXp, obstacles: [{ name, verb, kind, level, xp, failDmg }] }
 export const AGILITY_COURSES = {
-  brightwater: { name: 'Brightwater Agility Course', level: 1, lapXp: 39, obstacles: [
+  larkhaven: { name: 'Larkhaven Agility Course', level: 1, lapXp: 39, obstacles: [
     { name: 'Log balance', verb: 'Walk-across', kind: 'log', level: 1, xp: 7.5, failDmg: 10 },
     { name: 'Obstacle net', verb: 'Climb-over', kind: 'net', level: 1, xp: 7.5, failDmg: 10 },
     { name: 'Balancing rope', verb: 'Walk-on', kind: 'rope', level: 1, xp: 7.5, failDmg: 10 },
     { name: 'Obstacle pipe', verb: 'Squeeze-through', kind: 'pipe', level: 1, xp: 7.5, failDmg: 10 }] },
-  varrock: { name: 'Varrock Agility Course', level: 30, lapXp: 125, obstacles: [
+  highcrest: { name: 'Highcrest Agility Course', level: 30, lapXp: 125, obstacles: [
     { name: 'Rough wall', verb: 'Climb', kind: 'wall', level: 30, xp: 12, failDmg: 20 },
     { name: 'Clothes line', verb: 'Cross', kind: 'rope', level: 30, xp: 21, failDmg: 30 },
     { name: 'Gap', verb: 'Leap', kind: 'gap', level: 30, xp: 17, failDmg: 30 },
     { name: 'Wall ledge', verb: 'Balance', kind: 'log', level: 30, xp: 25, failDmg: 30 }] },
-  portsarim: { name: 'Port Sarim Docks Course', level: 45, lapXp: 190, obstacles: [
+  portsarim: { name: 'Saltreach Docks Course', level: 45, lapXp: 190, obstacles: [
     { name: 'Rigging net', verb: 'Climb-over', kind: 'net', level: 45, xp: 30, failDmg: 40 },
     { name: 'Mast rope', verb: 'Swing-on', kind: 'rope', level: 45, xp: 35, failDmg: 40 },
     { name: 'Crate stack', verb: 'Climb', kind: 'wall', level: 45, xp: 30, failDmg: 40 },
     { name: 'Pier gap', verb: 'Jump', kind: 'gap', level: 45, xp: 40, failDmg: 50 }] },
-  falador: { name: 'Falador Agility Course', level: 60, lapXp: 300, obstacles: [
+  whitecairn: { name: 'Whitecairn Agility Course', level: 60, lapXp: 300, obstacles: [
     { name: 'Rough wall', verb: 'Climb', kind: 'wall', level: 60, xp: 45, failDmg: 50 },
     { name: 'Tightrope', verb: 'Cross', kind: 'rope', level: 60, xp: 50, failDmg: 60 },
     { name: 'Hand holds', verb: 'Cross', kind: 'net', level: 60, xp: 55, failDmg: 60 },
     { name: 'Gap', verb: 'Jump', kind: 'gap', level: 60, xp: 50, failDmg: 60 },
     { name: 'Ledge', verb: 'Balance', kind: 'log', level: 60, xp: 60, failDmg: 60 }] }
 };
-// Flat list (one entry per obstacle) with ids like 'varrock:2'.
+// Flat list (one entry per obstacle) with ids like 'highcrest:2'.
 export const AGILITY_OBSTACLES = Object.fromEntries(Object.entries(AGILITY_COURSES).flatMap(([cid, c]) =>
   c.obstacles.map((o, i) => [`${cid}:${i}`, { ...o, id: `${cid}:${i}`, course: cid, index: i, last: i === c.obstacles.length - 1 }])));
 // Chance to cross an obstacle without slipping.
@@ -909,7 +909,7 @@ export function craftRunes(altarName, skills, player, rng = Math.random) {
   let used = 0;
   const parts = [];
   for (const k of kinds) { const n = player.inventory[k] || 0; if (n) { removeItem(player, k, n); used += n; parts.push(k); } }
-  if (!used) return { error: a.pure ? `You need pure essence to craft ${a.rune.toLowerCase()}s. Mine it at Mining 30 in the Varrock essence mine.` : 'You don\'t have any rune essence. Buy some from a magic shop or mine it.' };
+  if (!used) return { error: a.pure ? `You need pure essence to craft ${a.rune.toLowerCase()}s. Mine it at Mining 30 in the Highcrest essence mine.` : 'You don\'t have any rune essence. Buy some from a magic shop or mine it.' };
   let qty = used * runesPerEssence(a, lvl);
   const dbl = perk(skills, 'Runecrafting', 'runeDouble');
   if (dbl > 0) { let extra = 0; for (let i = 0; i < used; i++) if (rng() < dbl) extra++; qty += extra; }
@@ -935,18 +935,18 @@ export const RUNE_STOCK = [
   { item: 'Mystic staff', price: 9000 }, { item: 'Mystic hat', price: 3500 }, { item: 'Mystic robe top', price: 14000 }, { item: 'Mystic robe bottom', price: 10500 }
 ];
 Object.assign(SHOPS, {
-  magic0: { title: "Mizgog's Magic Supplies", stock: MAGIC_STOCK_BASIC },
-  magic: { title: "Betty's Magic Emporium", stock: MAGIC_STOCK },
-  runes: { title: "Aubury's Rune Shop", stock: RUNE_STOCK }
+  magic0: { title: "Mardoc's Magic Supplies", stock: MAGIC_STOCK_BASIC },
+  magic: { title: "Odessa's Magic Emporium", stock: MAGIC_STOCK },
+  runes: { title: "Orrin's Rune Shop", stock: RUNE_STOCK }
 });
-// The towns that were planned as Saltmere and Highcrag are now Port Sarim and Varrock (plus Falador).
-SHOPS.general2.title = 'Port Sarim General Store';
-// Ashford Store: Trader Mira's general goods (same stock and prices as the other general stores)
-SHOPS.ashford = { title: 'Ashford Store', stock: SHOP_STOCK };
-SHOPS.armour.title = 'Falador Armoury';
-SHOPS.weapons.title = 'Varrock Weaponsmith';
-SHOPS.general3.title = 'Varrock General Store';
-SHOPS.herb2.title = "Nessa's Herb Stall (Falador)";
+// The towns that were planned as Saltmere and Highcrag are now Saltreach and Highcrest (plus Whitecairn).
+SHOPS.general2.title = 'Saltreach General Store';
+// Emberfold Store: Trader Mira's general goods (same stock and prices as the other general stores)
+SHOPS.emberfold = { title: 'Emberfold Store', stock: SHOP_STOCK };
+SHOPS.armour.title = 'Whitecairn Armoury';
+SHOPS.weapons.title = 'Highcrest Weaponsmith';
+SHOPS.general3.title = 'Highcrest General Store';
+SHOPS.herb2.title = "Nessa's Herb Stall (Whitecairn)";
 
 // Rune drops from monsters that cast or carry them.
 const addLoot = (mon, ...entries) => { if (LOOT_TABLES[mon]) LOOT_TABLES[mon].push(...entries); };

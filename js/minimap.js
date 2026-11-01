@@ -56,7 +56,7 @@ export function createMinimap({ onWalk, onCompass, onRunToggle, onPrayerOrb }) {
     b.fillStyle = '#d8d0c0'; b.fillRect(W(x - w / 2), W(z - d / 2), w * 4, d * 4);
     b.strokeStyle = '#5a4a3a'; b.lineWidth = 1.5; b.strokeRect(W(x - w / 2), W(z - d / 2), w * 4, d * 4);
     // doorway gap (same rule as world.js: faces the nearest town centre)
-    let tc = TOWNS.Brightwater, bd = Infinity;
+    let tc = TOWNS.Larkhaven, bd = Infinity;
     for (const t of Object.values(TOWNS)) { const dd = Math.hypot(t.x - x, t.z - z); if (dd < bd) { bd = dd; tc = t; } }
     const rx = x - tc.x, rz = z - tc.z, onX = Math.abs(rx) > Math.abs(rz), sg = onX ? (Math.sign(-rx) || 1) : (Math.sign(-rz) || 1);
     b.fillStyle = '#b89a6a';

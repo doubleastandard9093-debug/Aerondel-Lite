@@ -1,4 +1,4 @@
-// Phase 4 (Sails of Sarim) headless check. Usage: node tools/phase4-check.cjs [path] [low|high] [WxH] [save.json]
+// Phase 4 (Sails of Saltreach) headless check. Usage: node tools/phase4-check.cjs [path] [low|high] [WxH] [save.json]
 // Buys a Sloop via the Shipwright dialogue, sails, fires a broadside and sinks a Drowned ship, goes ashore, reads and digs a
 // treasure chart, plays both card tables, fires a flintlock, casts a hex, checks saga/sea map marks and quick-button overlap.
 // On Low: no cloth sails (sail-high), no textured ship/sea meshes and no High asset requests.

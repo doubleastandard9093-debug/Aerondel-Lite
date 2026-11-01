@@ -19,13 +19,13 @@ export const SPAWN = { x: 0, z: 0 };
 export const LAKE = { x: -20, z: 16, r: 7 };
 // Town centres. Names with spaces need quotes.
 export const TOWNS = {
-  Brightwater: { x: 0, z: 0 },
-  Ashford: { x: 50, z: -24 },
-  'Port Sarim': { x: -80, z: 60 },
-  Varrock: { x: 120, z: -40 },
-  Falador: { x: -60, z: -80 }
+  Larkhaven: { x: 0, z: 0 },
+  Emberfold: { x: 50, z: -24 },
+  'Saltreach': { x: -80, z: 60 },
+  Highcrest: { x: 120, z: -40 },
+  Whitecairn: { x: -60, z: -80 }
 };
-export const TOWN_NAME = 'Brightwater';
+export const TOWN_NAME = 'Larkhaven';
 export const PATHS = [[0, 0, 13, -12], [0, 0, -15, -13], [0, 0, -15, 12], [0, 0, 20, 17], [0, 0, 0, 24], [0, 0, 0, -27], [0, 0, 5, -7.4], [0, 0, 50, -20], [50, -20, 55, -35],
   // roads to the new towns
   [0, 24, -30, 45], [-30, 45, -80, 60], [60, -22, 90, -30], [90, -30, 120, -40], [-15, -13, -35, -50], [-35, -50, -60, -80],
@@ -33,39 +33,39 @@ export const PATHS = [[0, 0, 13, -12], [0, 0, -15, -13], [0, 0, -15, 12], [0, 0,
   [-80, 60, -80, 76], [120, -40, 120, -26], [120, -40, 132, -22], [-60, -80, -60, -68], [120, -40, 138, -40], [138, -40, 138, -60], [138, -60, 122, -112], [-60, -80, -95, -110], [-80, 76, -50, 88]];
 // Buildings: [x, z, width(x), depth(z), wall colour, roof colour, name, examine]
 export const BUILDINGS = [
-  [-9.6, -2, 4, 6, 0x9a9488, 0x6a2a2a, 'Bank of Brightwater', 'Your money is safe here.'],
+  [-9.6, -2, 4, 6, 0x9a9488, 0x6a2a2a, 'Bank of Larkhaven', 'Your money is safe here.'],
   [11.6, 0, 4, 6, 0xc8b48a, 0x3a5a8a, 'General Store', 'The Merchant trades here.'],
-  [5, -10, 4, 4, 0xb89a6a, 0x8a4a2a, "Bob's Brilliant Tools", 'Axes, pickaxes and fishing gear.'],
-  [-4, -12, 5, 7, 0xd8d0c0, 0x4a4a5a, 'Church of Saradomin', 'A peaceful place of worship.'],
-  [7, 11.5, 5, 4, 0x6a5a4a, 0x3a3a3a, "Doric's Smithy", 'You can hear hammering inside.'],
+  [5, -10, 4, 4, 0xb89a6a, 0x8a4a2a, "Tobin's Trusty Tools", 'Axes, pickaxes and fishing gear.'],
+  [-4, -12, 5, 7, 0xd8d0c0, 0x4a4a5a, 'Chapel of the Dawnmother', 'A peaceful place of worship.'],
+  [7, 11.5, 5, 4, 0x6a5a4a, 0x3a3a3a, "Bruna's Smithy", 'You can hear hammering inside.'],
   [-8, 10.5, 4, 4, 0xc8b48a, 0x8a3a2a, 'Cookhouse', 'Something smells delicious.'],
   [13, -6, 3, 3, 0xd0c0a0, 0x7a3a2a, 'House', 'A cosy cottage.'],
   [12.5, 7, 3, 3, 0xc0b090, 0x5a4a3a, 'House', 'A cosy cottage.'],
   [-12, 5.5, 3, 3, 0xd0c0a0, 0x3a5a3a, 'House', 'A cosy cottage.'],
   [-14, -7, 3, 3, 0xc0b090, 0x7a3a2a, 'House', 'A cosy cottage.'],
-  // Ashford town (east)
-  [48, -25, 5, 6, 0x8a7a6a, 0x5a3a2a, 'Ashford Bank', 'A smaller bank serving the eastern farms.'],
-  [55, -18, 4, 5, 0xb8a878, 0x4a5a3a, 'Ashford Store', 'Local goods and supplies.'],
-  [42, -32, 4, 4, 0x6a5a4a, 0x3a3a3a, 'Ashford Smithy', 'Hammering rings from the forge.'],
-  [52, -35, 3, 3, 0xd0c0a0, 0x7a3a2a, 'Ashford House', 'A farmhouse.'],
-  [60, -22, 3, 3, 0xc0b090, 0x5a4a3a, 'Ashford House', 'Another cottage.'],
-  // Port Sarim (south-west, by the docks)
-  [-88, 54, 5, 5, 0xc8b48a, 0x3a5a8a, 'Port Sarim General Store', 'Supplies for sailors and travellers.'],
-  [-72, 54, 5, 5, 0x7a6a9a, 0x3a2a6a, "Betty's Magic Emporium", 'Runes, staffs and robes. Smells of incense.'],
-  [-88, 67, 4, 4, 0xd0c0a0, 0x7a3a2a, 'Port Sarim House', 'A fisherman\'s cottage.'],
-  [-71, 67, 6, 4, 0x8a6a4a, 0x4a3a2a, 'The Rusty Anchor', 'A noisy sailors\' tavern.'],
-  // Varrock (far east)
-  [120, -54, 11, 7, 0x9a9488, 0x5a5a6a, 'Varrock Palace', 'Home of King Roald.'],
-  [110, -44, 5, 5, 0x6a5a4a, 0x3a3a3a, 'Varrock Weaponsmith', 'Swords and bows line the walls.'],
-  [130, -44, 5, 5, 0xc8b48a, 0x8a3a2a, 'Varrock General Store', 'All sorts of odds and ends.'],
-  [130, -33, 5, 4, 0x7a6a9a, 0x3a2a6a, "Aubury's Rune Shop", 'Aubury sells runes and knows the way to the essence mine.'],
-  [110, -33, 4, 4, 0xd0c0a0, 0x5a4a3a, 'Varrock House', 'A townhouse.'],
-  // Falador (north-west, the white city)
-  [-60, -94, 11, 7, 0xe8e4dc, 0x4a5a7a, "White Knights' Castle", 'The White Knights guard Falador.'],
-  [-70, -84, 5, 5, 0xd8d4cc, 0x5a5a6a, 'Falador Armoury', 'Cassie sells shields and plate armour.'],
-  [-50, -84, 6, 4, 0xd8d0c0, 0x6a2a2a, 'Falador Inn', 'The Rising Sun inn.'],
-  [-70, -72, 4, 4, 0xe0dcd0, 0x4a5a7a, 'Falador House', 'A white stone house.'],
-  [-50, -72, 4, 4, 0xe0dcd0, 0x3a5a3a, 'Falador House', 'A white stone house.']
+  // Emberfold town (east)
+  [48, -25, 5, 6, 0x8a7a6a, 0x5a3a2a, 'Emberfold Bank', 'A smaller bank serving the eastern farms.'],
+  [55, -18, 4, 5, 0xb8a878, 0x4a5a3a, 'Emberfold Store', 'Local goods and supplies.'],
+  [42, -32, 4, 4, 0x6a5a4a, 0x3a3a3a, 'Emberfold Smithy', 'Hammering rings from the forge.'],
+  [52, -35, 3, 3, 0xd0c0a0, 0x7a3a2a, 'Emberfold House', 'A farmhouse.'],
+  [60, -22, 3, 3, 0xc0b090, 0x5a4a3a, 'Emberfold House', 'Another cottage.'],
+  // Saltreach (south-west, by the docks)
+  [-88, 54, 5, 5, 0xc8b48a, 0x3a5a8a, 'Saltreach General Store', 'Supplies for sailors and travellers.'],
+  [-72, 54, 5, 5, 0x7a6a9a, 0x3a2a6a, "Odessa's Magic Emporium", 'Runes, staffs and robes. Smells of incense.'],
+  [-88, 67, 4, 4, 0xd0c0a0, 0x7a3a2a, 'Saltreach House', 'A fisherman\'s cottage.'],
+  [-71, 67, 6, 4, 0x8a6a4a, 0x4a3a2a, 'The Barnacle Rest', 'A noisy sailors\' tavern.'],
+  // Highcrest (far east)
+  [120, -54, 11, 7, 0x9a9488, 0x5a5a6a, 'Highcrest Palace', 'Home of King Aldermar.'],
+  [110, -44, 5, 5, 0x6a5a4a, 0x3a3a3a, 'Highcrest Weaponsmith', 'Swords and bows line the walls.'],
+  [130, -44, 5, 5, 0xc8b48a, 0x8a3a2a, 'Highcrest General Store', 'All sorts of odds and ends.'],
+  [130, -33, 5, 4, 0x7a6a9a, 0x3a2a6a, "Orrin's Rune Shop", 'Orrin sells runes and knows the way to the essence mine.'],
+  [110, -33, 4, 4, 0xd0c0a0, 0x5a4a3a, 'Highcrest House', 'A townhouse.'],
+  // Whitecairn (north-west, the white city)
+  [-60, -94, 11, 7, 0xe8e4dc, 0x4a5a7a, "Lantern Keep", 'The Lantern Knights guard Whitecairn.'],
+  [-70, -84, 5, 5, 0xd8d4cc, 0x5a5a6a, 'Whitecairn Armoury', 'Brisa sells shields and plate armour.'],
+  [-50, -84, 6, 4, 0xd8d0c0, 0x6a2a2a, 'Whitecairn Inn', 'The Gilded Hearth inn.'],
+  [-70, -72, 4, 4, 0xe0dcd0, 0x4a5a7a, 'Whitecairn House', 'A white stone house.'],
+  [-50, -72, 4, 4, 0xe0dcd0, 0x3a5a3a, 'Whitecairn House', 'A white stone house.']
 ];
 // Guilds: walk-in halls that check your level at the door. Contents are created in createWorld.
 export const GUILDS = [
@@ -77,7 +77,7 @@ export const GUILDS = [
 for (const g of GUILDS) BUILDINGS.push([g.x, g.z, g.w, g.d, g.wall, g.roof, g.name, `Members need ${g.skill} level ${g.level} to enter.`]);
 PATHS.push([0, -27, 20, -56], [0, 29, 0, 55], [0, 55, -22, 55]);
 function nearestTown(x, z) {
-  let best = TOWNS.Brightwater, bd = Infinity;
+  let best = TOWNS.Larkhaven, bd = Infinity;
   for (const t of Object.values(TOWNS)) { const d = Math.hypot(t.x - x, t.z - z); if (d < bd) { bd = d; best = t; } }
   return best;
 }
@@ -197,7 +197,7 @@ function edgeHeight(x, z) {
 }
 export function terrainHeight(x, z) {
   if (x < -700) return 0; // instanced Hearthstead / Proving Grounds floors (instances.js)
-  if (z > SEA.z0) return seaGround(x, z); // the Sarim Sound (Sails of Sarim)
+  if (z > SEA.z0) return seaGround(x, z); // the Saltreach Sound (Sails of Saltreach)
   const H = HF.data;
   if (!H) return edgeHeight(x, z);
   const gx = x + HF.off, gz = z + HF.off;
@@ -254,13 +254,13 @@ function paintGroundMask(size) {
   blob(-9, -28, 5.5, '255,0,0', 0.9);   // high-level mine
   blob(13, -13, 5, '255,0,0', 0.45);    // goblin camp
   blob(-18, -16, 7, '255,0,0', 0.3);    // trampled cow field
-  blob(50, -25, 9, '255,0,0', 0.4);     // Ashford yard
+  blob(50, -25, 9, '255,0,0', 0.4);     // Emberfold yard
   blob(LAKE.x, LAKE.z, LAKE.r + 2.6, '0,255,0', 1);
-  blob(0, 0, 5.4, '0,0,255', 1);        // Brightwater square
-  blob(50, -24, 3.5, '0,0,255', 0.9);   // Ashford square
-  for (const [name, t] of Object.entries(TOWNS)) if (name !== 'Brightwater' && name !== 'Ashford') { blob(t.x, t.z, 12, '255,0,0', 0.35); blob(t.x, t.z, 5, '0,0,255', 1); }
-  blob(132, -22, 6, '255,0,0', 0.9);     // Varrock essence mine
-  blob(-80, 74, 6, '0,255,0', 0.8);      // Port Sarim sandy docks
+  blob(0, 0, 5.4, '0,0,255', 1);        // Larkhaven square
+  blob(50, -24, 3.5, '0,0,255', 0.9);   // Emberfold square
+  for (const [name, t] of Object.entries(TOWNS)) if (name !== 'Larkhaven' && name !== 'Emberfold') { blob(t.x, t.z, 12, '255,0,0', 0.35); blob(t.x, t.z, 5, '0,0,255', 1); }
+  blob(132, -22, 6, '255,0,0', 0.9);     // Highcrest essence mine
+  blob(-80, 74, 6, '0,255,0', 0.8);      // Saltreach sandy docks
   blob(122, -122, 18, '255,0,0', 0.45);  // scorched wilderness
   blob(130, -175, 7.8, '0,255,0', 1);    // mountain pond shore
   for (const [x, z, r] of [[-175, -150, 7], [205, 120, 12], [-225, 40, 6], [-205, 95, 6], [160, 205, 7], [-20, 230, 4], [60, -205, 8]]) blob(x, z, r, '255,0,0', 0.5); // trodden camps
@@ -581,7 +581,7 @@ export function createWorld(scene) {
   }
 
 
-  // ---- Town of Brightwater ----
+  // ---- Town of Larkhaven ----
   function createBuilding([x, z, w, d, wall, roof, name, examine]) {
     const g = new THREE.Group();
     const parts = [];
@@ -589,7 +589,7 @@ export function createWorld(scene) {
     const TIMBER = 0x4a3020, STONE = 0x7d776c;
     const WOODS = new Set([TIMBER, 0x5a3a20, 0x6a5040, 0x4a2e16, 0x6a4a2a, 0x5a3a1e]), STONES = new Set([STONE, 0x8e877a, 0x8a8478, 0x7a7268]);
     const add = (geo, hex, amt, px, py, pz, rx = 0, ry = 0, rz = 0) => { setMat(geo, WOODS.has(hex) ? woodAxis(geo) : STONES.has(hex) ? 5 : 0); parts.push(put(col(geo, hex, amt), px, py, pz, rx, ry, rz)); };
-    const big = w * d > 22 || /Bank|Church|Smithy|Palace|Castle|Armoury|Emporium|Rune Shop|Store|Inn|Tavern|Weaponsmith/.test(name);
+    const big = w * d > 22 || /Bank|Church|Chapel|Smithy|Palace|Castle|Lantern Keep|Armoury|Emporium|Rune Shop|Store|Inn|Tavern|Weaponsmith/.test(name);
     const wallC = new THREE.Color(wall), wc = new THREE.Color();
     const paintWall = (geo) => paint(geo, (px, py, pz) => wc.copy(wallC).multiplyScalar(0.88 + 0.12 * snoise(px * 3, py * 3, pz * 3, 7)));
     // Door faces the town square
@@ -707,7 +707,7 @@ export function createWorld(scene) {
       add(prim.box(0.45, rise + 0.9, 0.45), 0x6e665c, 0.25, cx, h + (rise + 0.9) / 2, cz);
       add(prim.box(0.55, 0.12, 0.55), 0x56504a, 0, cx, h + rise + 0.95, cz);
     }
-    if (name === 'Church of Saradomin') {
+    if (name === 'Chapel of the Dawnmother') {
       add(prim.box(1.3, 2.4, 1.3), wall, 0.15, 0, h + 1.2, d / 2 - 0.9);
       add(prim.cone(1.05, 2.6, 4), roof, 0.3, 0, h + 3.7, d / 2 - 0.9, 0, Math.PI / 4, 0);
       add(prim.box(0.08, 0.6, 0.08), 0xd4af37, 0, 0, h + 5.3, d / 2 - 0.9); add(prim.box(0.36, 0.08, 0.08), 0xd4af37, 0, 0, h + 5.4, d / 2 - 0.9);
@@ -1101,25 +1101,25 @@ export function createWorld(scene) {
   buildings.push(createWell(3, 3.2));
   nodes.push(createMerchant(8, 0));
   nodes.push(createBank(-6, -5.6));
-  nodes.push(createNpc(5, -7.4, 'bob', 'Bob', { body: 0x3a6a3a, hat: 0x5a3a1a, beard: 0x8a6a4a, apron: 0x6a4a2a }, 0, 0));
+  nodes.push(createNpc(5, -7.4, 'bob', 'Tobin', { body: 0x3a6a3a, hat: 0x5a3a1a, beard: 0x8a6a4a, apron: 0x6a4a2a }, 0, 0));
   nodes.push(createStation(5.3, 8.6, 'furnace'));
   nodes.push(createStation(8, 8.6, 'anvil'));
-  nodes.push(createNpc(9.9, 9.2, 'doric', 'Doric', { body: 0x6a3a2a, beard: 0xc06a2a, apron: 0x3a3a3a, skin: 0xd09a74 }, 8, 8.6));
+  nodes.push(createNpc(9.9, 9.2, 'doric', 'Bruna', { body: 0x6a3a2a, beard: 0xc06a2a, apron: 0x3a3a3a, skin: 0xd09a74 }, 8, 8.6));
   nodes.push(createStation(-7.2, 7.7, 'range'));
   nodes.push(createNpc(-5.3, 7.8, 'cook', 'Cook', { body: 0xf0f0f0, hat: 0xffffff, hatH: 0.45, hatW: 0.5, apron: 0xe0e0e0 }, 0, 0));
   nodes.push(createAltar(-4, -7.6));
   nodes.push(createNpc(-1.8, -7.6, 'priest', 'Father Elric', { body: 0x2a2a3a, legs: 0x2a2a3a, hat: null, beard: 0xdddddd, apron: 0xd4af37 }, 0, 0));
   nodes.push(createNpc(-1.8, 13, 'captain', 'Captain Rhea', { body: 0x8a2a2a, legs: 0x3a3a4a, hat: 0x9a9aa8, hatH: 0.28, skin: 0xc89a74 }, 0, 0));
   nodes.push(createNpc(-16, 2, 'ranger', 'Ranger Wyn', { body: 0x2a5a2a, legs: 0x3a2a1a, hat: 0x1e4a1e, hatH: 0.2, skin: 0xc89a74 }, -20, 2));
-  nodes.push(createNpc(1.8, -17, 'knight', 'Sir Vyvin', { body: 0xb0b0c0, legs: 0x8a8a9a, hat: 0xc0c0d0, hatH: 0.3, apron: 0x2a4aa0 }, 0, -17));
-  // Brightwater herb patches + the apothecary (Herblore shop)
+  nodes.push(createNpc(1.8, -17, 'knight', 'Sir Calder', { body: 0xb0b0c0, legs: 0x8a8a9a, hat: 0xc0c0d0, hatH: 0.3, apron: 0x2a4aa0 }, 0, -17));
+  // Larkhaven herb patches + the apothecary (Herblore shop)
   ['Guam leaf', 'Marrentill', 'Tarromin', 'Harralander'].forEach((h, i) => nodes.push(createHerbPatch(0.6 + i * 2, -14, h, i)));
   nodes.push(Object.assign(createNpc(1.2, -12, 'apothecary', 'Apothecary Lin', { body: 0x4a7a5a, legs: 0x3a3a2a, hat: 0x2a5a3a, hatH: 0.22, apron: 0xe0e0d0 }, 1.2, -14), { shop: 'apothecary' }));
   nodes.push(createNpc(-10.8, -16, 'farmer', 'Farmer Gil', { body: 0x6a8a3a, legs: 0x4a5a8a, hat: 0xd8c070, hatW: 0.8, hatH: 0.12 }, 0, 0));
   nodes.push(createNpc(LAKE.x + Math.cos(-0.9) * (LAKE.r + 1), LAKE.z + Math.sin(-0.9) * (LAKE.r + 1), 'fisherman', 'Fisherman Fred', { body: 0x4a6a8a, legs: 0x3a3a2a, hat: 0x2a4a6a, hatH: 0.2, skin: 0xc89a74 }, LAKE.x, LAKE.z)); // on the lakeshore facing the water
-  // Ashford NPCs
+  // Emberfold NPCs
   nodes.push(createNpc(50, -22, 'mayor', 'Mayor Aldric', { body: 0x4a3a2a, legs: 0x3a2a1a, hat: 0x8a6a3a, hatH: 0.25, beard: 0x6a4a2a }, 48, -25));
-  nodes.push(Object.assign(createNpc(56, -16, 'merchant2', 'Trader Mira', { body: 0xc8b48a, legs: 0x5a4a3a, hat: 0xd4af37, hatH: 0.15, apron: 0xe0d8c8 }, 55, -18), { shop: 'ashford', examine: 'She runs the Ashford Store.' }));
+  nodes.push(Object.assign(createNpc(56, -16, 'merchant2', 'Trader Mira', { body: 0xc8b48a, legs: 0x5a4a3a, hat: 0xd4af37, hatH: 0.15, apron: 0xe0d8c8 }, 55, -18), { shop: 'emberfold', examine: 'She runs the Emberfold Store.' }));
   nodes.push(createNpc(43, -30, 'smith2', 'Smith Torin', { body: 0x6a3a2a, beard: 0xa06a2a, apron: 0x3a3a3a }, 42, -32));
   nodes.push(createNpc(53, -33, 'farmer2', 'Farmer Elara', { body: 0x6a8a3a, legs: 0x4a5a8a, hat: 0xd8c070, hatW: 0.7, hatH: 0.1 }, 52, -35));
   nodes.push(createNpc(58, -24, 'guard2', 'Guard Captain Ryn', { body: 0x8a2a2a, legs: 0x3a3a4a, hat: 0x9a9aa8, hatH: 0.25 }, 60, -22));
@@ -1131,40 +1131,40 @@ export function createWorld(scene) {
   nodes.push(createNpc(44, -18, 'knight2', 'Sir Elric', { body: 0xb0b0c0, legs: 0x8a8a9a, hat: 0xc0c0d0, hatH: 0.28 }, 48, -25));
   nodes.push(createNpc(54, -26, 'herbalist', 'Herbalist Wren', { body: 0x4a7a5a, legs: 0x3a3a2a, hat: 0x2a5a3a, apron: 0xe0e0d0 }, 52, -35));
   nodes.push(createNpc(59, -28, 'carpenter', 'Carpenter Olan', { body: 0x8a6a4a, legs: 0x5a4a3a, hat: 0x6a4a2a, hatH: 0.15 }, 55, -18));
-  // ---- New towns: Port Sarim, Varrock and Falador ----
+  // ---- New towns: Saltreach, Highcrest and Whitecairn ----
   const townsfolk = (x, z, npc, name, look, extra, fx, fz) => nodes.push(Object.assign(createNpc(x, z, npc, name, look, fx, fz), extra));
   const MAN = { body: 0x7a6a4a, legs: 0x4a3a2a }, WOMAN = { body: 0x9a4a6a, legs: 0x5a3a4a, apron: 0xe0d8c8 };
-  // Brightwater: townsfolk to pickpocket and a wizard selling runes by the tower
+  // Larkhaven: townsfolk to pickpocket and a wizard selling runes by the tower
   townsfolk(-2.6, 3.8, 'man', 'Man', MAN, { thieve: 'Man', say: 'Nice day for it, eh? Mind your pockets around here.' }, 0, 0);
   townsfolk(2.8, -3.6, 'woman', 'Woman', WOMAN, { thieve: 'Woman', say: 'Have you seen the new agility course past the mine?' }, 0, 0);
-  townsfolk(-4, 22, 'mizgog', 'Wizard Mizgog', { body: 0x2a3a9a, legs: 0x2a3a9a, hat: 0x2a3a9a, hatH: 0.5, hatW: 0.42, beard: 0xdddddd }, { shop: 'magic0' }, 0, 24);
-  // Port Sarim
-  for (const [n, t] of Object.entries(TOWNS)) if (n !== 'Brightwater' && n !== 'Ashford') occupied.push({ x: t.x, z: t.z, r: 9 });
-  townsfolk(-84.5, 54, 'gerrant', 'Shopkeeper Gerrant', { body: 0x3a5a8a, legs: 0x3a3a2a, apron: 0xe0d8c8 }, { shop: 'general2' }, -80, 60);
-  townsfolk(-75.5, 54, 'betty', 'Betty', { body: 0x6a2a8a, legs: 0x4a2a5a, hat: 0x4a1a6a, hatH: 0.45, hatW: 0.4 }, { shop: 'magic' }, -80, 60);
+  townsfolk(-4, 22, 'mizgog', 'Wizard Mardoc', { body: 0x2a3a9a, legs: 0x2a3a9a, hat: 0x2a3a9a, hatH: 0.5, hatW: 0.42, beard: 0xdddddd }, { shop: 'magic0' }, 0, 24);
+  // Saltreach
+  for (const [n, t] of Object.entries(TOWNS)) if (n !== 'Larkhaven' && n !== 'Emberfold') occupied.push({ x: t.x, z: t.z, r: 9 });
+  townsfolk(-84.5, 54, 'gerrant', 'Shopkeeper Garrow', { body: 0x3a5a8a, legs: 0x3a3a2a, apron: 0xe0d8c8 }, { shop: 'general2' }, -80, 60);
+  townsfolk(-75.5, 54, 'betty', 'Odessa', { body: 0x6a2a8a, legs: 0x4a2a5a, hat: 0x4a1a6a, hatH: 0.45, hatW: 0.4 }, { shop: 'magic' }, -80, 60);
   townsfolk(-78, 71, 'sailor', 'Sailor', { body: 0x2a4a7a, legs: 0xe0e0e0, hat: 0xf0f0f0, hatH: 0.12 }, { thieve: 'Sailor', say: 'Arr, the docks are no place for landlubbers. Try the rigging course if ye dare.' }, -80, 60);
   townsfolk(-84, 73, 'sailor', 'Sailor', { body: 0x2a4a7a, legs: 0xe0e0e0, hat: 0xf0f0f0, hatH: 0.12 }, { thieve: 'Sailor', say: 'The Water altar is south-west of town, past the willows.' }, -80, 60);
-  townsfolk(-76, 62, 'man', 'Man', MAN, { thieve: 'Man', say: 'Welcome to Port Sarim.' }, -80, 60);
+  townsfolk(-76, 62, 'man', 'Man', MAN, { thieve: 'Man', say: 'Welcome to Saltreach.' }, -80, 60);
   townsfolk(-85, 61, 'woman', 'Woman', WOMAN, { thieve: 'Woman', say: 'Bandits camp to the south-east near a strange dark altar.' }, -80, 60);
   nodes.push(createBank(-80, 51));
-  // Varrock
-  townsfolk(113.5, -44, 'horvik', 'Horvik', { body: 0x5a3a2a, beard: 0x5a3a1a, apron: 0x3a3a3a }, { shop: 'weapons' }, 120, -40);
+  // Highcrest
+  townsfolk(113.5, -44, 'horvik', 'Halvard', { body: 0x5a3a2a, beard: 0x5a3a1a, apron: 0x3a3a3a }, { shop: 'weapons' }, 120, -40);
   townsfolk(126.5, -44, 'vshop', 'Shopkeeper', { body: 0xc8b48a, legs: 0x5a4a3a, apron: 0xe0d8c8 }, { shop: 'general3' }, 120, -40);
-  townsfolk(126.5, -33, 'aubury', 'Aubury', { body: 0x6a2a2a, legs: 0x4a2a2a, hat: 0x7a2a2a, hatH: 0.45, hatW: 0.4, beard: 0xcccccc }, { shop: 'runes' }, 120, -40);
-  townsfolk(116, -49.5, 'vguard', 'Varrock Guard', { body: 0x8a8a9a, legs: 0x5a5a6a, hat: 0x9a9aa8, hatH: 0.28 }, { thieve: 'Guard', say: 'Move along, citizen.' }, 120, -40);
-  townsfolk(124, -49.5, 'vguard', 'Varrock Guard', { body: 0x8a8a9a, legs: 0x5a5a6a, hat: 0x9a9aa8, hatH: 0.28 }, { thieve: 'Guard', say: 'The wilderness to the north is full of demons and dragons.' }, 120, -40);
+  townsfolk(126.5, -33, 'aubury', 'Orrin', { body: 0x6a2a2a, legs: 0x4a2a2a, hat: 0x7a2a2a, hatH: 0.45, hatW: 0.4, beard: 0xcccccc }, { shop: 'runes' }, 120, -40);
+  townsfolk(116, -49.5, 'vguard', 'Highcrest Guard', { body: 0x8a8a9a, legs: 0x5a5a6a, hat: 0x9a9aa8, hatH: 0.28 }, { thieve: 'Guard', say: 'Move along, citizen.' }, 120, -40);
+  townsfolk(124, -49.5, 'vguard', 'Highcrest Guard', { body: 0x8a8a9a, legs: 0x5a5a6a, hat: 0x9a9aa8, hatH: 0.28 }, { thieve: 'Guard', say: 'The wilderness to the north is full of demons and dragons.' }, 120, -40);
   townsfolk(114, -37, 'warrior', 'Warrior', { body: 0x8a3a2a, legs: 0x4a3a2a, hat: 0x7a7a7a, hatH: 0.2 }, { thieve: 'Warrior', say: 'I train on the agility course south-west of town.' }, 120, -40);
-  townsfolk(122.5, -36, 'man', 'Man', MAN, { thieve: 'Man', say: 'Aubury sells runes. The essence mine is just south-east of his shop.' }, 120, -40);
+  townsfolk(122.5, -36, 'man', 'Man', MAN, { thieve: 'Man', say: 'Orrin sells runes. The essence mine is just south-east of his shop.' }, 120, -40);
   townsfolk(117, -30, 'woman', 'Woman', WOMAN, { thieve: 'Woman', say: 'The Earth altar is north-west of the palace.' }, 120, -40);
   nodes.push(createBank(124, -27));
-  // Falador
-  townsfolk(-66.5, -84, 'cassie', 'Cassie', { body: 0xb0b0c0, legs: 0x6a6a7a, apron: 0x3a5aa0 }, { shop: 'armour' }, -60, -80);
+  // Whitecairn
+  townsfolk(-66.5, -84, 'cassie', 'Brisa', { body: 0xb0b0c0, legs: 0x6a6a7a, apron: 0x3a5aa0 }, { shop: 'armour' }, -60, -80);
   townsfolk(-55, -77, 'nessa', 'Nessa', { body: 0x4a7a5a, legs: 0x3a3a2a, hat: 0x2a5a3a, hatH: 0.2, apron: 0xe0e0d0 }, { shop: 'herb2' }, -60, -80);
-  townsfolk(-64, -89.5, 'wknight', 'White Knight', { body: 0xe0e0e8, legs: 0xb0b0c0, hat: 0xd0d0d8, hatH: 0.3, apron: 0x2a4aa0 }, { thieve: 'Knight', say: 'For Saradomin and Falador!' }, -60, -80);
-  townsfolk(-56, -89.5, 'wknight', 'White Knight', { body: 0xe0e0e8, legs: 0xb0b0c0, hat: 0xd0d0d8, hatH: 0.3, apron: 0x2a4aa0 }, { thieve: 'Knight', say: 'Ogres roam the hills to the north-west.' }, -60, -80);
+  townsfolk(-64, -89.5, 'wknight', 'Lantern Knight', { body: 0xe0e0e8, legs: 0xb0b0c0, hat: 0xd0d0d8, hatH: 0.3, apron: 0x2a4aa0 }, { thieve: 'Knight', say: 'For the Dawnmother and Whitecairn!' }, -60, -80);
+  townsfolk(-56, -89.5, 'wknight', 'Lantern Knight', { body: 0xe0e0e8, legs: 0xb0b0c0, hat: 0xd0d0d8, hatH: 0.3, apron: 0x2a4aa0 }, { thieve: 'Knight', say: 'Ogres roam the hills to the north-west.' }, -60, -80);
   townsfolk(-52.5, -89, 'paladin', 'Paladin', { body: 0xd8c070, legs: 0xb0b0c0, hat: 0xd8c070, hatH: 0.3 }, { thieve: 'Paladin', say: 'Only the nimble fingered dare try my purse.' }, -60, -80);
   townsfolk(-68, -89, 'hero', 'Hero', { body: 0x8a1a1a, legs: 0x3a3a4a, hat: 0xd4af37, hatH: 0.18, beard: 0x6a4a2a }, { thieve: 'Hero', say: 'I have slain dragons in the far north-east.' }, -60, -80);
-  townsfolk(-63, -76, 'man', 'Man', MAN, { thieve: 'Man', say: 'Welcome to Falador, the white city.' }, -60, -80);
+  townsfolk(-63, -76, 'man', 'Man', MAN, { thieve: 'Man', say: 'Welcome to Whitecairn, the white city.' }, -60, -80);
   townsfolk(-56.5, -70, 'woman', 'Woman', WOMAN, { thieve: 'Woman', say: 'The Mind altar is north-east of the castle.' }, -60, -80);
   nodes.push(createBank(-56, -75));
   // Farmers can be pickpocketed too
@@ -1175,10 +1175,10 @@ export function createWorld(scene) {
 
   // ---- Agility courses ----
   const COURSE_LAYOUT = {
-    brightwater: [[16, 33, 22, 33], [23.5, 33, 26.5, 33], [28, 34, 28, 40], [26, 42, 19, 42]],
-    varrock: [[100, -22, 100, -19], [100, -17, 106, -17], [107.5, -17, 110.5, -17], [111.5, -19, 111.5, -25]],
+    larkhaven: [[16, 33, 22, 33], [23.5, 33, 26.5, 33], [28, 34, 28, 40], [26, 42, 19, 42]],
+    highcrest: [[100, -22, 100, -19], [100, -17, 106, -17], [107.5, -17, 110.5, -17], [111.5, -19, 111.5, -25]],
     portsarim: [[-64, 70, -64, 73], [-64, 75, -58, 75], [-56, 75, -56, 72], [-56, 70, -56, 66]],
-    falador: [[-84, -66, -84, -63], [-84, -61, -78, -61], [-76, -61, -76, -58], [-76, -56, -80, -56], [-82, -56, -88, -56]]
+    whitecairn: [[-84, -66, -84, -63], [-84, -61, -78, -61], [-76, -61, -76, -58], [-76, -56, -80, -56], [-82, -56, -88, -56]]
   };
   for (const [cid, list] of Object.entries(COURSE_LAYOUT)) list.forEach(([sx, sz, ex, ez], i) => nodes.push(createObstacle(`${cid}:${i}`, AGILITY_COURSES[cid].obstacles[i], sx, sz, ex, ez)));
 
@@ -1256,7 +1256,7 @@ export function createWorld(scene) {
   for (const [x, z] of [[-3, -31], [1.5, -33], [-1, -28.5]]) monsters.push(createMonster('Hill Giant', x, z, 3));
   for (const [x, z] of [[-16, -32], [-18, -35]]) monsters.push(createMonster('Black Knight', x, z, 2.5));
   for (const [x, z] of [[-34, 9], [-36, 4.5], [-32.5, 5]]) monsters.push(createMonster('Dark Archer', x, z, 2));
-  // New monsters near Brightwater (more in the far wilderness)
+  // New monsters near Larkhaven (more in the far wilderness)
   for (const [x, z] of [[38, -8], [40, -12], [36, -14]]) monsters.push(createMonster('Wolf', x, z, 3));
   for (const [x, z] of [[-24, -30], [-28, -27]]) monsters.push(createMonster('Zombie', x, z, 2.5));
   for (const [x, z] of [[24, -38], [28, -36]]) monsters.push(createMonster('Skeleton', x, z, 2.5));
@@ -1379,7 +1379,7 @@ export function createWorld(scene) {
     { const cx = -175, cz = -150; flat(cx, cz, 9);
       nodes.push(fireAt(cx, cz)); tent(cx - 4, cz - 3, 0.6, 0x8a6a4a); tent(cx + 4, cz - 3.5, -0.5, 0x5a6a4a);
       prop(cx + 1.6, cz + 1.4, [[prim.cyl(0.2, 0.2, 1.2, 9), 0x6a4a2a, 0, 0.2, 0, 0, 0, Math.PI / 2]], 'Log seat', 'A log to sit on by the fire.', 0.4);
-      npcAt(cx - 1.8, cz + 1.2, 'camper', 'Weary Traveller', { body: 0x6a5a4a, legs: 0x3a3028, beard: 0x5a4a3a }, "The road from Falador is long. Rest by the fire a while; you can cook on it if you've caught anything.");
+      npcAt(cx - 1.8, cz + 1.2, 'camper', 'Weary Traveller', { body: 0x6a5a4a, legs: 0x3a3028, beard: 0x5a4a3a }, "The road from Whitecairn is long. Rest by the fire a while; you can cook on it if you've caught anything.");
       npcAt(cx + 2.2, cz - 0.6, 'bard', 'Wandering Bard', { body: 0x8a2a4a, legs: 0x2a2a3a, hat: 0x6a1a3a, hatH: 0.16 }, "I sing of the snowy peaks to the north. They say a cave there runs deep, crawling with spiders.");
     }
     // 2) Old ruins (east) with the restless dead
@@ -1544,7 +1544,7 @@ export function createWorld(scene) {
     nodes.push(n);
   }
 
-  // ---- Sails of Sarim: the Shipwright and Mama Sorrel in Port Sarim; port folk on the Sound's islands; the Drowned Crew on Wreckers' Reef ----
+  // ---- Sails of Saltreach: the Shipwright and Mama Sorrel in Saltreach; port folk on the Sound's islands; the Drowned Crew on Wreckers' Reef ----
   {
     const SARIM = [
       { id: 'shipwright', name: 'Shipwright Halvard', x: -77, z: 70, look: { body: 0x6a4a2a, legs: 0x3a2a1a, apron: 0xb89a6a, beard: 0x8a5a2a }, flag: { sea: 'shipwright' } },
@@ -1592,7 +1592,7 @@ export function createWorld(scene) {
   // ---- Elevation: keep every town, road, building and work spot level, then lift the land ----
   {
     const flats = [{ x: LAKE.x, z: LAKE.z, r: LAKE.r + 6 }];
-    for (const t of Object.values(TOWNS)) flats.push({ x: t.x, z: t.z, r: t === TOWNS.Brightwater ? 42 : 24 });
+    for (const t of Object.values(TOWNS)) flats.push({ x: t.x, z: t.z, r: t === TOWNS.Larkhaven ? 42 : 24 });
     for (const o of occupied) if (o.r >= 2.5) flats.push({ x: o.x, z: o.z, r: Math.min(o.r, 12) + 1 });
     for (const n of nodes) if (n.type !== 'tree' && n.type !== 'rock' && n.type !== 'fish') flats.push({ x: n.x, z: n.z, r: (n.radius || 1) + 2.5 });
     for (const sp of FLAT_SPOTS) flats.push(sp);

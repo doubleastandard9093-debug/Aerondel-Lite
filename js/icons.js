@@ -303,7 +303,7 @@ function paint(c, item) {
   if (item === 'White berries') return berries(c, '#f0f0e8');
   if (item === 'Snape grass') return herb(c, '#3a7a3a');
   if (item === 'Red spider eggs') return eggs(c);
-  if (item === 'Wine of zamorak') return wine(c);
+  if (item === 'Wine of the pyre') return wine(c);
   if (/lobster/.test(low)) return crustacean(c, /Cooked/.test(item));
   if (/shrimp|anchov/.test(low)) { c.save(); c.translate(32, 32); c.scale(.75, .75); c.translate(-32, -32); fish(c, /Cooked/.test(item) ? '#f08a6a' : '#d0a090', false); c.restore(); return; }
   if (/(raw|cooked) (trout|salmon|swordfish|shark|tuna|monkfish|pike)/.test(low)) return fish(c, { trout: '#8aa06a', salmon: '#e0806a', swordfish: '#6a8ac0', shark: '#7a8aa0', tuna: '#5a6a8a', monkfish: '#8a7a5a', pike: '#7a9a5a' }[low.split(' ')[1]], /^cooked/.test(low));

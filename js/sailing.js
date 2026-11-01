@@ -1,4 +1,4 @@
-// Sails of Sarim: runtime for sailing the Sound — your ship, Drowned Crew ships and broadside cannon fights.
+// Sails of Saltreach: runtime for sailing the Sound — your ship, Drowned Crew ships and broadside cannon fights.
 // Kept out of main.js. Low: merged hull meshes only (no cloth sails, no wake), a small cannonball pool.
 import * as THREE from 'three';
 import { SEA, SEA_ENTRY, SARIM_DOCK, ISLANDS, HULLS, OFFICERS, islandAt, buildShip, buildSound } from './sea.js';
@@ -33,11 +33,11 @@ export function createSailing(ctx) {
 
   function setSail() {
     const v = ctx.player.vessel;
-    if (!v.hull) { ctx.log('You have no ship. The Shipwright on the Port Sarim dock can build you one.', 'warn'); return false; }
+    if (!v.hull) { ctx.log('You have no ship. The Shipwright on the Saltreach dock can build you one.', 'warn'); return false; }
     if (v.hp <= 0) v.hp = Math.ceil(hullDef().hp * 0.5);
     ensureSound(); makeShip(); S.atSea = true; S.moored = null; S.throttle = 0; S.target = null; S.nextSpawn = S.t + 6;
     ctx.pm.mesh.position.set(S.ship.x, 1, S.ship.z);
-    ctx.log(`You cast off in your ${hullDef().name} into the Sarim Sound. Tap the sea to steer; ${'Z'}/${'X'} or the Port/Stbd buttons fire broadsides.`, 'game');
+    ctx.log(`You cast off in your ${hullDef().name} into the Saltreach Sound. Tap the sea to steer; ${'Z'}/${'X'} or the Port/Stbd buttons fire broadsides.`, 'game');
     ctx.onChange(); return true;
   }
   function goAshore(isl) {
@@ -109,7 +109,7 @@ export function createSailing(ctx) {
   }
   function hitShip(dmg) {
     const v = ctx.player.vessel; v.hp = Math.max(0, v.hp - dmg); ctx.markDirty();
-    if (v.hp <= 0) { v.sunk = (v.sunk || 0) + 1; ctx.onSunk(); homeToSarim('Your ship goes down! You wash ashore on the Port Sarim docks. The Shipwright can patch her up.'); }
+    if (v.hp <= 0) { v.sunk = (v.sunk || 0) + 1; ctx.onSunk(); homeToSarim('Your ship goes down! You wash ashore on the Saltreach docks. The Shipwright can patch her up.'); }
   }
   function moveBoat(o, dt, speed, turnTo) {
     let dy = turnTo - o.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
@@ -138,7 +138,7 @@ export function createSailing(ctx) {
     ctx.pm.mesh.position.set(sh.x - Math.sin(sh.yaw) * 1.6, sh.mesh.position.y + 0.85 * sh.mesh.scale.y, sh.z - Math.cos(sh.yaw) * 1.6);
     ctx.pm.mesh.rotation.y = sh.yaw;
     // Leave the Sound: sail north past the harbour line.
-    if (sh.z < SEA_ENTRY.z - 25) { homeToSarim('You sail back into Port Sarim harbour.'); return; }
+    if (sh.z < SEA_ENTRY.z - 25) { homeToSarim('You sail back into Saltreach harbour.'); return; }
     for (const k of ['port', 'star']) S.reload[k] = Math.max(0, S.reload[k] - dt);
     if (officer('surgeon')) { S.repairT += dt; if (S.repairT >= 2) { S.repairT = 0; if (v.hp < h.hp) { v.hp++; } } }
     // Enemies: close in, turn broadside, fire.
@@ -161,7 +161,7 @@ export function createSailing(ctx) {
       if (hit || b.left <= 0 || b.y < 0) { if (!hit && ctx.quality() !== 'low') ctx.burst('dust', b.x, 0.2, b.z, 4); b.live = false; b.mesh.visible = false; }
     }
   }
-  // The Shipwright drops you back at Sarim when you load a save made at sea.
+  // The Shipwright drops you back at Saltreach when you load a save made at sea.
   function restore() { if (ctx.pm.mesh.position.z > SEA.z0 && !S.atSea && !S.moored) { ensureSound(); makeShip(); const near = ISLANDS.reduce((a, i) => Math.hypot(i.x - ctx.pm.mesh.position.x, i.z - ctx.pm.mesh.position.z) < Math.hypot(a.x - ctx.pm.mesh.position.x, a.z - ctx.pm.mesh.position.z) ? i : a); const p = ctx.pm.mesh.position.clone(); goAshore(near); if (islandAt(p.x, p.z)) ctx.pm.mesh.position.copy(p); } }
   return {
     S, setSail, goAshore, reboard, homeToSarim, steerTo, fire, update, restore, setSoundVisible, hullDef,

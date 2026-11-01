@@ -12,7 +12,7 @@ export const ERRANDS = [
   { id: 'e_oak', name: 'Fell oaks for the shipwrights', mins: 60, skill: 'Woodcutting', xp: 400, items: [['Oak logs', 20]], fac: 'mariners', rep: 25 },
   { id: 'e_herbs', name: 'Forage herbs in the wilds', mins: 90, skill: 'Herblore', xp: 500, items: [['Grimy guam leaf', 10]], fac: 'circle', rep: 30 },
   { id: 'e_runes', name: 'Ferry essence to the Circle', mins: 120, skill: 'Runecrafting', xp: 650, items: [['Rune essence', 60]], fac: 'circle', rep: 40 },
-  { id: 'e_bars', name: 'Work the Falador forges', mins: 240, skill: 'Smithing', xp: 1400, items: [['Iron bar', 12], ['Steel bar', 4]], fac: 'lantern', rep: 70 },
+  { id: 'e_bars', name: 'Work the Whitecairn forges', mins: 240, skill: 'Smithing', xp: 1400, items: [['Iron bar', 12], ['Steel bar', 4]], fac: 'lantern', rep: 70 },
   { id: 'e_patrol', name: 'Ride the long border patrol', mins: 480, skill: 'Defence', xp: 2600, items: [['Bones', 30]], fac: 'watch', rep: 120 }
 ];
 // Crew skills: each companion keeps their own level per errand skill (1-30), earned on errands.
