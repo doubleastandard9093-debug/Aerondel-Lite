@@ -397,8 +397,54 @@ function hairGeos(look, S) {
 
 // ---- posing ------------------------------------------------------------------
 // t: walk phase, move 0..1, atk 0..1 (1 = swing just started), work: skilling bob.
+// ANIM.full: layered realism (stance give, hip/shoulder counter-rotation, footfall bob, breathing, weight shift,
+// head look, anticipation and follow-through on attacks). Off on Low, where the original light cycle runs.
+export const ANIM = { full: true };
+const sm = k => k * k * (3 - 2 * k), sg = (t, a, b) => sm(Math.min(1, Math.max(0, (t - a) / (b - a))));
 export function poseHumanoid(rig, t, move, atk = 0, work = 0) {
   const u = rig.userData; if (!u || !u.arms) return;
+  if (!ANIM.full) return poseLight(rig, u, t, move, atk, work);
+  // smooth start/stop: ease the move weight per rig so NPCs settle instead of snapping
+  const now = performance.now() * 0.001, dt = Math.min(0.1, now - (u._at || now)); u._at = now;
+  u._mv = (u._mv ?? move) + (move - (u._mv ?? move)) * Math.min(1, dt * 8); const M = u._mv;
+  const by = u._by ??= u.body.position.y, seed = rig.id * 1.7;
+  const sw = Math.sin(t) * 0.58 * M;
+  u.legs[0].rotation.x = sw - 0.04 * M; u.legs[1].rotation.x = -sw - 0.04 * M;
+  // swing knee folds, stance knee keeps a little give
+  u.legs[0].userData.knee.rotation.x = (Math.max(0, -Math.cos(t)) * 0.85 + 0.07) * M;
+  u.legs[1].userData.knee.rotation.x = (Math.max(0, Math.cos(t)) * 0.85 + 0.07) * M;
+  // arms lag the legs a touch and splay slightly; elbows bend more on the forward swing
+  const as = Math.sin(t - 0.25) * 0.5 * M;
+  u.arms[0].rotation.x = -as; u.arms[1].rotation.x = as;
+  u.arms[0].rotation.z = -0.07 * M - 0.03; u.arms[1].rotation.z = 0.07 * M + 0.03;
+  u.arms[0].userData.elbow.rotation.x = -0.22 - 0.38 * M * (0.5 + 0.5 * Math.sin(t));
+  u.arms[1].userData.elbow.rotation.x = -0.22 - 0.38 * M * (0.5 - 0.5 * Math.sin(t));
+  // shoulders counter-rotate the hips, two bobs per stride, lean into the walk; idle breathing and weight shift
+  const it = now + seed, idle = 1 - M, shift = Math.sin(it * 0.45) * idle;
+  u.body.rotation.y = Math.sin(t) * 0.09 * M;
+  u.body.rotation.x = 0.05 * M + Math.sin(it * 2.0) * 0.012 * idle;
+  u.body.rotation.z = Math.sin(t) * 0.03 * M + shift * 0.035;
+  u.body.position.y = by + Math.abs(Math.cos(t)) * 0.035 * M + Math.sin(it * 2.0) * 0.006 * idle;
+  if (idle > 0.05) { u.legs[shift > 0 ? 0 : 1].userData.knee.rotation.x += Math.abs(shift) * 0.18; u.arms[0].rotation.x += Math.sin(it * 0.7) * 0.03 * idle; u.arms[1].rotation.x -= Math.sin(it * 0.7) * 0.03 * idle; }
+  if (atk > 0) {
+    // anticipation (pull back, weight onto the back foot), strike across with the hips, follow-through and settle
+    const k = 1 - atk, wind = sg(k, 0, 0.3), cut = sg(k, 0.3, 0.48), rec = sg(k, 0.6, 1), hold = 1 - rec, imp = k > 0.48 && k < 0.7 ? Math.exp(-(k - 0.48) * 20) : 0;
+    u.arms[1].rotation.x = -0.3 - 2.1 * wind + 2.4 * cut * (1 - 0.3 * rec) - 0.15 * imp;
+    u.arms[1].rotation.z = (0.4 * wind - 0.7 * cut) * hold + 0.05;
+    u.arms[1].userData.elbow.rotation.x = -1.1 * wind * (1 - cut) - 0.2;
+    u.arms[0].rotation.x = -0.45 * hold - 0.15; u.arms[0].userData.elbow.rotation.x = -0.9 * hold - 0.2;
+    u.body.rotation.y = (-0.35 * wind + 0.7 * cut) * hold;
+    u.body.rotation.x = 0.04 + 0.16 * cut * hold + 0.04 * imp;
+    const lunge = Math.sin(Math.PI * sg(k, 0.1, 0.85)) * (1 - M);
+    u.legs[0].rotation.x += -0.4 * lunge; u.legs[0].userData.knee.rotation.x += 0.3 * lunge; u.legs[1].rotation.x += 0.25 * lunge;
+  }
+  if (work > 0) { const s = Math.sin(work * 6), d = Math.max(0, -s); u.arms[1].rotation.x = -1.0 + s * 0.55; u.arms[0].rotation.x = -0.8 + s * 0.35; u.arms[1].userData.elbow.rotation.x = -0.9; u.arms[0].userData.elbow.rotation.x = -0.9; u.body.rotation.x = 0.12 + d * 0.12; u.legs[0].userData.knee.rotation.x += d * 0.12; u.legs[1].userData.knee.rotation.x += d * 0.12; }
+  // head: counter the body so the eyes stay level, and look around now and then when idle
+  const cyc = (it * 0.6) % 9, look = cyc > 6 ? Math.sin((cyc - 6) / 3 * Math.PI) : 0;
+  u.head.rotation.y = -u.body.rotation.y * 0.7 + (look * 0.55 * (Math.floor(it * 0.6 / 9) % 2 ? 1 : -1) + Math.sin(it * 0.13) * 0.1) * idle;
+  u.head.rotation.x = -u.body.rotation.x * 0.6 + Math.sin(it * 0.3) * 0.04 * idle;
+}
+function poseLight(rig, u, t, move, atk, work) {
   const sw = Math.sin(t) * 0.6 * move;
   u.legs[0].rotation.x = sw; u.legs[1].rotation.x = -sw;
   u.legs[0].userData.knee.rotation.x = Math.max(0, -Math.cos(t)) * 0.8 * move;
@@ -420,7 +466,7 @@ export function poseHumanoid(rig, t, move, atk = 0, work = 0) {
 // ---- distance LOD ------------------------------------------------------------
 // ent.lod = { lo: Object3D, buildHi: () => Object3D, hi: null, parent }
 export const LOD = { near: 26, far: 34, seg: 1.3 };
-export function setLodRange(quality) { CHAR.q.value = quality === 'low' ? 0 : 1;
+export function setLodRange(quality) { CHAR.q.value = quality === 'low' ? 0 : 1; ANIM.full = quality !== 'low';
   if (quality === 'low') { LOD.near = 10; LOD.far = 14; LOD.seg = 0.8; } else { LOD.near = 30; LOD.far = 40; LOD.seg = 1.3; } }
 export function updateLod(ent, cx, cz) {
   const L = ent.lod; if (!L) return false;

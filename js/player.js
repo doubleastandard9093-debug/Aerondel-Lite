@@ -1,7 +1,7 @@
 import { inInstance, clampInstance } from './instances.js';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { shapes, contactShadow, gearDetail } from './anatomy.js';
+import { shapes, contactShadow, gearDetail, ANIM } from './anatomy.js';
 import { terrainHeight } from './world.js';
 import { WORLD_HALF, waterAt, colliders } from './world.js';
 import { inSound, clampToIsland } from './sea.js';
@@ -587,6 +587,18 @@ export function updatePlayer(pm, keys, dt, running, camYaw) {
       });
       o[3] = Math.max(-0.12, Math.min(0.12, (hR - hL) * 0.6)) * plant; p.body.rotation.z += o[3]; // hips tilt with the ground
     }
+  }
+  // secondary motion (not on Low): lean into starts, rock back on stops, bank into turns, and let the arms trail
+  // a damped spring behind the torso's twist so swings and stops carry through instead of snapping.
+  if (ANIM.full && !pm.dodge) {
+    const S = pm.secS ??= { v: 0, acc: 0, ay: 0, avy: 0, by: 0 }, d = Math.min(dt, 0.05);
+    const spd = moved / Math.max(dt, 1e-3), dv = (spd - S.v) / Math.max(dt, 1e-3); S.v = spd;
+    S.acc += (Math.max(-30, Math.min(30, dv)) - S.acc) * Math.min(1, dt * 8);
+    p.body.rotation.x += Math.max(-0.12, Math.min(0.12, S.acc * 0.006));
+    p.body.rotation.z += Math.max(-0.1, Math.min(0.1, -(pm.turnLeft || 0) * 0.12 * Math.min(1, spd / 3)));
+    S.avy += ((p.body.rotation.y - S.ay) * 70 - S.avy * 9) * d; S.ay += S.avy * d;
+    const lag = (S.ay - p.body.rotation.y) * 0.5; p.leftArm.rotation.z += lag * 0.4; p.rightArm.rotation.z += lag * 0.4;
+    if (p.headG && pm.moving) p.headG.rotation.y += Math.max(-0.35, Math.min(0.35, (pm.turnLeft || 0) * 0.5)); // look into the turn
   }
   // cape: damped spring that flares back with speed, lags behind turns and flutters while running
   if (p.cape && p.cape.visible) {
