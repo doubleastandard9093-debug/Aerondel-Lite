@@ -45,10 +45,12 @@ export const MODEL_KINDS = {
 };
 export const FOLK = V('characters', 'folk_m_a', 'folk_f_a', 'folk_m_b', 'folk_f_b', 'folk_m_c', 'folk_f_c');
 
-function prep(gltf) {
+function prep(gltf, path = '') {
+  const palm = /palm/.test(path);
   gltf.scene.traverse(o => {
     if (!o.isMesh) return;
-    o.castShadow = true; o.receiveShadow = true;
+    o.castShadow = true; o.receiveShadow = !palm;   // palms: fronds self-shadowed into near-black, so lit only
+    if (palm) for (const m of [].concat(o.material)) { m.side = THREE.DoubleSide; if (m.emissive) m.emissive.copy(m.color).multiplyScalar(0.22); }
     if (o.geometry) o.geometry.userData.shared = true;
     for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
       m.userData.shared = true;
@@ -59,7 +61,7 @@ function prep(gltf) {
 }
 export function loadModel(path) {
   if (!cache.has(path)) cache.set(path, loader.loadAsync(new URL(path + '.glb', BASE).href)
-    .then(g => { state.loaded++; return prep(g); })
+    .then(g => { state.loaded++; return prep(g, path); })
     .catch(e => { state.failed++; console.warn('[models] failed', path, e && e.message); return null; }));
   return cache.get(path);
 }
@@ -101,12 +103,12 @@ export function dressProp(holder, kind, x, z) {
 
 // ---- ambient townsfolk: skinned, animated (idle / walk / gather), wander near a spot ----
 const folk = [];
-export function makeFolk(path, x, z, ground) {
+export function makeFolk(path, x, z, ground, opts = {}) {
   const holder = new THREE.Group();
   holder.position.set(x, ground(x, z), z);
   const F = { holder, home: [x, z], target: null, wait: 1 + hash(x, z) * 3, mixer: null, acts: {}, cur: null, ground, speed: 1.2 };
   holder.userData.folk = F; holder.userData.noChunk = true;
-  F.path = path; folk.push(F);
+  F.path = path; Object.assign(F, opts); folk.push(F);
   return holder;
 }
 function loadFolk(F) {
@@ -115,12 +117,15 @@ function loadFolk(F) {
     const holder = F.holder;
     if (!g) return;
     const m = skClone(g.scene);
-    _b.setFromObject(m); _b.getSize(_s);
-    m.scale.setScalar(1.75 / Math.max(1e-3, _s.y));
+    m.updateMatrixWorld(true); m.traverse(o => { if (o.isSkinnedMesh) o.skeleton.update(); });
+    _b.setFromObject(m, true); _b.getSize(_s);
+    if (F.tint != null) m.traverse(o => { if (o.isMesh) { o.material = o.material.clone(); o.material.color.multiply(new THREE.Color(1, 1, 1).lerp(new THREE.Color(F.tint), 0.4)); } });
+    m.scale.multiplyScalar((F.height || 1.75) / Math.max(1e-3, _s.y));
     m.traverse(o => { if (o.isMesh) o.frustumCulled = false; });
     holder.add(m);
     F.mixer = new THREE.AnimationMixer(m);
-    for (const name of ['idle', 'walk', 'pick-up', 'emote-yes']) { const c = THREE.AnimationClip.findByName(g.animations, name); if (c) F.acts[name] = F.mixer.clipAction(c); }
+    const ALT = { 'pick-up': /^(pick-up|interact|eating)$/i, 'emote-yes': /^(emote-yes|yes|wave)$/i };
+    for (const name of ['idle', 'walk', 'pick-up', 'emote-yes']) { const c = THREE.AnimationClip.findByName(g.animations, name) || g.animations.find(a => (ALT[name] || new RegExp('^' + name + '$', 'i')).test(a.name.split('|').pop())); if (c) F.acts[name] = F.mixer.clipAction(c); }
     play(F, 'idle');
   });
 }

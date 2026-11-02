@@ -176,3 +176,34 @@ export function drivePlayer(pm, dt, running) {
   drive(R, dt, pm.moving ? (running ? 'run' : 'walk') : 'idle', trig);
 }
 
+// ---- NPCs and companions: rigged by role, procedural kit stays as Low / far / fallback look ----
+const NPC_FOLK = ['characters/folk_m_a', 'characters/folk_f_a', 'characters/folk_m_b', 'characters/folk_f_b', 'characters/folk_m_c', 'characters/folk_f_c'];
+const hstr = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; };
+export function npcRigSpec(name, look = {}) {
+  if (/wizard|mage|sage|seer|druid|witch|chronicler|scholar|alchemist|hermit|oracle/i.test(name)) return T('wizard');
+  if (/guard|knight|captain|soldier|squire|warden|sergeant|sentry|marshal/i.test(name)) return T('matt', look.body ?? 0xb0b0c0, 0.4);
+  if (/ogre|grumsh|brute/i.test(name)) return T('orc_enemy', 0x9a8a5a, 0.4);
+  if (/pirate|sailor|deckhand|bosun|smuggler/i.test(name)) return T('sam', look.body ?? null, 0.35);
+  const h = hstr(name);
+  return { m: NPC_FOLK[RS.touch ? h % 2 : h % NPC_FOLK.length], tint: null, k: 0 };
+}
+const NPC_DIST = 45;
+export function npcRig(e, camX, camZ) {
+  if (e.rig === undefined) {
+    if (!wantRigs()) return;
+    const d = Math.hypot(e.mesh.position.x - camX, e.mesh.position.z - camZ);
+    if (d > (RS.touch ? 30 : NPC_DIST)) return;
+    e.rig = null;
+    const V = npcRigSpec(e.name || '', e.look);
+    makeRig(V.m, { height: 1.72, tint: V.tint, k: V.k }).then(R => { if (R) { e.rig = R; e.mesh.add(R.obj); R.obj.visible = false; } });
+    return;
+  }
+  if (e.rig) showRig(e, wantRigs() && !!e.mesh.parent && Math.hypot(e.mesh.position.x - camX, e.mesh.position.z - camZ) < (RS.touch ? 32 : NPC_DIST + 3));
+}
+export function driveNpc(e, dt) {
+  const R = e.rig; if (!R || !R.on) return;
+  const p = e.mesh.position, sp = e._rp ? Math.hypot(p.x - e._rp.x, p.z - e._rp.z) / Math.max(dt, 1e-3) : 0;
+  e._rp = (e._rp || new THREE.Vector3()).copy(p);
+  e._sp = (e._sp || 0) * 0.8 + sp * 0.2;
+  drive(R, dt, e._sp > 3.2 ? 'run' : e._sp > 0.3 ? 'walk' : 'idle');
+}

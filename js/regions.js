@@ -189,6 +189,10 @@ export function loadRegions(scene, { spawnMonster, registerDynamic, density = 1,
     spots.forEach(([sx, sz], i) => { for (let j = 0; j < (density < 1 ? 1 : 2); j++) {
       const x = sx + (j ? 5 : -5), z = sz + 4 + j * 2, path = FOLK[(i * 2 + j) % (density < 1 ? 2 : FOLK.length)];
       registerChunkObject(x, z, () => makeFolk(path, x, z, terrainHeight), scene); folk++; } });
+    // ogre villages: big rigged ogre-kin townsfolk (Quaternius orc, tinted) instead of the human folk
+    VILLAGES.filter(V => V.kind === 'ogre').forEach(V => { for (let j = 0; j < (density < 1 ? 1 : 2); j++) {
+      const x = V.x + (j ? 6 : -6), z = V.z + 5;
+      registerChunkObject(x, z, () => makeFolk('rigged/orc_enemy', x, z, terrainHeight, { height: 2.6, tint: 0x9a8a5a, speed: 0.9 }), scene); folk++; } });
   }
   return { regions: list, props, mobs, folk };
 }

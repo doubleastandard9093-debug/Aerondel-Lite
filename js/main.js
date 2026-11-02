@@ -18,7 +18,7 @@ import { createScene, createCamera, createRenderer, createLights, followLight, s
 import { adoptSceneObjects, registerDynamic, updateChunks, pumpChunks, primeChunks, setLoadRadius, radiusFor, isLoadedAt, chunkStats } from './chunk.js';
 import { loadRegions } from './regions.js';
 import { setModelQuality, updateFolk, modelStats } from './assets.js';
-import { setRigQuality, rigStats, wantRigs, MONSTER_RIGS, monsterRig, showRig, driveMonster, rigRange, attachPlayerRig, showPlayerRig, drivePlayer } from './rigs.js';
+import { setRigQuality, rigStats, wantRigs, MONSTER_RIGS, monsterRig, showRig, driveMonster, rigRange, attachPlayerRig, showPlayerRig, drivePlayer, npcRig, driveNpc } from './rigs.js';
 import { createClimate } from './climate.js';
 import { PATHS, terrainHeight, insideLake, WORLD_HALF, TOWNS, CAVE, inCave } from './world.js';
 import { createWorld, createPileMesh, SPAWN, setDecorQuality, updateDecorChunks, updateLocalGrass } from './world.js';
@@ -3662,7 +3662,8 @@ function syncMonsterRig(m) {
 // Idle and walking poses for townsfolk shown with the detailed rig.
 function updateCharacters(dt, now) {
   for (const n of lodList) {
-    const r = n.lod.hi; if (!r || !n.mesh.parent) continue;
+    if (n.rig && n.rig.on) { driveNpc(n, dt); continue; }
+    const r = n.lod && n.lod.hi; if (!r || !n.mesh.parent) continue;
     const mv = n._mv || 0;
     n._wt = (n._wt || 0) + dt * 7 * mv;
     poseHumanoid(r, n._wt, mv, 0, 0);
@@ -3687,7 +3688,7 @@ function cullWorld() {
   if (scene.userData.packImpostors) { const imp = gfx.quality !== 'low' && !IS_TOUCH; scene.userData.packImpostors(imp, px, pz, R - 10, camera.far * 0.9);   // desktop High only
     FADE.c.value.set(px, pz); if (imp) FADE.r.value.set(R - 10, R - 1); else FADE.r.value.set(1e6, 1e6 + 1); }   // 9 m dithered crossfade mesh -> card   // desktop High only
   const cx = camera.position.x, cz = camera.position.z;
-  for (const e of lodList) if (e.mesh.parent || e.lod.hi) updateLod(e, px, pz);
+  for (const e of lodList) { npcRig(e, px, pz); if (e.lod && (e.mesh.parent || e.lod.hi)) updateLod(e, px, pz); }
   const rigOn = wantRigs();
   for (const m of monsters) {
     if (MONSTER_RIGS[m.typeName]) { monsterRig(m, m.typeName, m.rigSeed, px, pz); if (m.rig) showRig(m, rigOn && Math.hypot(m.mesh.position.x - px, m.mesh.position.z - pz) < rigRange() + 3); }
