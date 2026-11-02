@@ -380,6 +380,14 @@ export function waterMaterial(cx, cz, radius) {
         vec2 b = texture2D(tNoise, p * 0.21 - vec2(time * 0.025, -time * 0.017)).gb - 0.5;
         vec3 N = normalize(vec3((a.x + b.x) * 0.45, 1.0, (a.y + b.y) * 0.45));
         vec3 V = normalize(cameraPosition - vW);
+        float camD = length(cameraPosition - vW);
+        if (reflOn > 0.5) {
+          // High: fine capillary ripples close to the camera, fading out so distant water stays calm and glassy
+          vec2 c1 = texture2D(tNoise, p * 0.9 + vec2(-time * 0.06, time * 0.045)).rb - 0.5;
+          vec2 c2 = texture2D(tNoise, p * 2.3 + vec2(time * 0.08, time * 0.05)).gr - 0.5;
+          float fk = 1.0 - smoothstep(12.0, 40.0, camD);
+          N = normalize(N + vec3(c1.x * 0.3 + c2.x * 0.16, 0.0, c1.y * 0.3 + c2.y * 0.16) * fk);
+        }
         float fres = pow(1.0 - max(dot(N, V), 0.0), 3.0);
         float r = length(p - center) / radius;
         vec3 deep = vec3(0.008, 0.045, 0.10), shallow = vec3(0.025, 0.14, 0.17);
@@ -398,6 +406,12 @@ export function waterMaterial(cx, cz, radius) {
         vec3 H = normalize(sunDir + V + vec3(0.0, 1e-4, 0.0));
         float spec = pow(max(dot(N, H), 0.0), 220.0) * 3.0 + pow(max(dot(N, H), 0.0), 30.0) * 0.08;
         col += sunCol * spec;
+        if (reflOn > 0.5) {
+          // sun glitter: sparse sharp highlights on ripple crests; Beer-style absorption darkens deep water toward teal-black
+          float gl = pow(max(dot(N, H), 0.0), 900.0) * step(0.6, texture2D(tNoise, p * 3.1 + time * 0.2).r);
+          col += sunCol * gl * 4.0;
+          col *= mix(vec3(1.0), vec3(0.75, 0.9, 0.95), (1.0 - smoothstep(0.5, 1.0, r)) * (1.0 - fres));
+        }
         float fn = texture2D(tNoise, p * 0.6 + time * 0.03).b;
         float foam = smoothstep(0.93, 1.0, r + (fn - 0.5) * 0.08 + sin(time * 1.6 + r * 40.0) * 0.008);
         // lapping shoreline: bands of foam that roll in toward the bank and break up with noise
