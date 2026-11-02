@@ -11,7 +11,7 @@ import { poseGait, tailSway } from '../../js/gait.js';
 import { updateSound, soundStats } from '../../js/sound.js';
 import { PUSH, FADE } from '../../js/models.js';
 import { initVfx, updateVfx, addFire, removeFireVfx, burst, setVfxQuality, setLeafSources } from './vfx.js';
-import { createSky, tickGfx, resolveQuality, pixelRatioFor, SWAY, enableTexDetail, SUN_DIR, createWaterReflection } from './gfx.js';
+import { createSky, tickGfx, resolveQuality, pixelRatioFor, SWAY, enableTexDetail, SUN_DIR, createWaterReflection, setSeasonDetail, SEASON_GRASS, SEASON_SNOW } from './gfx.js';
 import { createScene, createCamera, createRenderer, createLights, followLight, setShadows, tuneLights, IS_TOUCH } from './scene.js';
 import { adoptSceneObjects, registerDynamic, updateChunks, pumpChunks, primeChunks, setLoadRadius, radiusFor, isLoadedAt, chunkStats } from '../../js/chunk.js';
 import { loadRegions } from '../../js/regions.js';
@@ -57,6 +57,8 @@ import { HEARTH, ARENA, inInstance, instanceAt } from '../../js/instances.js';
 import { installRelicry } from '../../js/relicry.js';
 import { installRelicGear } from '../../js/relicgear.js';
 import { installDelving } from '../../js/delving.js';
+import { installSeasons } from '../../js/seasons.js';
+import { foliageMat as seasonFoliage } from '../../js/models.js';
 import { WILDS, RIVAL, CAP, botCap, normalizeWilds, captureStep, heldCount } from '../../js/wilds.js';
 import { ARENA_RULES, ARENA_SHOP, normalizeArena, ladder, rankOf, rateDuel, weekRoll, weekNo, pickOpponent, duellistStats } from '../../js/arena.js';
 import { TASK, HUNT_SHOP, normalizeTasks, assignTask, taskKill, taskLabel, isDrowned } from '../../js/tasks.js';
@@ -1887,6 +1889,7 @@ const aeroCtx = { scene, nodes, pickables, player, skills, pm, EXT, giveXP, give
 installRelicGear(aeroCtx);
 installRelicry(aeroCtx);
 installDelving(aeroCtx);
+const seasonsX = installSeasons({ ...aeroCtx, setSeasonDetail, SEASON_GRASS, SEASON_SNOW, foliageMat: seasonFoliage });
 // ---- Stable Codex: mount collection, Skyrook flights between towns, wardrobe looks ----
 function lookEquip() {
   const L = player.codex && player.codex.looks; if (!L) return player.equipment;

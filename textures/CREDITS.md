@@ -15,3 +15,15 @@ Used on High graphics only (not downloaded on Low).
 
 `detail_terrain_n0/n1.webp` hold the NormalGL maps of the same four sets (RG per set: n0 = grass, dirt; n1 = cobbles, rock).
 `detail_terrain_r.webp` holds their Roughness maps, mean-normalised (128 = the shader's palette roughness), one set per channel.
+
+## Seasonal variants (Aerondel seasons)
+
+`season_spring.webp`, `season_autumn.webp`, `season_winter.webp` use the same RGBA packing as `detail_terrain.webp`
+(G/B/A unchanged) with only the grass channel (R) replaced, at 512x512. They are swapped in by `js/seasons.js` on
+Medium and above; Low keeps the palette-only look (tint and snow uniforms, no texture download).
+
+| File | Channel R source (CC0, ambientCG) |
+|---|---|
+| season_spring.webp | [Grass004](https://ambientcg.com/view?id=Grass004) |
+| season_autumn.webp | [ScatteredLeaves008](https://ambientcg.com/view?id=ScatteredLeaves008) |
+| season_winter.webp | [Snow010A](https://ambientcg.com/view?id=Snow010A) |

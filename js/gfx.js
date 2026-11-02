@@ -182,6 +182,20 @@ export function enableTexDetail(on) {
     DETAIL_N0.value = ld('detail_terrain_n0.webp'); DETAIL_N1.value = ld('detail_terrain_n1.webp'); DETAIL_R.value = ld('detail_terrain_r.webp');   // M2: normal (RG per set) + mean-normalised roughness
   }
 }
+// Seasons (js/seasons.js): palette tint on grass and a light snow cover over the temperate core lands work on every
+// quality (two uniforms, no textures). On High the grass detail set is also swapped for a CC0 seasonal photo set
+// (textures/season_*.webp, same packing as detail_terrain.webp with only the grass channel replaced).
+export const SEASON_GRASS = { value: new THREE.Vector3(1, 1, 1) }, SEASON_SNOW = { value: 0 };
+let seasonTex = 'summer', baseDetail = null;
+export function setSeasonDetail(season) {
+  seasonTex = season;
+  if (!TEX_DETAIL.value || !DETAIL_TEX.value) return;
+  if (!baseDetail) baseDetail = DETAIL_TEX.value;
+  if (season === 'summer') { DETAIL_TEX.value = baseDetail; return; }
+  const t = new THREE.TextureLoader().load('textures/season_' + season + '.webp', () => { if (seasonTex === season) DETAIL_TEX.value = t; });
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4;
+}
+export function seasonDetailName() { return seasonTex; }
 const DETAIL_N0 = { value: null }, DETAIL_N1 = { value: null }, DETAIL_R = { value: null };
 const BLANK_DETAIL = new THREE.DataTexture(new Uint8Array([128, 128, 128, 128]), 1, 1); BLANK_DETAIL.needsUpdate = true;
 export function terrainMaterial(maskTex, maskSize) {
@@ -191,6 +205,7 @@ export function terrainMaterial(maskTex, maskSize) {
     sh.uniforms.tNoise = { value: getNoiseTexture() };
     sh.uniforms.maskSize = { value: maskSize };
     sh.uniforms.texOn = TEX_DETAIL;
+    sh.uniforms.seasonGrass = SEASON_GRASS; sh.uniforms.seasonSnow = SEASON_SNOW;
     sh.uniforms.wetK = WET;   // P3 drizzle: 0 on Low
     sh.uniforms.tDetail = { get value() { return DETAIL_TEX.value || BLANK_DETAIL; } };
     sh.uniforms.tDN0 = { get value() { return DETAIL_N0.value || BLANK_DETAIL; } };
@@ -201,7 +216,7 @@ export function terrainMaterial(maskTex, maskSize) {
       .replace('#include <project_vertex>', '#include <project_vertex>\nvWPos = (modelMatrix * vec4(transformed, 1.0)).xyz;');
     sh.fragmentShader = sh.fragmentShader
       .replace('#include <common>', `#include <common>
-        varying vec3 vWPos; uniform sampler2D tMask, tNoise, tDetail, tDN0, tDN1, tDR; uniform float maskSize, texOn, wetK;
+        varying vec3 vWPos; uniform sampler2D tMask, tNoise, tDetail, tDN0, tDN1, tDR; uniform float maskSize, texOn, wetK, seasonSnow; uniform vec3 seasonGrass;
         vec3 lin(vec3 c){ return pow(c, vec3(2.2)); }`)
       .replace('#include <map_fragment>', `
         vec2 wp = vWPos.xz;
@@ -213,6 +228,7 @@ export function terrainMaterial(maskTex, maskSize) {
         vec3 grass = mix(vec3(0.24, 0.37, 0.20), vec3(0.42, 0.54, 0.23), smoothstep(0.3, 0.7, n1));
         grass = mix(grass, vec3(0.12, 0.23, 0.17), smoothstep(0.55, 0.85, n2) * 0.55);
         grass = mix(grass, vec3(0.55, 0.62, 0.24), smoothstep(0.62, 0.9, n3) * 0.3);
+        grass *= seasonGrass;
         // shader LOD: fine grain fades out with distance (less shimmer on phones)
         float fineK = 1.0 - smoothstep(40.0, 70.0, length(cameraPosition - vWPos));
         n4 = mix(0.5, n4, fineK); n3 = mix(0.5, n3, fineK * 0.5 + 0.5);
@@ -247,7 +263,8 @@ export function terrainMaterial(maskTex, maskSize) {
         rockC *= 0.88 + 0.16 * strata * slope;
         col = mix(col, rockC, hrock);
         col = mix(col, mix(col, vec3(0.32, 0.42, 0.16), 0.5), smoothstep(-0.3, -2.5, vWPos.y)); // lush valley floors
-        float snow = smoothstep(19.0, 24.0, vWPos.y + (n2 - 0.5) * 5.0) * (1.0 - smoothstep(0.55, 0.75, slope));
+        float snow = max(smoothstep(19.0, 24.0, vWPos.y + (n2 - 0.5) * 5.0) * (1.0 - smoothstep(0.55, 0.75, slope)),
+          seasonSnow * smoothstep(0.38, 0.62, n2 * 0.7 + n3 * 0.3) * (1.0 - smoothstep(0.45, 0.7, slope)) * (1.0 - smoothstep(170.0, 230.0, length(wp))));
         col = mix(col, vec3(0.92, 0.94, 0.97) * (0.92 + 0.1 * n4), snow);
         if (texOn > 0.5) { // photo detail, tinted: each set only modulates its own palette colour
           float dk = fineK * 0.75 + 0.25;

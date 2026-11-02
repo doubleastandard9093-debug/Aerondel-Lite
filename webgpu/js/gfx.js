@@ -206,6 +206,18 @@ export function enableTexDetail(on) {
   const ld = (f, k) => new THREE.TextureLoader().load('../textures/' + f, t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4; t.needsUpdate = true; for (const n of DETAIL_NODES[k]) n.value = t; });
   ld('detail_terrain.webp', 'd'); ld('detail_terrain_n0.webp', 'n0'); ld('detail_terrain_n1.webp', 'n1'); ld('detail_terrain_r.webp', 'r');
 }
+// Seasons (js/seasons.js): grass tint + temperate snow cover on every tier; High also swaps the grass detail set
+// for a CC0 seasonal photo set (textures/season_*.webp, same packing as detail_terrain.webp).
+export const SEASON_GRASS = uniform(new THREE.Vector3(1, 1, 1)), SEASON_SNOW = uniform(0);
+let seasonTex = 'summer', baseDetailTex = null;
+export function setSeasonDetail(season) {
+  seasonTex = season;
+  if (!detailLoaded) return;
+  const cur = DETAIL_NODES.d[0] && DETAIL_NODES.d[0].value;
+  if (!baseDetailTex && cur && cur !== BLANK_DETAIL) baseDetailTex = cur;
+  if (season === 'summer') { if (baseDetailTex) for (const n of DETAIL_NODES.d) n.value = baseDetailTex; return; }
+  new THREE.TextureLoader().load('../textures/season_' + season + '.webp', t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4; t.needsUpdate = true; if (seasonTex === season) for (const n of DETAIL_NODES.d) n.value = t; });
+}
 const dtex = (k, uv) => { const n = texture(BLANK_DETAIL, uv); DETAIL_NODES[k].push(n); return n; };
 export const TERRAIN_MASK = { tex: null, size: 1 };
 export function terrainMaterial(maskTex, maskSize) {
@@ -231,7 +243,7 @@ export function terrainMaterial(maskTex, maskSize) {
   const n3 = mix(0.5, st3, fineK.mul(0.5).add(0.5)), n4 = mix(0.5, st4, fineK);
   let grass = mix(vec3(0.24, 0.37, 0.20), vec3(0.42, 0.54, 0.23), smoothstep(0.3, 0.7, n1));
   grass = mix(grass, vec3(0.12, 0.23, 0.17), smoothstep(0.55, 0.85, n2).mul(0.55));
-  grass = mix(grass, vec3(0.55, 0.62, 0.24), smoothstep(0.62, 0.9, n3).mul(0.3)).mul(n4.mul(0.36).add(0.82));
+  grass = mix(grass, vec3(0.55, 0.62, 0.24), smoothstep(0.62, 0.9, n3).mul(0.3)).mul(n4.mul(0.36).add(0.82)).mul(SEASON_GRASS);
   let dirt = mix(vec3(0.47, 0.35, 0.21), vec3(0.58, 0.45, 0.29), n3).mul(n4.mul(0.35).add(0.8));
   dirt = mix(dirt, vec3(0.62, 0.6, 0.55), smoothstep(0.72, 0.8, n4).mul(0.6));
   const sand = mix(vec3(0.82, 0.72, 0.5), vec3(0.9, 0.82, 0.6), n2).mul(n4.mul(0.18).add(0.9));
@@ -254,7 +266,8 @@ export function terrainMaterial(maskTex, maskSize) {
   col = mix(col, rockC, hrock);
   const valley = smoothstep(-0.3, -2.5, W.y);
   col = mix(col, mix(col, vec3(0.32, 0.42, 0.16), 0.5), valley);
-  const snow = smoothstep(19.0, 24.0, W.y.add(n2.sub(0.5).mul(5.0))).mul(float(1).sub(smoothstep(0.55, 0.75, slope)));
+  const snow = max(smoothstep(19.0, 24.0, W.y.add(n2.sub(0.5).mul(5.0))).mul(float(1).sub(smoothstep(0.55, 0.75, slope))),
+    SEASON_SNOW.mul(smoothstep(0.38, 0.62, n2.mul(0.7).add(n3.mul(0.3)))).mul(float(1).sub(smoothstep(0.45, 0.7, slope))).mul(float(1).sub(smoothstep(170.0, 230.0, length(W.xz)))));
   col = mix(col, vec3(0.92, 0.94, 0.97).mul(n4.mul(0.1).add(0.92)), snow);
   // photo detail, tinted: each set only modulates its own palette colour (TEX_ON gates it; textures are blank until High loads them)
   const dk = fineK.mul(0.75).add(0.25).mul(TEX_ON), nh = float(1).sub(hrock), ns = float(1).sub(snow);
