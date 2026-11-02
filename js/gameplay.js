@@ -965,3 +965,38 @@ export const BOUNTIES = [
   Object.assign({ id: 'bandits', mon: 'Bandit', n: 4, gp: 400, xp: { Attack: 350, Strength: 350 }, ask: "Bandits hide out in the rocks north of my tower. Bring four of them to justice and the crown will reward you." }, { giver: 'Captain Brann', where: 'Watchtower (west highlands)' }),
   Object.assign({ id: 'wolves', mon: 'Wolf', n: 5, gp: 300, xp: { Ranged: 400, Agility: 150 }, ask: "Wolves have been taking deer all along the dale. Thin the pack: five wolves, and I'll pay you in coin and know-how." }, { giver: 'Rhea the Hunter', where: "Hunter's camp (south-east)" }),
 ];
+
+// ---- Climate regions (regiondata.js): native creatures and their drops ----
+Object.assign(MONSTER_TYPES, {
+  'Fen Crawler':    { name: 'Fen Crawler',    level: 24, hp: 240, maxHit: 22, att: 20, def: 16, speed: 4, color: 0x3a4a2a, scale: 0.9, shape: 'spider', poison: { chance: 0.3, dmg: 16 } },
+  'Mire Hag':       { name: 'Mire Hag',       level: 40, hp: 400, maxHit: 36, att: 30, def: 24, speed: 5, color: 0x3a3a2a, scale: 1.0, skin: 0x7a8a5a, ranged: true, range: 6 },
+  'Crag Ram':       { name: 'Crag Ram',       level: 30, hp: 320, maxHit: 30, att: 24, def: 26, speed: 4, color: 0xd8d0c0, scale: 1.0, shape: 'quad' },
+  'Skyreach Harpy': { name: 'Skyreach Harpy', level: 44, hp: 430, maxHit: 40, att: 34, def: 28, speed: 4, color: 0x7a6a8a, scale: 1.0, skin: 0xb0a0c0, ranged: true, range: 7 },
+  'Frostfang Wolf': { name: 'Frostfang Wolf', level: 36, hp: 360, maxHit: 34, att: 30, def: 26, speed: 4, color: 0xe0e8f0, scale: 1.05, shape: 'quad' },
+  'Rime Wraith':    { name: 'Rime Wraith',    level: 48, hp: 480, maxHit: 44, att: 38, def: 32, speed: 4, color: 0x9ac0e0, scale: 1.1, skin: 0xd0e8ff, undead: true },
+  'Dune Scuttler':  { name: 'Dune Scuttler',  level: 38, hp: 380, maxHit: 34, att: 30, def: 30, speed: 4, color: 0xc8a060, scale: 1.0, shape: 'spider', poison: { chance: 0.2, dmg: 24 } },
+  'Sand Reaver':    { name: 'Sand Reaver',    level: 50, hp: 520, maxHit: 46, att: 40, def: 34, speed: 4, color: 0x8a6a3a, scale: 1.1, skin: 0xc89a6a },
+  'Vine Lurker':    { name: 'Vine Lurker',    level: 45, hp: 460, maxHit: 40, att: 36, def: 30, speed: 4, color: 0x2a5a1a, scale: 1.1, shape: 'spider', poison: { chance: 0.3, dmg: 30 } },
+  'Canopy Stalker': { name: 'Canopy Stalker', level: 58, hp: 600, maxHit: 54, att: 46, def: 38, speed: 3, color: 0x3a4a1a, scale: 1.15, shape: 'quad' },
+  'Ember Imp':      { name: 'Ember Imp',      level: 52, hp: 480, maxHit: 50, att: 44, def: 32, speed: 3, color: 0xc0401a, scale: 0.8, skin: 0xe06030, ranged: true, range: 6 },
+  'Magma Brute':    { name: 'Magma Brute',    level: 70, hp: 900, maxHit: 70, att: 56, def: 50, speed: 5, color: 0x3a1a10, scale: 1.9, skin: 0xa03a1a },
+});
+{
+  const B = (coins, extra) => [{ item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.8, qty: coins }, ...extra];
+  Object.assign(LOOT_TABLES, {
+    'Fen Crawler':    [{ item: 'Bones', chance: 1 }, { item: 'Marsh reed', chance: 0.3 }, { herbs: ['Marshmint', 'Tallowroot'], chance: 0.3 }, { item: 'Relic shard', chance: 0.12 }],
+    'Mire Hag':       B([20, 80], [{ item: 'Marsh reed', chance: 0.3 }, { herbs: MID_HERBS, chance: 0.4 }, { item: 'Relic shard', chance: 0.15 }]),
+    'Crag Ram':       B([10, 60], [{ item: 'Goat horn dust', chance: 0.35 }, { item: 'Relic shard', chance: 0.1 }]),
+    'Skyreach Harpy': B([30, 110], [{ item: 'Feather', chance: 0.6, qty: [10, 30] }, { item: 'Relic shard', chance: 0.15 }, { item: 'Verdite ore', chance: 0.05 }]),
+    'Frostfang Wolf': B([20, 90], [{ item: 'White berries', chance: 0.25 }, { item: 'Relic shard', chance: 0.12 }]),
+    'Rime Wraith':    [{ item: 'Coins', chance: 0.8, qty: [40, 140] }, { item: 'Water rune', chance: 0.3, qty: [10, 30] }, { item: 'Relic shard', chance: 0.2 }, { item: 'Ancient fragment', chance: 0.04 }],
+    'Dune Scuttler':  [{ item: 'Bones', chance: 1 }, { item: 'Coins', chance: 0.7, qty: [20, 90] }, { item: 'Relic shard', chance: 0.15 }],
+    'Sand Reaver':    B([40, 160], [{ item: 'Bluesteel ore', chance: 0.1 }, { item: 'Relic shard', chance: 0.2 }, { item: 'Ancient fragment', chance: 0.04 }]),
+    'Vine Lurker':    [{ item: 'Bones', chance: 1 }, { herbs: [...MID_HERBS, 'Snapdragon'], chance: 0.4 }, { item: 'Relic shard', chance: 0.18 }],
+    'Canopy Stalker': B([50, 180], [{ item: 'Relic shard', chance: 0.22 }, { item: 'Ancient fragment', chance: 0.05 }]),
+    'Ember Imp':      [{ item: 'Coins', chance: 0.8, qty: [40, 160] }, { item: 'Fire rune', chance: 0.4, qty: [10, 40] }, { item: 'Relic shard', chance: 0.2 }],
+    'Magma Brute':    B([80, 260], [{ item: 'Emberite ore', chance: 0.06 }, { item: 'Relic shard', chance: 0.3, qty: [1, 3] }, { item: 'Ancient fragment', chance: 0.08 }]),
+  });
+  Object.assign(WEAKNESS, { 'Fen Crawler': 'fire', 'Mire Hag': 'wind', 'Crag Ram': 'earth', 'Skyreach Harpy': 'earth', 'Frostfang Wolf': 'fire', 'Rime Wraith': 'fire',
+    'Dune Scuttler': 'water', 'Sand Reaver': 'water', 'Vine Lurker': 'fire', 'Canopy Stalker': 'fire', 'Ember Imp': 'water', 'Magma Brute': 'water' });
+}

@@ -17,6 +17,7 @@ import { createSky, tickGfx, resolveQuality, pixelRatioFor, SWAY, enableTexDetai
 import { createScene, createCamera, createRenderer, createLights, followLight, setShadows, tuneLights, IS_TOUCH } from './scene.js';
 import { adoptSceneObjects, registerDynamic, updateChunks, pumpChunks, primeChunks, setLoadRadius, radiusFor, isLoadedAt, chunkStats } from './chunk.js';
 import { loadRegions } from './regions.js';
+import { createClimate } from './climate.js';
 import { PATHS, terrainHeight, insideLake, WORLD_HALF, TOWNS, CAVE, inCave } from './world.js';
 import { createWorld, createPileMesh, SPAWN, setDecorQuality, updateDecorChunks, updateLocalGrass } from './world.js';
 import { updateLod, setLodRange, poseHumanoid } from './anatomy.js';
@@ -142,9 +143,11 @@ const chunkSkip = new Set([ground, pm.mesh, ...monsters.map(m => m.mesh), ...wan
 adoptSceneObjects(scene, chunkSkip);
 for (const m of monsters) registerDynamic(m.mesh, () => m.mesh.position, scene);
 for (const n of wanderers) registerDynamic(n.mesh, () => n.mesh.position, scene);
-const regionInfo = loadRegions(scene, { spawnMonster, registerDynamic });   // data-only map regions (js/regions.js), built lazily per chunk
+const regionInfo = loadRegions(scene, { spawnMonster, registerDynamic, density: IS_TOUCH ? 0.6 : 1 });   // data-only map regions (js/regions.js), built lazily per chunk
 primeChunks(pm.mesh.position.x, pm.mesh.position.z, scene);
 window.regionInfo = regionInfo;
+const climate = createClimate(scene, { lite: IS_TOUCH });   // climate-region fog + particles (js/climate.js)
+window.climate = climate;
 window.chunkStats = chunkStats;
 const updateCritters = createCritters(scene, terrainHeight, (x, z) => insideLake(x, z, 1) || blockedAt(x, z) || Math.abs(x) > WORLD_HALF - 4 || Math.abs(z) > WORLD_HALF - 4 || Object.values(TOWNS).some(t => Math.hypot(t.x - x, t.z - z) < 22));
 const skills = createSkills();
@@ -3678,6 +3681,7 @@ function animate(now) {
   rig.shakeOff = player.settings.shake === false;
   updateRig(rig, camera, pm.mesh.position.x, pm.mesh.position.z, dt, sailing && sailing.atSea ? pm.mesh.position.y - 0.5 : crossing ? pm.mesh.position.y * 0.6 + terrainHeight(pm.mesh.position.x, pm.mesh.position.z) * 0.4 : terrainHeight(pm.mesh.position.x, pm.mesh.position.z));
   updateCave(dt);
+  climate.setLite(IS_TOUCH || gfx.quality === 'low'); climate.update(dt, pm.mesh.position.x, pm.mesh.position.z, pm.mesh.position.y);
   followLight(dirLight, rig.fx, rig.fz, DAY.lightDir);
   sky.follow(camera);
   updatePushers(); updateLocalGrass(scene, pm.mesh.position.x, pm.mesh.position.z, gfx.quality !== 'low' && !inCave(pm.mesh.position.x, pm.mesh.position.z));

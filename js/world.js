@@ -6,13 +6,14 @@ import { QUEST_NPCS } from './questnpcs.js';
 import { COMPANIONS } from './companions.js';
 import { SEA, seaGround, ISLANDS } from './sea.js';
 import { addFire } from './vfx.js';
+import { REGION_DATA, BIOMES, regionWeight } from './regiondata.js';
 import { terrainMaterial, waterMaterial, hookWaterNoise, WATER_MESHES } from './gfx.js';
 import { buildHumanoidRig, apronGeo, varyLook, hashStr, contactShadow, plateCharMat, chainCharMat } from './anatomy.js';
 import { buildCreatureRig, rollVariant, namedVariant, loColours } from './creatures.js';
 import { vcMat, foliageMat, bakedMesh, treeGeometry, rockGeometry, stumpGeometry, emptyRockGeometry, blob, paint, place as put, prim, col, snoise, bake, makeFoliageMat, tuftGeometry, flowerGeometry, humanoidParts, npcExtras, legPivot, creatureParts, hairCap, treeMat, treeDepthMat, setMat, woodAxis, buildMat, addFadeDither } from './models.js';
 
 // The world is about 440 x 440. Chunked decor + instance packing keep phones smooth.
-export const WORLD_HALF = 300;
+export const WORLD_HALF = 420; // was 300; the climate regions (regiondata.js) fill the outer ring
 export const CHUNK_SIZE = 64; // decor / clutter streaming grid
 
 export const SPAWN = { x: 0, z: 0 };
@@ -25,6 +26,8 @@ export const TOWNS = {
   Highcrest: { x: 120, z: -40 },
   Whitecairn: { x: -60, z: -80 }
 };
+// Climate-region camps are towns too (signposts, banners, flat ground, cobbles).
+for (const R of REGION_DATA) if (R.camp) TOWNS[R.camp.name] = { x: R.x + R.camp.dx, z: R.z + R.camp.dz };
 export const TOWN_NAME = 'Larkhaven';
 export const PATHS = [[0, 0, 13, -12], [0, 0, -15, -13], [0, 0, -15, 12], [0, 0, 20, 17], [0, 0, 0, 24], [0, 0, 0, -27], [0, 0, 5, -7.4], [0, 0, 50, -20], [50, -20, 55, -35],
   // roads to the new towns
@@ -74,6 +77,10 @@ export const GUILDS = [
   { name: 'Cooking Guild', skill: 'Cooking', level: 32, x: 0, z: 60, w: 9, d: 8, wall: 0xd8d0c0, roof: 0x8a3a2a, stations: ['range', 'range'], bank: true },
   { name: 'Crafting Guild', skill: 'Crafting', level: 40, x: -22, z: 60, w: 9, d: 8, wall: 0xb89a6a, roof: 0x3a5a3a, stations: ['furnace', 'anvil'], bank: true }
 ];
+// one outpost lodge per climate-region camp
+const CAMP_LOOK = { tundra: [0xd8dce4, 0x3a4a6a], alpine: [0x8a7a62, 0x4a5a3a], volcanic: [0x4a3a36, 0x8a2a1a], desert: [0xd8c08a, 0xa0603a], jungle: [0x6a5a3a, 0x3a6a2a], swamp: [0x5a5a48, 0x3a4a2a] };
+for (const R of REGION_DATA) if (R.camp) { const [wall, roof] = CAMP_LOOK[R.biome] || [0x9a8a6a, 0x5a3a2a];
+  BUILDINGS.push([R.x + R.camp.dx + 9, R.z + R.camp.dz - 7, 5, 4, wall, roof, `${R.camp.name} Lodge`, `The outpost lodge of ${R.camp.name}, ${R.name}.`]); }
 for (const g of GUILDS) BUILDINGS.push([g.x, g.z, g.w, g.d, g.wall, g.roof, g.name, `Members need ${g.skill} level ${g.level} to enter.`]);
 PATHS.push([0, -27, 20, -56], [0, 29, 0, 55], [0, 55, -22, 55]);
 function nearestTown(x, z) {
@@ -91,6 +98,11 @@ export function inBuilding(x, z, pad = 0) {
 }
 // Extra spots to keep level (points of interest added later register here).
 export const FLAT_SPOTS = [];
+for (const R of REGION_DATA) {
+  if (R.dig) FLAT_SPOTS.push({ x: R.x + R.dig.dx, z: R.z + R.dig.dz, r: 8 });
+  if (R.delveHub) FLAT_SPOTS.push({ x: R.x + R.delveHub.dx, z: R.z + R.delveHub.dz, r: 7 });
+  if (R.pond) FLAT_SPOTS.push({ x: R.x + R.pond.dx, z: R.z + R.pond.dz, r: R.pond.r + 4 });
+}
 
 // Shared geometry and materials keep memory and draw setup low on phones.
 const G = {
@@ -187,7 +199,18 @@ export function reliefHeight(x, z) {
   // western highland plateau
   const w = Math.max(0, Math.min(1, (-x - 190) / 50)) * Math.max(0, 1 - Math.abs(z + 20) / 160);
   h += w * (7 + 2 * Math.sin(z * 0.05));
+  // climate regions: blend toward the biome's own relief so camps and dig sites stay walkable
+  for (const R of REGION_DATA) {
+    const k = regionWeight(R, x, z);
+    if (k > 0) h = h * (1 - k) + biomeRelief(BIOMES[R.biome].relief, x, z, h) * k;
+  }
   return h;
+}
+function biomeRelief(kind, x, z, h) {
+  if (kind === 'dunes') return 1.8 * Math.sin(x * 0.08 + Math.sin(z * 0.045) * 2.2) + 0.9 * Math.sin(z * 0.12 - x * 0.03) + 1.2;
+  if (kind === 'crags') return Math.min(h, 9) * 0.45 + 3.2 * Math.pow(Math.max(0, ridge(Math.sin(x * 0.07 + z * 0.05))), 3) + 1;
+  if (kind === 'mounds') return 1.4 * Math.sin(x * 0.06) * Math.cos(z * 0.07) + 0.5 * Math.sin(x * 0.19 + z * 0.13) + 0.8;
+  return -0.5 + 0.35 * Math.sin(x * 0.11) * Math.cos(z * 0.09); // flat (fen)
 }
 function edgeHeight(x, z) {
   const d = Math.max(Math.abs(x), Math.abs(z)) - (WORLD_HALF + 3);
@@ -263,6 +286,13 @@ function paintGroundMask(size) {
   blob(-80, 74, 6, '0,255,0', 0.8);      // Saltreach sandy docks
   blob(122, -122, 18, '255,0,0', 0.45);  // scorched wilderness
   blob(130, -175, 7.8, '0,255,0', 1);    // mountain pond shore
+  // climate regions: sand under dunes and snowfields (tinted white by the vertex colours), ash-dirt in the wastes
+  for (const R of REGION_DATA) {
+    const P = BIOMES[R.biome].paint;
+    if (P) blob(R.x, R.z, R.r, P[0], P[1]);
+    if (R.pond) blob(R.x + R.pond.dx, R.z + R.pond.dz, R.pond.r + 2.6, '0,255,0', 1);
+    if (R.dig) blob(R.x + R.dig.dx, R.z + R.dig.dz, 7, '255,0,0', 0.9);
+  }
   for (const [x, z, r] of [[-175, -150, 7], [205, 120, 12], [-225, 40, 6], [-205, 95, 6], [160, 205, 7], [-20, 230, 4], [60, -205, 8]]) blob(x, z, r, '255,0,0', 0.5); // trodden camps
   const tex = new THREE.CanvasTexture(cv);
   tex.colorSpace = THREE.NoColorSpace;
@@ -278,6 +308,7 @@ export const LANDMARKS = [
   { n: "Hunter's camp", x: 160, z: 205 }, { n: 'Wayside shrine', x: -20, z: 230 }, { n: 'Mountain cave', x: 60, z: -205 }, { n: 'Mountain pond', x: 130, z: -175 }
 ];
 export const PONDS = [{ x: 130, z: -175, r: 5 }];
+for (const R of REGION_DATA) if (R.pond) PONDS.push({ x: R.x + R.pond.dx, z: R.z + R.pond.dz, r: R.pond.r, region: R.id });
 // Mountain cave: the entrance sits in the northern foothills; the cavern itself is a
 // sealed chamber sunk into the high peaks that you travel into through the entrance.
 export const CAVE = { x: 0, z: -272, r: 15, entrance: { x: 60, z: -205 }, inside: { x: 0, z: -259 }, outside: { x: 60, z: -201.5 } };
@@ -304,7 +335,16 @@ export function createWorld(scene) {
   const pos = groundGeo.attributes.position;
   for (let i = 0; i < pos.count; i++) pos.setZ(i, terrainHeight(pos.getX(i), -pos.getY(i)));
   groundGeo.computeVertexNormals();
-  const ground = new THREE.Mesh(groundGeo, terrainMaterial(mask, MASK));
+  // biome tint: per-vertex colour multiplier (1,1,1 outside the climate regions)
+  { const cols = new Float32Array(pos.count * 3);
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i), z = -pos.getY(i); let r = 1, g = 1, b = 1;
+      for (const R of REGION_DATA) { const k = regionWeight(R, x, z); if (k > 0) { const t = BIOMES[R.biome].tint; r += (t[0] - 1) * k; g += (t[1] - 1) * k; b += (t[2] - 1) * k; } }
+      cols[i * 3] = r; cols[i * 3 + 1] = g; cols[i * 3 + 2] = b;
+    }
+    groundGeo.setAttribute('color', new THREE.BufferAttribute(cols, 3)); }
+  const groundMat = terrainMaterial(mask, MASK); groundMat.vertexColors = true;
+  const ground = new THREE.Mesh(groundGeo, groundMat);
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
   scene.add(ground);
@@ -1589,6 +1629,28 @@ export function createWorld(scene) {
       monsters.push(createMonster(t, R.x + fx * R.r, R.z + fz * R.r, t === 'Captain Saltgrave' ? 2 : 3));
   }
 
+  // ---- Climate regions: resource nodes, ponds, mobs and a signpost per camp ----
+  // (scenery props stream per chunk from regions.js; dig sites and the Delving hub come from relicry.js / delving.js)
+  for (const R of REGION_DATA) {
+    const P = R.pond ? { x: R.x + R.pond.dx, z: R.z + R.pond.dz, r: R.pond.r } : null;
+    if (P) {
+      const w = new THREE.Mesh(new THREE.CircleGeometry(P.r + 0.25, 40), hookWaterNoise(waterMaterial(P.x, P.z, P.r + 0.25))); w.rotation.x = -Math.PI / 2; w.position.set(P.x, 0.05, P.z); scene.add(w); WATER_MESHES.push(w);
+      const b = new THREE.Mesh(new THREE.CircleGeometry(P.r + 0.3, 24), new THREE.MeshBasicMaterial({ color: R.biome === 'swamp' ? 0x1a2a14 : 0x0c2a3a })); b.rotation.x = -Math.PI / 2; b.position.set(P.x, 0.015, P.z); scene.add(b);
+    }
+    let fi = 0;
+    for (const [t, k, dx, dz] of R.nodes || []) {
+      let x = R.x + dx, z = R.z + dz;
+      if (t === 'fish' && P) { const a = 0.8 + fi++ * 1.9; x = P.x + Math.cos(a) * (P.r - 0.6); z = P.z + Math.sin(a) * (P.r - 0.6); }
+      if (t === 'tree') nodes.push(createTree(x, z, k));
+      else if (t === 'rock') nodes.push(createRock(x, z, k));
+      else if (t === 'fish') nodes.push(createFish(x, z, k));
+      else if (t === 'herb') nodes.push(createHerbPatch(x, z, k, (Math.abs(dx) + Math.abs(dz)) % 8));
+      if (t !== 'fish') occupied.push({ x, z, r: 1.2 });
+    }
+    for (const [type, dx, dz, roam] of R.mobs || []) monsters.push(createMonster(type, R.x + dx, R.z + dz, roam));
+    if (R.camp) nodes.push(createSignpost(R.x + R.camp.dx - 6, R.z + R.camp.dz + 6));
+  }
+
   // ---- Elevation: keep every town, road, building and work spot level, then lift the land ----
   {
     const flats = [{ x: LAKE.x, z: LAKE.z, r: LAKE.r + 6 }];
@@ -1708,6 +1770,7 @@ function scatterDecor(scene, rng, occupied) {
     if (Math.hypot(x, z) < 6.5 || Math.hypot(x - 50, z + 24) < 4) return false;
     for (const t of Object.values(TOWNS)) if (Math.hypot(x - t.x, z - t.z) < 6) return false;
     if (Math.hypot(x - 132, z + 22) < 6) return false;
+    for (const R of REGION_DATA) if (BIOMES[R.biome].paint && BIOMES[R.biome].paint[1] > 0.9 && regionWeight(R, x, z) > 0.3) return false; // no grass on snow, sand or ash
     if (insideLake(x, z, 2.6)) return false;
     if (inBuilding(x, z, pad + 0.25)) return false; // no grass through the floorboards
     for (const p of PATHS) if (distToSeg(x, z, ...p) < 1.4) return false;

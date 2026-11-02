@@ -1,4 +1,5 @@
-import { WORLD_HALF, LAKE, PATHS, BUILDINGS, TOWNS } from './world.js';
+import { WORLD_HALF, LAKE, PATHS, BUILDINGS, TOWNS, PONDS } from './world.js';
+import { REGION_DATA, BIOMES } from './regiondata.js';
 
 // Rotating minimap with compass, hitpoints orb and run orb. Tap the map to walk there.
 export function createMinimap({ onWalk, onCompass, onRunToggle, onPrayerOrb }) {
@@ -43,6 +44,13 @@ export function createMinimap({ onWalk, onCompass, onRunToggle, onPrayerOrb }) {
   const b = base.getContext('2d');
   const W = u => (u + WORLD_HALF + 5) * 4;
   b.fillStyle = '#3f7a35'; b.fillRect(0, 0, S, S);
+  // climate regions: soft biome-coloured fills
+  for (const Rg of REGION_DATA) {
+    const gr = b.createRadialGradient(W(Rg.x), W(Rg.z), 0, W(Rg.x), W(Rg.z), Rg.r * 4);
+    gr.addColorStop(0, BIOMES[Rg.biome].map); gr.addColorStop(0.7, BIOMES[Rg.biome].map); gr.addColorStop(1, 'rgba(63,122,53,0)');
+    b.fillStyle = gr; b.beginPath(); b.arc(W(Rg.x), W(Rg.z), Rg.r * 4, 0, Math.PI * 2); b.fill();
+  }
+  for (const P of PONDS) { b.fillStyle = '#2f6fb0'; b.beginPath(); b.arc(W(P.x), W(P.z), P.r * 4, 0, Math.PI * 2); b.fill(); }
   b.strokeStyle = '#8a7650'; b.lineWidth = 6; b.lineCap = 'round';
   for (const [x1, z1, x2, z2] of PATHS) {
     b.beginPath(); b.moveTo(W(x1), W(z1)); b.lineTo(W(x2), W(z2)); b.stroke();
@@ -185,6 +193,11 @@ export function createMinimap({ onWalk, onCompass, onRunToggle, onPrayerOrb }) {
     const P = v => (W(v) / S) * Z;
     const star = (x, z, col, rr) => { mctx.save(); mctx.translate(P(x), P(z)); mctx.rotate(Math.PI / 4); mctx.fillStyle = col; mctx.strokeStyle = '#000'; mctx.lineWidth = 2 * dpr; mctx.fillRect(-rr, -rr, rr * 2, rr * 2); mctx.strokeRect(-rr, -rr, rr * 2, rr * 2); mctx.restore(); };
     mctx.font = `${Math.round(11 * dpr)}px sans-serif`; mctx.fillStyle = '#fff'; mctx.textAlign = 'center';
+    mctx.save(); mctx.font = `italic bold ${Math.round(12 * dpr)}px serif`; mctx.fillStyle = '#ffe9b0';
+    for (const Rg of REGION_DATA) { const y = P(Rg.z) + (Rg.r * 0.55 / (2 * WORLD_HALF + 10)) * Z; mctx.strokeStyle = '#000'; mctx.lineWidth = 3 * dpr; mctx.strokeText(Rg.name, P(Rg.x), y); mctx.fillText(Rg.name, P(Rg.x), y);
+      if (Rg.dig) star(Rg.x + Rg.dig.dx, Rg.z + Rg.dig.dz, '#c08a4a', 4 * dpr);
+      if (Rg.delveHub) star(Rg.x + Rg.delveHub.dx, Rg.z + Rg.delveHub.dz, '#8a6aff', 5 * dpr); }
+    mctx.restore();
     for (const [n, t] of Object.entries(TOWNS)) { mctx.strokeStyle = '#000'; mctx.lineWidth = 3 * dpr; mctx.strokeText(n, P(t.x), P(t.z) - 10 * dpr); mctx.fillText(n, P(t.x), P(t.z) - 10 * dpr); }
     for (const mk of marks) {
       const inside = Math.abs(mk.x) < WORLD_HALF && Math.abs(mk.z) < WORLD_HALF;

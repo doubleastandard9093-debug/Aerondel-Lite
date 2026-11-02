@@ -28,7 +28,7 @@ import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 
 export const SAVE_VERSION = 19;
-export const POS_LIMIT = 146; // world half-size (150) minus a margin
+export const POS_LIMIT = 416; // world half-size (WORLD_HALF 420, climate regions) minus a margin
 const KEY = 'gielinor3d';
 // Wanderer's Horizons (v15+): extra player fields saved and loaded as-is (normalized in migrateSave).
 export const EXTRA_KEYS = ['tongue', 'quirks', 'writs', 'still', 'path', 'delves', 'codex', 'aim', 'colossi', 'skywing', 'charter', 'siege'];

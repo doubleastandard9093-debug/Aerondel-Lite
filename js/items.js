@@ -477,3 +477,7 @@ export function canCraft(skills, inventory, recipe) {
   return hasInputs(inventory, recipe);
 }
 
+
+// ---- Climate regions / Relicry materials (dropped by regional creatures, dug at dig sites) ----
+def('Relic shard', { type: 'resource', value: 25 });
+def('Ancient fragment', { type: 'resource', value: 400 });
