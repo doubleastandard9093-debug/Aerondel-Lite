@@ -740,13 +740,13 @@ export const QUESTS = [
   }
 ];
 
-// The 100 data-driven quests (quests2.js / questdata*.js).
+// The data-driven quests (about 1,100, including the generated batch 6) (quests2.js / questdata*.js).
 const LIB = { q, setQ, finish: (p, qd, g) => finish(p, qd, g), isDone: (p, id) => isDone(p, id), questName: id => (questById(id) || { name: id }).name, get NPC_INFO() { return NPC_INFO; } };
 for (const qd of QUEST_DATA) QUESTS.push(buildQuest(qd, LIB));
 const OLD_TOWN = { emberfold_help: 'Emberfold', eastern_guards: 'Emberfold', herbs_for_wren: 'Emberfold', smith_order: 'Emberfold', eastern_feast: 'Emberfold', scout_report: 'Emberfold', miner_tools: 'Emberfold', sister_prayers: 'Emberfold', trader_supplies: 'Emberfold', knight_honour_east: 'Emberfold', angler_catch: 'Emberfold', carpenter_wood: 'Emberfold' };
 for (const x of QUESTS) { if (!x.town) x.town = OLD_TOWN[x.id] || 'Larkhaven'; if (!x.diff) x.diff = x.points > 1 ? 'Intermediate' : 'Novice'; }
 export const QUEST_POINTS_TOTAL = QUESTS.reduce((t, x) => t + x.points, 0);
-export const QUEST_TOWNS = ['Larkhaven', 'Emberfold', 'Saltreach', 'Highcrest', 'Whitecairn', 'Wilds'];
+export const QUEST_TOWNS = ['Larkhaven', 'Emberfold', 'Saltreach', 'Highcrest', 'Whitecairn', 'Wilds', 'Snarlwick', 'Gorrumhold', 'Sylvaranth', 'Bogwatch', 'Cragmoor Lodge', 'Rimeholt', 'Mirage Well', 'Vinehollow', 'Cinderpost'];
 
 export function questById(id) { return QUESTS.find(x => x.id === id); }
 // One NPC can give several quests: the one in progress, else the first one you can start, else the next locked one.

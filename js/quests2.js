@@ -16,8 +16,9 @@ import { QDATA2 } from './questdata2.js';
 import { QDATA3 } from './questdata3.js';
 import { QDATA4 } from './questdata4.js';
 import { QDATA5 } from './questdata5.js';
+import { QDATA6, GEN_PLACES } from './questgen.js';
 
-export const QUEST_DATA = [...QDATA1, ...QDATA2, ...QDATA3, ...QDATA4, ...QDATA5];
+export const QUEST_DATA = [...QDATA1, ...QDATA2, ...QDATA3, ...QDATA4, ...QDATA5, ...QDATA6];
 
 export const PLACES = {
   airAltar: { x: -26, z: 34, r: 4, name: 'the Air altar south-west of Larkhaven' },
@@ -69,6 +70,8 @@ export const PLACES = {
   mapleVarrock: { x: 100, z: -6, r: 6, name: 'the maple trees south-west of Highcrest' },
   grumsh: { x: -112, z: -124, r: 6, name: "Grumsh's camp beyond the ogre hills" }
 };
+
+Object.assign(PLACES, GEN_PLACES);
 
 const NPC_NAME = {};
 for (const n of QUEST_NPCS) NPC_NAME[n.id] = n.name;

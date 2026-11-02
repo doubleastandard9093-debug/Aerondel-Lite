@@ -22,6 +22,7 @@ import { terrainHeight, colliders, PATHS } from './world.js';
 import { REGION_DATA, BIOMES } from './regiondata.js';
 import { vcMat, bake, col, place, prim } from './models.js';
 import { makeRng } from './rng.js';
+import { VILLAGES } from './villagedata.js';
 
 export const REGIONS = [
   // Example (uncomment and move to an empty area to try it):
@@ -77,6 +78,17 @@ const CLIMATE = {
   bones: [0, r => [C(place(prim.cyl(0.08, 0.08, 1.4, 5), 0, 0.1, 0, 0, 0.3, Math.PI / 2), 0xe8e0c8), C(place(prim.sphere(0.28, 6, 5), 0.8, 0.22, 0.2), 0xe8e0c8), ...[0, 1, 2].map(i => C(place(new THREE.TorusGeometry(0.4, 0.04, 4, 8, Math.PI), -0.2 + i * 0.3, 0.05, 0, 0, Math.PI / 2, 0), 0xe0d8c0))]],
   junglebush: [0, r => [0, 1, 2].map(i => C(lowpoly(place(new THREE.IcosahedronGeometry(0.7, 0), (i - 1) * 0.6, 0.5 + (i % 2) * 0.2, (r() - 0.5) * 0.6), r, 0.3), [0x2a6a22, 0x347a2a, 0x2a5a1e][i]))],
   reed: [0, r => Array.from({ length: 6 }, (_, i) => C(place(prim.cyl(0.03, 0.04, 1.4 + r() * 0.6, 4), (r() - 0.5) * 0.7, 0.75, (r() - 0.5) * 0.7, (r() - 0.5) * 0.2, 0, (r() - 0.5) * 0.2), i % 3 ? 0x7a8a4a : 0x8a6a3a))],
+  // ---- quest villages ----
+  gobhut: [1.7, r => [C(lowpoly(place(prim.cyl(1.5, 1.8, 1.6, 8), 0, 0.8), r, 0.15), 0x7a5a3a), C(lowpoly(place(prim.cone(2.3, 1.9, 8), 0, 2.4, 0, 0, r() * 0.3, 0.06), r, 0.2), 0xb09a5a), C(place(prim.box(0.8, 1.1, 0.2), 0, 0.55, 1.6), 0x2a1a10), C(place(prim.cyl(0.05, 0.05, 1.2, 4), 0.3, 3.5, 0, 0, 0, 0.3), 0x4a3a24)]],
+  gobtotem: [0.3, r => [C(place(prim.cyl(0.18, 0.24, 3.2, 6), 0, 1.6), 0x5a3a24), C(place(prim.box(0.6, 0.5, 0.5), 0, 2.9), 0x6aa040), C(place(prim.box(0.9, 0.12, 0.12), 0, 3.3), 0xc0a040), C(place(prim.sphere(0.12, 5, 4), 0.15, 2.95, 0.26), 0xd02020), C(place(prim.sphere(0.12, 5, 4), -0.15, 2.95, 0.26), 0xd02020)]],
+  palisade: [0.4, r => Array.from({ length: 5 }, (_, i) => C(place(prim.cone(0.2, 2.6 + r() * 0.6, 5), (i - 2) * 0.42, 1.3, 0), 0x6a4a2a))],
+  ogrehall: [3.2, r => [C(lowpoly(place(prim.box(6.5, 2.6, 4.6), 0, 1.3), r, 0.08), 0x6a5a48), C(lowpoly(place(prim.cyl(0.01, 3.9, 2.6, 4), 0, 3.9, 0, 0, Math.PI / 4, 0, 1.15, 1, 0.8), r, 0.1), 0x8a6a3a), C(place(prim.box(1.6, 2.0, 0.2), 0, 1.0, 2.35), 0x2a1a10), C(place(prim.cyl(0.4, 0.5, 3.2, 6), 3.4, 1.6, 2.4), 0x5a4a38), C(place(prim.cyl(0.4, 0.5, 3.2, 6), -3.4, 1.6, 2.4), 0x5a4a38)]],
+  ogrestone: [0.8, r => [C(lowpoly(place(prim.box(1.0, 3.6 + r() * 1.2, 0.7), 0, 1.9, 0, (r() - 0.5) * 0.12, r(), (r() - 0.5) * 0.12), r, 0.25), 0x7a7a70), C(place(prim.box(1.05, 0.25, 0.75), 0, 3.0, 0), 0x4a6a2a)]],
+  bonepile: [0, r => [C(place(prim.sphere(0.4, 6, 5), 0, 0.2, 0), 0xe8e0c8), C(place(prim.cyl(0.08, 0.08, 1.2, 5), 0.4, 0.15, 0.2, 0, 0.5, Math.PI / 2), 0xe8e0c8), C(place(prim.cyl(0.08, 0.08, 1.0, 5), -0.3, 0.12, -0.2, 0, -0.8, Math.PI / 2), 0xe0d8c0)]],
+  elftower: [1.3, r => [C(place(prim.cyl(1.0, 1.25, 7.5, 12), 0, 3.75), 0xeef0ea), C(place(prim.cyl(1.3, 1.3, 0.3, 12), 0, 7.6), 0xd0d8d0), C(place(prim.cone(1.5, 3.2, 12), 0, 9.3), 0x5a9a7a), C(place(prim.box(0.6, 1.4, 0.15), 0, 0.7, 1.2), 0x6a8aa0), C(place(prim.box(0.4, 0.8, 0.12), 0, 5.2, 1.0), 0x9ad0ff)]],
+  elfhall: [2.6, r => [C(place(prim.box(5.4, 2.8, 4.0), 0, 1.4), 0xf2f0e8), C(place(prim.cyl(0.01, 3.6, 2.2, 4), 0, 3.9, 0, 0, Math.PI / 4, 0, 1.08, 1, 0.8), 0x4a8a6a), ...[-2.3, -0.8, 0.8, 2.3].map(x => C(place(prim.cyl(0.18, 0.2, 2.8, 8), x, 1.4, 2.15), 0xffffff)), C(place(prim.box(1.2, 2.0, 0.15), 0, 1.0, 2.05), 0x6a8aa0)]],
+  silvertree: [0.4, r => [C(place(prim.cyl(0.18, 0.3, 4.2, 7), 0, 2.1), 0xd8d8d0), C(lowpoly(place(new THREE.IcosahedronGeometry(1.8, 1), 0, 5.0, 0, 0, 0, 0, 1, 0.8, 1), r, 0.2), 0xa8d0b8), C(lowpoly(place(new THREE.IcosahedronGeometry(1.2, 0), 0.8, 5.8, 0.3), r, 0.2), 0xc8e8d8)]],
+  moonlamp: [0.15, r => [C(place(prim.cyl(0.06, 0.08, 2.4, 6), 0, 1.2), 0xd8d8d0), C(place(prim.sphere(0.22, 8, 6), 0, 2.55), 0xc8f0ff)]],
   mossrock: [0.7, r => [C(lowpoly(place(new THREE.DodecahedronGeometry(0.9, 0), 0, 0.35, 0, 0, 0, 0, 1.2, 0.7, 1.0), r, 0.35), 0x4a4a42), C(place(new THREE.DodecahedronGeometry(0.75, 0), 0, 0.62, 0, 0, 0, 0, 1.05, 0.3, 0.85), 0x4a6a2a)]],
 };
 
@@ -120,10 +132,26 @@ export function climateRegions(density = 1) {
   });
 }
 
+// Quest villages (js/villagedata.js) -> seeded prop rings: huts round a central totem/hall, a palisade or
+// stones on the rim, a few scattered extras. All baked vertex-coloured meshes, chunk-loaded like region props.
+export function villageRegions() {
+  const LAYOUT = { goblin: { core: 'gobtotem', ring: 'gobhut', n: 7, rim: 'palisade', rimN: 18, extra: ['bonepile', 'campfire'] },
+    ogre: { core: 'ogrehall', ring: 'ogrehall', n: 4, rim: 'ogrestone', rimN: 12, extra: ['bonepile', 'campfire', 'boulder'] },
+    elf: { core: 'elfhall', ring: 'elftower', n: 6, rim: 'silvertree', rimN: 16, extra: ['moonlamp', 'moonlamp', 'fern'] } };
+  return VILLAGES.map((V, vi) => {
+    const rng = makeRng(9001 + vi * 77), Lo = LAYOUT[V.kind], props = [];
+    props.push([Lo.core, V.x, V.z - (V.kind === 'goblin' ? 0 : 6), 1, 0]);
+    for (let i = 0; i < Lo.n; i++) { const a = (i / Lo.n) * Math.PI * 2 + 0.4, d = V.r * 0.55; const x = V.x + Math.cos(a) * d, z = V.z + Math.sin(a) * d; props.push([Lo.ring, x, z, 0.9 + rng() * 0.2, Math.atan2(V.x - x, V.z - z)]); }
+    for (let i = 0; i < Lo.rimN; i++) { const a = (i / Lo.rimN) * Math.PI * 2, d = V.r * 0.95; if (Math.abs(Math.sin(a)) > 0.97) continue; const x = V.x + Math.cos(a) * d, z = V.z + Math.sin(a) * d; props.push([Lo.rim, x, z, 1, -a + Math.PI / 2]); }
+    for (let i = 0; i < 10; i++) { const a = rng() * Math.PI * 2, d = V.r * (0.25 + rng() * 0.15); props.push([Lo.extra[i % Lo.extra.length], V.x + Math.cos(a) * d, V.z + Math.sin(a) * d, 0.8 + rng() * 0.4, rng() * 6]); }
+    return { id: V.id, name: V.name, bounds: [V.x - V.r, V.z - V.r, V.x + V.r, V.z + V.r], props, mobs: V.mobs.map(([t, dx, dz, roam]) => [t, V.x + dx, V.z + dz, roam]) };
+  });
+}
+
 // Register every region prop with its chunk. Returns the regions in use (for the world map).
 // spawnMonster/registerDynamic come from main so mobs share the normal AI, loot and respawn code.
 export function loadRegions(scene, { spawnMonster, registerDynamic, density = 1 } = {}) {
-  const list = [...REGIONS, ...climateRegions(density)];
+  const list = [...REGIONS, ...climateRegions(density), ...villageRegions()];
   if (typeof location !== 'undefined' && new URLSearchParams(location.search).get('regiontest')) list.push(TEST_REGION);
   let props = 0, mobs = 0;
   for (const r of list) {

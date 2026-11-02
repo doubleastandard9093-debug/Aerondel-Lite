@@ -1,3 +1,4 @@
+import { GEN_NPCS } from './questgen.js';
 // NPCs who give the data-driven quests (quests2.js). world.js spawns them near
 // (x, z) on a free spot; looks reuse the shared townsperson model.
 const L = {
@@ -82,4 +83,4 @@ const RAW = [
   ['otto', 'Otto the Courier', 56, -14, 'kid', 'He delivers letters all over the realm.', '📮'],
   ['ada', 'Ada the Cartographer', 76, -40, 'scholar', 'She is mapping the whole realm.', '🗺️']
 ];
-export const QUEST_NPCS = RAW.map(([id, name, x, z, look, examine, face]) => ({ id, name, x, z, look: L[look], examine, face }));
+export const QUEST_NPCS = [...RAW, ...GEN_NPCS].map(([id, name, x, z, look, examine, face]) => ({ id, name, x, z, look: typeof look === 'string' ? L[look] : look, examine, face }));

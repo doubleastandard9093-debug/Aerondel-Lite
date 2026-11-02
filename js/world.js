@@ -7,6 +7,7 @@ import { COMPANIONS } from './companions.js';
 import { SEA, seaGround, ISLANDS } from './sea.js';
 import { addFire } from './vfx.js';
 import { REGION_DATA, BIOMES, regionWeight } from './regiondata.js';
+import { VILLAGES } from './villagedata.js';
 import { terrainMaterial, waterMaterial, hookWaterNoise, WATER_MESHES } from './gfx.js';
 import { buildHumanoidRig, apronGeo, varyLook, hashStr, contactShadow, plateCharMat, chainCharMat } from './anatomy.js';
 import { buildCreatureRig, rollVariant, namedVariant, loColours } from './creatures.js';
@@ -28,6 +29,7 @@ export const TOWNS = {
 };
 // Climate-region camps are towns too (signposts, banners, flat ground, cobbles).
 for (const R of REGION_DATA) if (R.camp) TOWNS[R.camp.name] = { x: R.x + R.camp.dx, z: R.z + R.camp.dz };
+for (const V of VILLAGES) TOWNS[V.name] = { x: V.x, z: V.z };
 export const TOWN_NAME = 'Larkhaven';
 export const PATHS = [[0, 0, 13, -12], [0, 0, -15, -13], [0, 0, -15, 12], [0, 0, 20, 17], [0, 0, 0, 24], [0, 0, 0, -27], [0, 0, 5, -7.4], [0, 0, 50, -20], [50, -20, 55, -35],
   // roads to the new towns
