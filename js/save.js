@@ -4,6 +4,7 @@ import { normalizeShopState, normalizeWear } from './economy.js';
 import { normalizeTasks } from './tasks.js';
 import { normalizeVessel, inSea } from './sea.js';
 import { normalizeCompanions } from './companions.js';
+import { normalizeRelicry } from './relicdata.js';
 import { normalizeSkills, convertXpV1, xpForLevel } from './skills.js';
 import { DEFAULT_SETTINGS, INV_SIZE } from './playerState.js';
 import { ITEMS, isTool, STARTER_TOOLS } from './items.js';
@@ -27,11 +28,11 @@ import { normalizeSkywing } from './skywing.js';
 import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 
-export const SAVE_VERSION = 19;
+export const SAVE_VERSION = 20;
 export const POS_LIMIT = 416; // world half-size (WORLD_HALF 420, climate regions) minus a margin
 const KEY = 'gielinor3d';
 // Wanderer's Horizons (v15+): extra player fields saved and loaded as-is (normalized in migrateSave).
-export const EXTRA_KEYS = ['tongue', 'quirks', 'writs', 'still', 'path', 'delves', 'codex', 'aim', 'colossi', 'skywing', 'charter', 'siege'];
+export const EXTRA_KEYS = ['tongue', 'quirks', 'writs', 'still', 'path', 'delves', 'codex', 'aim', 'colossi', 'skywing', 'charter', 'siege', 'relicry'];
 
 export function getSaveData(skills, player, playerMesh) {
   return JSON.stringify({
@@ -203,6 +204,9 @@ export function migrateSave(saved) {
   p.skywing = normalizeSkywing(p.skywing);
   p.charter = normalizeCharter(p.charter);
   p.siege = normalizeSiege(p.siege, Math.floor(Date.now() / 604800000));
+  // v20 (Aerondel expansion): six climate regions, the Relicry skill and its relic dungeons.
+  p.relicry = normalizeRelicry(p.relicry);
+  if (fromVersion < 20) notes.push('New: six climate regions beyond the old map edge, and the Relicry skill. Dig at the Drowned Chapel in Mirelow Fen (south-west) to start.');
   if (fromVersion < 16) notes.push('New: Wanderer\'s Horizons part 2. Combat Paths, Delves of Three and the Stable Codex. See Settings → What\'s new.');
   if (fromVersion < 15) notes.push('New: Wanderer\'s Horizons part 1. Silver Tongue checks, Quirks, Daily Writs and Stillwatch. See Settings → What\'s new.');
   if (fromVersion < 14) notes.push('New: Hearth & Arena. Deedwarden Oswin behind Larkhaven sells a Hearthstead deed. See Settings → What\'s new.');

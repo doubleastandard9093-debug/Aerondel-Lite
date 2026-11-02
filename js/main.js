@@ -56,6 +56,8 @@ import { createBondsUI } from './bondsUI.js';
 import { createBossMech } from './bossmech.js';
 import { DEED_COST, ROOMS, FURNITURE, BOSS_TROPHIES, normalizeHouse, hasRoom, hasFurn, houseXpBonus, houseBossDamage, houseErrandBonus, takeHarvest, takeBondDay, addTrophy } from './hearth.js';
 import { HEARTH, ARENA, inInstance, instanceAt } from './instances.js';
+import { installRelicry } from './relicry.js';
+import { installRelicGear } from './relicgear.js';
 import { WILDS, RIVAL, CAP, botCap, normalizeWilds, captureStep, heldCount } from './wilds.js';
 import { ARENA_RULES, ARENA_SHOP, normalizeArena, ladder, rankOf, rateDuel, weekRoll, weekNo, pickOpponent, duellistStats } from './arena.js';
 import { TASK, HUNT_SHOP, normalizeTasks, assignTask, taskKill, taskLabel, isDrowned } from './tasks.js';
@@ -822,6 +824,7 @@ function doMagicTick(a, now) {
   mon.lastHitAt = now;
   lastCombatTick = tick;
   if (mon.state !== 'fight') { mon.state = 'fight'; mon.nextAttackTick = tick + 1; }
+  if (res.dmg > 0) for (const f of extHit) f(mon, res.dmg, now, 'magic');
   if (mon.hp <= 0) killMonster(mon, now);
   markDirty();
 }
@@ -1876,6 +1879,11 @@ extTick.push(() => {
 extIncoming.push(dmg => delvesX.run ? Math.max(1, Math.round(dmg * (1 - roleFx(delvesX.run.role).red))) : dmg);
 extSwing.push((mon, swings) => { if (delvesX.run && mon.delve) { const d = roleFx(delvesX.run.role).dmg; for (const s of swings) s.dmg = (s.dmg || 0) + d; } });
 extDeath.push(() => { if (delvesX.run) delvesX.finish(false); });
+// ---- Relicry (dig sites, restoration, relic dungeons) and the high-tier relic arms ----
+const aeroCtx = { scene, nodes, pickables, player, skills, pm, EXT, giveXP, giveItem, countItem, removeItem, log, travelTo, spawnMonster, markDirty, gfx, monsters, killMonster,
+  stopAction: () => stopAction(), tick: () => tick };
+installRelicGear(aeroCtx);
+installRelicry(aeroCtx);
 // ---- Stable Codex: mount collection, Skyrook flights between towns, wardrobe looks ----
 function lookEquip() {
   const L = player.codex && player.codex.looks; if (!L) return player.equipment;
@@ -3726,7 +3734,7 @@ document.addEventListener('pointerdown', e => {
     o.connect(g); g.connect(uiAudio.destination); o.start(t); o.stop(t + 0.1);
   } catch (er) { /* audio unavailable */ }
 }, true);
-window.gielinor = {
+window.gielinor = { EXT,
   gfx, terrainHeight, applyLook() { applyEquipmentLook(pm, lookEquip()); }, setGfx(q) { player.settings.gfx = q; gfx.autoLow = false; applyGfx(); markDirty(); }, scene, camera,
   renderer, player, skills, flow, doDodge, toggleRide, steedShift, steedState, checkSteeds, monsters, nodes, piles, pm, rig, fires, buildings, ui, invUI, get hud() { return hud; }, giveXP, setAutocast, get crossing() { return crossing; }, gtao, get gfxQ() { return gfx.quality; }, useAbility, talkTo, startCraft, stopAction, startAction, useItem, RECIPES, optionsFor, walkTo,
   soundStats, get queued() { return queuedAbility; }, cooldowns, buffs,

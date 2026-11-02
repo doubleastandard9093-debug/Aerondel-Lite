@@ -6,12 +6,20 @@ export const ARENA = { x: -1000, z: -200, r: 13, gate: { x: -1000, z: -188 } };
 export function inInstance(x) { return x < INSTANCE_X; }
 export function instanceAt(x, z) {
   if (!inInstance(x)) return null;
+  if (z > 300) return 'dungeon';   // relic dungeons and Delving floors (dungeon.js)
   if (z < -560) return 'siege';
   if (z < -340) return 'delve';
   return Math.abs(z - HEARTH.z) < 60 ? 'hearth' : 'arena';
 }
 // Keep a walker inside the instance it's in.
+// dungeon.js sets the active dungeon's outer box here (walls are colliders).
+export const DUNGEON_BOX = { box: null };
 export function clampInstance(pos) {
+  if (instanceAt(pos.x, pos.z) === 'dungeon') {
+    const b = DUNGEON_BOX.box; if (!b) return;
+    pos.x = Math.max(b.minX, Math.min(b.maxX, pos.x)); pos.z = Math.max(b.minZ, Math.min(b.maxZ, pos.z));
+    return;
+  }
   if (instanceAt(pos.x, pos.z) === 'hearth') {
     pos.x = Math.max(HEARTH.x - HEARTH.hw + 0.6, Math.min(HEARTH.x + HEARTH.hw - 0.6, pos.x));
     pos.z = Math.max(HEARTH.z - HEARTH.hd + 0.6, Math.min(HEARTH.z + HEARTH.hd - 0.6, pos.z));

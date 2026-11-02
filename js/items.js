@@ -57,7 +57,8 @@ const GEAR = {
   legs:   { suffix: 'platelegs', slot: 'legs', bars: 3, off: 12, stat: t => armour([6, 10, 15, 21, 29, 40, 55][t], t, -0.5), val: 30 },
   body:   { suffix: 'platebody', slot: 'body', bars: 5, off: 16, stat: t => armour([8, 14, 20, 28, 38, 52, 72][t], t, -1), val: 60 },
   axe:    { suffix: 'axe', tool: 'axe', bars: 1, off: 0, stat: t => ({ toolTier: t, req: { Woodcutting: TOOL_REQ[t] } }), val: 10 },
-  pickaxe:{ suffix: 'pickaxe', tool: 'pickaxe', bars: 2, off: 1, stat: t => ({ toolTier: t, req: { Mining: TOOL_REQ[t] } }), val: 14 }
+  pickaxe:{ suffix: 'pickaxe', tool: 'pickaxe', bars: 2, off: 1, stat: t => ({ toolTier: t, req: { Mining: TOOL_REQ[t] } }), val: 14 },
+  mattock:{ suffix: 'mattock', tool: 'mattock', bars: 2, off: 2, stat: t => ({ toolTier: t, req: { Relicry: TOOL_REQ[t] } }), val: 14 }   // Relicry excavation tool
 };
 METALS.forEach((m, t) => {
   def(`${m} bar`, { type: 'processed', value: [8, 25, 50, 120, 300, 900, 2500][t] });
@@ -110,7 +111,7 @@ def("Angler's ring", { type: 'ring', gather: { Fishing: 0.04 }, xp: { Fishing: 0
 def('Red cape', { type: 'cape', def: 1, rdef: 1, value: 15 });
 def('Blue cape', { type: 'cape', def: 1, rdef: 1, value: 15 });
 def('Quest point cape', { type: 'cape', atk: 3, str: 3, ranged: 3, def: 6, rdef: 6, prayer: 4, regen: 0.1, questCape: true, value: 99 });
-export const SKILL_CAPE_SKILLS = ['Attack', 'Strength', 'Defence', 'Hitpoints', 'Ranged', 'Magic', 'Prayer', 'Agility', 'Thieving', 'Mining', 'Woodcutting', 'Fishing', 'Smithing', 'Crafting', 'Cooking', 'Fletching', 'Herbalism', 'Glyphcraft'];
+export const SKILL_CAPE_SKILLS = ['Attack', 'Strength', 'Defence', 'Hitpoints', 'Ranged', 'Magic', 'Prayer', 'Agility', 'Thieving', 'Mining', 'Woodcutting', 'Fishing', 'Smithing', 'Crafting', 'Cooking', 'Fletching', 'Herbalism', 'Glyphcraft', 'Relicry'];
 for (const sk of SKILL_CAPE_SKILLS) def(`${sk} cape`, { type: 'cape', def: 4, rdef: 4, prayer: 2, capeSkill: sk, req: { [sk]: 99 }, value: 9900 });
 
 // Full matched sets. pieces = how many you need; fx feeds the combat maths.
@@ -224,6 +225,7 @@ export function rarityColor(item) { const r = rarityOf(item); return r ? RARITY[
 export const TOOL_TYPES = [
   { id: 'axe', name: 'Axe', icon: '🪓', skill: 'Woodcutting' },
   { id: 'pickaxe', name: 'Pickaxe', icon: '⛏️', skill: 'Mining' },
+  { id: 'mattock', name: 'Mattock', icon: '⛏️', skill: 'Relicry' },
   { id: 'net', name: 'Fishing net', icon: '🥅' },
   { id: 'rod', name: 'Fishing rod', icon: '🎣' },
   { id: 'cage', name: 'Lobster pot', icon: '🧺' },
@@ -255,7 +257,7 @@ export function isRangedWeapon(item) { return !!(item && ITEMS[item] && ITEMS[it
 export function itemValue(item) { return ITEMS[item] ? ITEMS[item].value : 1; }
 
 // ---- Icons: [emoji, tint] ----
-const KIND_ICON = { cutlass: '🗡️', flintlock: '🔫', sword: '⚔️', 'full helm': '🪖', shield: '🛡️', platelegs: '👖', platebody: '🦺', axe: '🪓', pickaxe: '⛏️', arrows: '🏹', bar: '🧱', crossbow: '🏹', bolts: '➶', 'thrown dagger': '🔪', 'throwing axe': '🪓' };
+const KIND_ICON = { cutlass: '🗡️', flintlock: '🔫', sword: '⚔️', 'full helm': '🪖', shield: '🛡️', platelegs: '👖', platebody: '🦺', axe: '🪓', pickaxe: '⛏️', mattock: '⛏️', arrows: '🏹', bar: '🧱', crossbow: '🏹', bolts: '➶', 'thrown dagger': '🔪', 'throwing axe': '🪓' };
 const FIXED_ICONS = {
   Coal: ['🪨', '#11111180'], 'Copper ore': ['🪨', '#b8733340'], 'Tin ore': ['🪨', '#c8c8c840'], 'Iron ore': ['🪨', '#8a4b3a50'],
   'Bluesteel ore': ['🪨', '#5a6ad060'], 'Verdite ore': ['🪨', '#3a9a5a60'], 'Cobalt ore': ['🪨', '#3ab8d060'],
@@ -297,6 +299,7 @@ export function iconFor(item) {
     if (info0.unique) {
       const tint = RARITY[info0.rarity] + '50';
       if (/^Wyrmscale/.test(item)) return [{ head: '⛑️', body: '🦺', legs: '👖', shield: '🛡️' }[info0.type], '#2a8a3a80'];
+      if (info0.highTier) return [info0.icon || { weapon: info0.ranged ? '🏹' : info0.mag ? '🪄' : '⚔️', head: '⛑️', body: '🦺', legs: '👖', shield: '🛡️', ring: '💍' }[info0.type] || '✨', tint];
       return [UNIQUE_ICON[item] || '✨', tint];
     }
     if (info0.type === 'herb') return ['🌿', '#3ad03a30'];
@@ -406,7 +409,7 @@ R({ name: 'Smelt Bluesteel bar', cat: 'Smithing', group: 'Smelting', skill: 'Smi
 R({ name: 'Smelt Verdite bar', cat: 'Smithing', group: 'Smelting', skill: 'Smithing', level: 70, inputs: { 'Verdite ore': 1, Coal: 6 }, output: 'Verdite bar', xp: 37.5, station: 'furnace' });
 R({ name: 'Smelt Cobalt bar', cat: 'Smithing', group: 'Smelting', skill: 'Smithing', level: 85, inputs: { 'Cobalt ore': 1, Coal: 8 }, output: 'Cobalt bar', xp: 50, station: 'furnace' });
 // Smithing at the anvil
-const BRONZE_LVL = { sword: 1, helm: 3, shield: 5, legs: 10, body: 14, axe: 1, pickaxe: 1 };
+const BRONZE_LVL = { sword: 1, helm: 3, shield: 5, legs: 10, body: 14, axe: 1, pickaxe: 1, mattock: 2 };
 METALS.forEach((m, t) => {
   for (const [key, g] of Object.entries(GEAR)) {
     R({ name: `Smith ${m} ${g.suffix}`, cat: 'Smithing', group: m, skill: 'Smithing', level: t === 0 ? BRONZE_LVL[key] : Math.min(99, SMITH_BASE[t] + g.off),

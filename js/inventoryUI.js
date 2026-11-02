@@ -1,4 +1,8 @@
 // RS-style side panel with tabs, plus the bank, shop and help windows and the combat-skill quick bar.
+// Short how-to lines for newer skills on the skill detail panel.
+export const SKILL_NOTE = {
+  Relicry: 'Relicry: excavate dig sites in the six climate regions with a mattock, restore damaged artifacts at the site bench, turn in collections of three, and use a restored artifact on the vault door to enter a relic dungeon whose gates test every skill. Relic arms come from collections and reforging.'
+};
 import { ITEMS, RECIPES, iconFor, CRAFT_TABS, METALS, TOOL_TYPES, statLine, setDesc, rarityColor } from './items.js';
 import { SKILLS, SKILL_ICONS, xpToNext, levelProgress, nextLevelXp, combatLevel, totalLevel, PERKS, maxPrayer, perkTotals, CAPS_TEXT, synergyLines } from './skills.js';
 import { INV_SIZE, slotsUsed } from './playerState.js';
@@ -312,6 +316,7 @@ export function createInventoryUI(api) {
       const k = skills[selectedSkill];
       const bst = boostOf(player, selectedSkill);
       html += `<div class="skilldetail"><b>${selectedSkill}</b> level ${bst ? `<span class="boosted">${k.level + bst}</span>/${k.level} (potion boost)` : k.level}<br>XP: ${fmt(k.xp)}<br>` +
+        (SKILL_NOTE[selectedSkill] ? `<small>${SKILL_NOTE[selectedSkill]}</small><br>` : '') +
         (selectedSkill === 'Herbalism' ? '<small>Herbalism (herbology): pick grimy herbs from patches, clean them, then brew potions with a vial of water and a secondary from monster drops.</small><br>' : '') +
         (k.level >= 99 ? 'Maximum level!' : `Next level at: ${fmt(nextLevelXp(k))}<br>Remaining: ${fmt(xpToNext(k))}`) +
         `<div class="bar"><i style="width:${(levelProgress(k) * 100).toFixed(1)}%"></i></div>
