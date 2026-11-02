@@ -85,7 +85,7 @@ export function gatherInfo(node) {
 }
 
 export function successChance(level, req) {
-  return Math.max(0.05, Math.min(0.92, 0.3 + (level - req) * 0.025));
+  return Math.max(0.05, 0.3 + (level - req) * 0.025); // no upper cap: high levels/bonuses can reach 100%
 }
 
 // One gathering attempt on a game tick. Returns { item, qty, xp, depleted } on success,
@@ -111,7 +111,7 @@ export function gatherTick(node, skills, player, rng = Math.random) {
       if (lvl < c.level) continue;
       if (!canAdd(player, c.item)) return { error: 'Your inventory is too full to hold any more.' };
       const last = c === info.catches[info.catches.length - 1];
-      if (rng() < Math.min(0.95, successChance(lvl, c.level) + bonus) * (last ? 1 : 0.6)) {
+      if (rng() < (successChance(lvl, c.level) + bonus) * (last ? 1 : 0.6)) {
         return { item: c.item, qty: doubled(), xp: c.xp * xpMult, skill: info.skill, depleted: false, bank: banked() };
       }
     }
@@ -119,7 +119,7 @@ export function gatherTick(node, skills, player, rng = Math.random) {
   }
   const item = info.pureAt && lvl >= info.pureAt ? info.pure : info.item;
   if (!canAdd(player, item)) return { error: 'Your inventory is too full to hold any more.' };
-  if (rng() >= Math.min(0.95, successChance(lvl, info.level) + bonus)) return null;
+  if (rng() >= successChance(lvl, info.level) + bonus) return null;
   // Resources are infinite: trees, rocks and herb patches never run out.
   return { item, qty: doubled(), xp: info.xp * xpMult, skill: info.skill, depleted: false, bank: banked() };
 }
@@ -149,7 +149,7 @@ export function xpMultiplier(player, skill) {
 export function saveChance(recipe, skills, player) {
   const key = recipe.skill === 'Smithing' ? 'saveBar' : 'saveMat';
   const fromPerk = recipe.skill === 'Cooking' ? 0 : perk(skills, recipe.skill, key);
-  return Math.min(0.75, fromPerk + prayerFx(player, 'saveMat'));
+  return fromPerk + prayerFx(player, 'saveMat');
 }
 export function makeXp(recipe, skills) {
   return recipe.xp * (1 + perk(skills, recipe.skill, 'xpBonus'));
@@ -304,7 +304,7 @@ export function playerAccuracy(player, skills, mon, mods = {}) {
   const att = lvl * Math.max(16, 64 + (ranged ? b.ranged : b.atk) * 3);
   const def = (mon.def + 8) * 64;
   const bonus = (ranged ? perk(skills, 'Ranged', 'racc') + setFx(player, 'racc') : perk(skills, 'Attack', 'acc') + setFx(player, 'acc')) + (mods.acc || 0);
-  return Math.min(0.98, hitChance(att, def) * (1 + bonus));
+  return hitChance(att, def) * (1 + bonus);
 }
 
 export function monsterAccuracy(mon, player, skills) {
@@ -323,7 +323,7 @@ export function rollPlayerHit(player, skills, mon, rng = Math.random, mods = {})
   if (rng() < playerAccuracy(player, skills, mon, mods)) {
     dmg = 1 + Math.floor(rng() * playerMaxHit(player, skills, mods));
     const ranged = isRangedWeapon(player.equipment.weapon);
-    const crit = Math.min(0.75, (ranged ? perk(skills, 'Ranged', 'rcrit') : perk(skills, 'Strength', 'crit')) + (gearEffects(player).crit || 0));
+    const crit = (ranged ? perk(skills, 'Ranged', 'rcrit') : perk(skills, 'Strength', 'crit')) + (gearEffects(player).crit || 0);
     if (rng() < crit) dmg = Math.floor(dmg * (1.5 + perk(skills, 'Strength', 'critMult')));
     const ge = gearEffects(player);
     if (ge.bigHit && rng() < ge.bigHit) { dmg = Math.floor(dmg * 1.5); mods.procs = (mods.procs || []).concat('bigHit'); }
@@ -364,13 +364,12 @@ export function rollMonsterHit(mon, player, skills, rng = Math.random) {
   return Math.floor(rng() * (mon.maxHit + 1));
 }
 
-export const DR_CAP = 0.6; // hard cap on damage reduction from perks + quests + sets
 // Damage you actually take after Defence perks, Ward against Melee and buffs.
 export function reduceIncoming(dmg, player, skills, buffs = {}) {
   if (dmg <= 0) return 0;
-  // Damage reduction from Defence perks, quests and armour sets (capped so nothing gets silly).
-  let m = 1 - Math.min(DR_CAP, perk(skills, 'Defence', 'dr') + questFx(player, 'dr') + setFx(player, 'dr'));
-  if (!buffs.boss) m *= 1 - prayerFx(player, 'protect'); // bosses: style-matched Protect prayers (bossmech.js)
+  // Damage reduction from Defence perks, quests and armour sets. Uncapped: 100%+ means no damage taken.
+  let m = Math.max(0, 1 - (perk(skills, 'Defence', 'dr') + questFx(player, 'dr') + setFx(player, 'dr')));
+  if (!buffs.boss) m *= Math.max(0, 1 - prayerFx(player, 'protect')); // bosses: style-matched Protect prayers (bossmech.js)
   if (buffs.fortify) m *= 0.5;
   if (buffs.rage) m *= 1.1;
   return Math.max(0, Math.round(dmg * m));
@@ -624,7 +623,7 @@ export const SHOPS = {
 export function healAmount(item, skills) {
   const info = ITEMS[item];
   if (!info || !info.heal) return 0;
-  const bonus = skills ? Math.min(1, perk(skills, 'Hitpoints', 'healBonus') + perk(skills, 'Cooking', 'healBonus')) : 0;
+  const bonus = skills ? perk(skills, 'Hitpoints', 'healBonus') + perk(skills, 'Cooking', 'healBonus') : 0;
   return Math.round(info.heal * HEAL_SCALE * (1 + bonus));
 }
 
@@ -762,7 +761,7 @@ export function magicAccuracy(player, skills, mon) {
   const b = equipmentBonuses(player);
   const att = (boostedLevel(player, skills, 'Magic') + 8) * Math.max(16, 64 + b.mag * 3);
   const def = (mon.def + 8) * 64;
-  return Math.min(0.98, hitChance(att, def) * (1 + perk(skills, 'Magic', 'magicAcc')));
+  return hitChance(att, def) * (1 + perk(skills, 'Magic', 'magicAcc'));
 }
 // Cast one spell at a monster: uses runes, rolls the hit. Returns { dmg, xp: { Magic, Hitpoints }, saved }
 // or { error } when it can't be cast.
@@ -824,8 +823,8 @@ export const AGILITY_OBSTACLES = Object.fromEntries(Object.entries(AGILITY_COURS
   c.obstacles.map((o, i) => [`${cid}:${i}`, { ...o, id: `${cid}:${i}`, course: cid, index: i, last: i === c.obstacles.length - 1 }])));
 // Chance to cross an obstacle without slipping.
 export function agilitySuccess(level, req, failLess = 0) {
-  const fail = Math.max(0.02, Math.min(0.5, 0.25 - (level - req) * 0.012));
-  return 1 - fail * (1 - Math.min(0.9, failLess));
+  const fail = Math.max(0, Math.min(0.5, 0.25 - (level - req) * 0.012));
+  return 1 - fail * Math.max(0, 1 - failLess);
 }
 // One attempt. Updates player.agilityLap. Returns { ok, xp, dmg, lap, msg } or { error }.
 export function runObstacle(obs, skills, player, rng = Math.random) {
@@ -859,7 +858,7 @@ export const THIEVE_TARGETS = {
   Hero:     { level: 80, xp: 273.3, stun: 6, dmg: 40, loot: [{ item: 'Coins', qty: [200, 300] }, { item: 'Grave rune', qty: [2, 2], chance: 0.25 }, { item: 'Crimson rune', qty: [1, 1], chance: 0.15 }, { item: 'Amulet of renown', qty: [1, 1], chance: 0.01 }] }
 };
 export function thieveChance(level, req, bonus = 0) {
-  return Math.max(0.1, Math.min(0.95, 0.6 + (level - req) * 0.012 + bonus));
+  return Math.max(0.1, 0.6 + (level - req) * 0.012 + bonus);
 }
 // One pickpocket attempt. Returns { fail, xp, dmg, stun, drops: [{ item, qty }] } or { error }.
 export function thieve(targetType, skills, player, rng = Math.random) {

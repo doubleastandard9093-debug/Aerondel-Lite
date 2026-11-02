@@ -143,7 +143,7 @@ export const PERK_CAPS = {
   extraArrows: 15, xpBonus: 1, buryXp: 1, potionTime: 1, ppRegen: 0.3, maxHp: 100, maxHit: 60, rmaxHit: 40,
   magicAcc: 0.6, magicDmg: 0.5, runeSave: 0.75, agilityXp: 1, failLess: 0.75, thieveXp: 1, lootChance: 0.5, rcXp: 1, runeDouble: 0.5, dodgeMs: 120, rareDrop: 0.25, magicAdren: 0.4, rareFind: 0.5, gateEase: 0.75, tokenBonus: 1, floorHeal: 0.5
 };
-export const CAPS_TEXT = "Level bonuses are 5x. Caps: chance effects 75% (crits 50%), damage reduction 60% total, accuracy +60%, food heals +100%, HP regen +200%, heal on kill 10% of max HP, actions never faster than 1 tick.";
+export const CAPS_TEXT = "Level bonuses are 5x and have no caps: stack gear, quests, perks, guild and potions as high as you like (100% damage reduction means no damage taken).";
 function describe(fx) { return Object.entries(fx).map(([k, v]) => FX_LABEL[k] ? FX_LABEL[k](v) : k).join(", "); }
 
 function build(small, big) {
@@ -232,7 +232,7 @@ export function perk(skills, skill, key) {
   const boost = skills._boost && skills._boost[skill];
   if (boost) v *= 1 + boost;
   v += synergy(skills, skill, key);
-  return PERK_CAPS[key] !== undefined ? Math.min(PERK_CAPS[key], v) : v;
+  return v; // uncapped since v21 (PERK_CAPS kept only as reference values)
 }
 export function perkTotals(skills, skill) {
   const out = {};
@@ -243,9 +243,7 @@ export function perkTotals(skills, skill) {
   const boost = skills._boost && skills._boost[skill];
   if (boost) for (const k of Object.keys(out)) out[k] *= 1 + boost;
   return Object.entries(out).map(([k, v]) => {
-    const cap = PERK_CAPS[k];
-    const capped = cap !== undefined && v > cap;
-    return (FX_LABEL[k] ? FX_LABEL[k](capped ? cap : v) : k) + (capped ? " (capped)" : "");
+    return FX_LABEL[k] ? FX_LABEL[k](v) : k;
   });
 }
 export function perksBetween(skill, fromLvl, toLvl) {

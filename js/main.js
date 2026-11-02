@@ -1558,7 +1558,7 @@ function inParty(id) { return player.activeCompanion === id || (player.party || 
 function partyXpBonus(skill) {
   let t = 0; const lead = player.activeCompanion;
   for (const id of partyIds()) { player.activeCompanion = id; t += companionXpBonus(player, skill); }
-  player.activeCompanion = lead; return Math.min(0.25, t);
+  player.activeCompanion = lead; return t;
 }
 function sendHome(id) { const e = compEnts[id]; if (e && e.home) { const h = e.home; e.mesh.position.set(h.x, terrainHeight(h.x, h.z), h.z); e.x = h.x; e.z = h.z; } }
 function togglePartyMember(id) {
@@ -1658,7 +1658,7 @@ function companionMend(id) {
   const h = 2 + Math.floor(s.bond / 2) * 2; player.hp = Math.min(player.maxHp, player.hp + h);
   if (tick % 50 === 0) log(`${d.short} mends your wounds (+${h} HP).`, 'game');
 }
-function partyGuard() { let r = 0; for (const id of partyIds()) { const d = companionById(id); if (d.style === 'melee') r += 0.05 + (compState(id).bond >= 6 ? 0.03 : 0); } return Math.min(0.2, r); }
+function partyGuard() { let r = 0; for (const id of partyIds()) { const d = companionById(id); if (d.style === 'melee') r += 0.05 + (compState(id).bond >= 6 ? 0.03 : 0); } return r; }
 extIncoming.push(dmg => { const r = partyGuard(); return r ? Math.max(1, Math.round(dmg * (1 - r))) : dmg; });
 function companionAssistOne(id, now) {
   const e = compEnts[id]; if (!e) return;
@@ -1840,7 +1840,7 @@ const pathsX = {
 };
 EXT.paths = pathsX;
 extTalk.paths = { face: '🧭', talk: () => pathsX.script(false) };
-extIncoming.push(dmg => { const r = pathsX.fx().red + (tick < (buffs.wallUntil || 0) ? 0.6 : 0) + (tick < (buffs.wardUntil || 0) ? 0.4 : 0); return r ? Math.max(1, Math.round(dmg * (1 - Math.min(0.8, r)))) : dmg; });
+extIncoming.push(dmg => { const r = pathsX.fx().red + (tick < (buffs.wallUntil || 0) ? 0.6 : 0) + (tick < (buffs.wardUntil || 0) ? 0.4 : 0); return r ? Math.max(0, Math.round(dmg * (1 - r))) : dmg; });
 extSwing.push((mon, swings, ranged, special) => {
   const fx = pathsX.fx(); if (fx.dmg || fx.acc) for (const s of swings) { s.dmg = (s.dmg || 0) + fx.dmg; s.acc = (s.acc || 0) + fx.acc; }
   if (special === 'rend') swings[0].dmg = (swings[0].dmg || 0) + 0.9;
@@ -3163,7 +3163,7 @@ function monsterAttack(mon, now) {
   if (dmg > 0 && dodging(flow, now)) { dmg = 0; overlays.splat(playerEnt, 0, now); log('Dodged!', 'combat'); if (!flow.perfectAt || now - flow.perfectAt > 1500) { flow.perfectAt = now; onPerfectDodge(); } return; }
   if (dmg > 0 && Math.random() < perk(skills, 'Defence', 'block')) { dmg = 0; log('Parry: you block the attack!', 'combat'); }
   // Retribution: reflect some damage back.
-  const refl = dmg > 0 ? Math.floor(dmg * Math.min(0.6, perk(skills, 'Defence', 'reflect') + (gearEffects(player).reflect || 0))) : 0;
+  const refl = dmg > 0 ? Math.floor(dmg * (perk(skills, 'Defence', 'reflect') + (gearEffects(player).reflect || 0))) : 0;
   if (refl > 0 && mon.alive) {
     mon.hp -= Math.min(refl, mon.hp); overlays.splat(mon, refl, now + 150);
     if (mon.hp <= 0) { killMonster(mon, now); }

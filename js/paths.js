@@ -30,6 +30,5 @@ export function pathFx(P) {
   if (!P || !P.id) return o;
   const d = PATHS[P.id]; for (const k in o) if (d[k]) o[k] += d[k];
   P.talents.forEach((v, i) => { if (v != null && TALENTS[i]) { const fx = TALENTS[i][v][1]; for (const k in fx) o[k] += fx[k]; } });
-  o.red = Math.min(0.45, o.red);
   return o;
 }

@@ -49,7 +49,6 @@ function sumEff(player) {
     if (e.burn && (!o.burn || e.burn.dmg > o.burn.dmg)) o.burn = e.burn;
     if (!o.glow && I.glow) o.glow = I.glow;
   }
-  o.dr = Math.min(0.2, o.dr);
   return o;
 }
 
@@ -58,7 +57,7 @@ export function installRelicGear(ctx) {
   const { EXT, player, log } = ctx;
   let cache = null, cacheKey = '';
   const fx = () => { const k = JSON.stringify(player.equipment || {}); if (k !== cacheKey) { cacheKey = k; cache = sumEff(player); } return cache; };
-  EXT.extIncoming.push(dmg => { const d = fx().dr; return d ? Math.max(1, Math.round(dmg * (1 - d))) : dmg; });
+  EXT.extIncoming.push(dmg => { const d = fx().dr; return d ? Math.max(0, Math.round(dmg * (1 - d))) : dmg; });
   EXT.extSwing.push((mon, swings, ranged) => {
     const f = fx(); if (!ranged || !swings.length) return;
     if (f.pierce && mon.hp > mon.maxHp / 2) for (const s of swings) s.dmg = (s.dmg || 0) + f.pierce;

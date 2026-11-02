@@ -49,7 +49,7 @@ export function installGuild(ctx) {
   EXT.extXp.push(skill => {
     const g = G(); if (!g) return 1;
     g.xpAcc++; if (g.xpAcc >= 40) { g.xpAcc = 0; renown(1); }
-    let m = 1 + (isCombat(skill) ? g.rooms.training : g.rooms.workshop) * 0.01 + Math.min(0.1, members().length * 0.005);
+    let m = 1 + (isCombat(skill) ? g.rooms.training : g.rooms.workshop) * 0.01 + members().length * 0.005;
     const b = boost();
     if (b === 'wisdom') m += 0.1; else if (b === 'rally') m += 0.25;
     else if (b === 'valor' && isCombat(skill)) m += 0.15; else if (b === 'craft' && !isCombat(skill)) m += 0.15;

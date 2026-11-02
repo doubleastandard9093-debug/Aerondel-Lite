@@ -86,7 +86,7 @@ export function installRelicry(ctx) {
     dig.next = ctx.tick() + (fast ? 2 : 3);
     pm.actionAnim = 1; pm.actionKind = 'tool';
     const s = e.site, tool = ITEMS[dig.tool], t = tool ? tool.toolTier || 0 : 0;
-    const chance = Math.min(0.9, 0.3 + (lvl() - s.level) * 0.01 + t * 0.05);
+    const chance = 0.3 + (lvl() - s.level) * 0.01 + t * 0.05;
     if (Math.random() > chance) return;
     giveXP('Relicry', digXp(s.level));
     const dbl = Math.random() < perk(skills, 'Relicry', 'double') ? 2 : 1, r = Math.random();

@@ -36,5 +36,5 @@ let pathOf = () => null;
 export function setPathSource(f) { pathOf = f; }
 export function unlocked(skills, a) { return a.path ? pathOf() === a.path : skills[a.skill].level >= a.level; }
 export function cooldownTicks(skills, a) {
-  return Math.max(3, Math.round(a.cd * (1 - perk(skills, 'Attack', 'abilityCd'))));
+  return Math.max(0, Math.round(a.cd * (1 - perk(skills, 'Attack', 'abilityCd'))));
 }

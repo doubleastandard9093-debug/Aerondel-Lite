@@ -57,8 +57,8 @@ export function prayerBonus(player) {
 export function drainPerTick(player, skills) {
   let d = 0;
   for (const id of player.activePrayers || []) d += prayerById(id).drain;
-  const less = Math.min(0.6, perk(skills, 'Prayer', 'drainLess') + questFx(player, 'drainLess'));
-  return d * (1 - less) / (1 + Math.max(0, prayerBonus(player)) / 30);
+  const less = perk(skills, 'Prayer', 'drainLess') + questFx(player, 'drainLess');
+  return d * Math.max(0, 1 - less) / (1 + Math.max(0, prayerBonus(player)) / 30);
 }
 // Faithful perk and Rest for the Fallen: prayer points slowly come back.
 export function ppRegenPerTick(player, skills) {
