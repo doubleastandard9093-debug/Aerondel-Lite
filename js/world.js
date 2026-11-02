@@ -80,7 +80,7 @@ export const GUILDS = [
 // one outpost lodge per climate-region camp
 const CAMP_LOOK = { tundra: [0xd8dce4, 0x3a4a6a], alpine: [0x8a7a62, 0x4a5a3a], volcanic: [0x4a3a36, 0x8a2a1a], desert: [0xd8c08a, 0xa0603a], jungle: [0x6a5a3a, 0x3a6a2a], swamp: [0x5a5a48, 0x3a4a2a] };
 for (const R of REGION_DATA) if (R.camp) { const [wall, roof] = CAMP_LOOK[R.biome] || [0x9a8a6a, 0x5a3a2a];
-  BUILDINGS.push([R.x + R.camp.dx + 9, R.z + R.camp.dz - 7, 5, 4, wall, roof, `${R.camp.name} Lodge`, `The outpost lodge of ${R.camp.name}, ${R.name}.`]); }
+  BUILDINGS.push([R.x + R.camp.dx + 9, R.z + R.camp.dz - 7, 5, 4, wall, roof, R.camp.name.endsWith(" Lodge") ? R.camp.name : `${R.camp.name} Lodge`, `The outpost lodge of ${R.camp.name}, ${R.name}.`]); }
 for (const g of GUILDS) BUILDINGS.push([g.x, g.z, g.w, g.d, g.wall, g.roof, g.name, `Members need ${g.skill} level ${g.level} to enter.`]);
 PATHS.push([0, -27, 20, -56], [0, 29, 0, 55], [0, 55, -22, 55]);
 function nearestTown(x, z) {
