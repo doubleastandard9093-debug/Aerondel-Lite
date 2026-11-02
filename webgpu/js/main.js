@@ -16,7 +16,7 @@ import { createScene, createCamera, createRenderer, createLights, followLight, s
 import { adoptSceneObjects, registerDynamic, updateChunks, pumpChunks, primeChunks, setLoadRadius, radiusFor, isLoadedAt, chunkStats } from '../../js/chunk.js';
 import { loadRegions } from '../../js/regions.js';
 import { setModelQuality, updateFolk, modelStats } from '../../js/assets.js';
-import { setRigQuality, rigStats, wantRigs, MONSTER_RIGS, monsterRig, showRig, driveMonster, rigRange } from '../../js/rigs.js';
+import { setRigQuality, rigStats, wantRigs, MONSTER_RIGS, monsterRig, showRig, driveMonster, rigRange, attachPlayerRig, showPlayerRig, drivePlayer } from '../../js/rigs.js';
 import { createClimate } from '../../js/climate.js';
 import { PATHS, terrainHeight, insideLake, WORLD_HALF, TOWNS, CAVE, inCave } from '../../js/world.js';
 import { createWorld, createPileMesh, SPAWN, setDecorQuality, updateDecorChunks, updateLocalGrass } from '../../js/world.js';
@@ -110,6 +110,7 @@ attachPendingReflectors(scene); upgradeShared(); upgradeScene(scene);
 initGpuExtras({ scene, camera, renderer, dirLight, lightsRef });
 setLeafSources(nodes.filter(n => n.type === 'tree'));
 const pm = createPlayer(scene);
+attachPlayerRig(pm);
 // Chunk streaming: static props, buildings and NPC stalls attach only near the player.
 scene.updateMatrixWorld(true);
 const wanderers = nodes.filter(n => n.wander);
@@ -3677,6 +3678,7 @@ function animate(now) {
   const running = player.settings.run && player.runEnergy > 0;
   routeThroughDoors();
   const moved = crossing || sailing.atSea ? 0 : updatePlayer(pm, keys, dt, running, rig.yaw);
+  if (pm.rig) { showPlayerRig(pm, true); drivePlayer(pm, dt, running); }
   sailing.update(dt, keys);
   updateSteed(dt, moved);
   updateSound(pm, dt, player.settings, DAY.night < 0.5);

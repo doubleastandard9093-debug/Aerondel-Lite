@@ -129,3 +129,50 @@ export function driveMonster(m, dt, moving) {
   drive(R, dt, moving ? (m.state === 'idle' ? 'walk' : 'run') : 'idle', trig);
 }
 
+// ---- player: Adventurer, tinted by the equipped armour tier, procedural weapon / bow / shield on the hand bones ----
+CLIP.roll = [/^roll$/i];
+const _v = new THREE.Vector3(), _v2 = new THREE.Vector3();
+export function attachPlayerRig(pm) {
+  if (!RS.on || pm.rig !== undefined) return;
+  pm.rig = null;
+  makeRig('adventurer', { height: 1.78 }).then(R => {
+    if (!R) return;
+    const p = pm.parts, G = pm.mesh;
+    G.add(R.obj);
+    const bone = re => { let b = null; R.obj.traverse(o => { if (!b && o.isBone && re.test(o.name)) b = o; }); return b; };
+    const hR = bone(/^wrist\.?_?r$/i), hL = bone(/^wrist\.?_?l$/i);
+    R.obj.updateMatrixWorld(true); G.updateMatrixWorld(true);
+    const mount = (b, items) => {
+      if (!b) return;
+      const h = new THREE.Group(); b.add(h);
+      b.getWorldScale(_v); G.getWorldScale(_v2); h.scale.set(_v2.x / _v.x, _v2.y / _v.y, _v2.z / _v.z);
+      for (const [it, pos, rot] of items) { it.userData.home = [it.parent, it.position.clone(), it.rotation.clone()]; h.add(it); it.position.set(...pos); it.rotation.set(...rot); }
+    };
+    mount(hR, [[p.sword, [0, 0.08, 0.02], [Math.PI, 0, 0]]]);
+    mount(hL, [[p.bow, [0, 0.08, 0.04], [0, 0, 0]], [p.shield, [-0.08, 0.1, 0], [0, 0, 0]]]);
+    // body / legs materials follow the procedural gear colours (tier tint)
+    R.matKind = R.mats.map(m => /leg|pant|feet|boot|shoe/i.test(m.name) ? 'legs' : /skin|eye|hair|face|black|white/i.test(m.name) ? null : 'body');
+    pm.rig = R; R.on = false;
+  });
+}
+export function showPlayerRig(pm, on) {
+  const R = pm.rig; if (!R || R.on === on) return;
+  R.on = on; R.obj.visible = on;
+  const p = pm.parts;
+  for (const c of [p.body, p.leftArm, p.rightArm, p.leftLeg, p.rightLeg]) if (c) c.visible = !on;
+}
+const _wc = new THREE.Color(1, 1, 1), _tc = new THREE.Color();
+export function drivePlayer(pm, dt, running) {
+  const R = pm.rig; if (!R || !R.on) return;
+  const p = pm.parts;
+  // tier tint, cheap: 3 colour lerps per material
+  R.mats.forEach((m, i) => { const k = R.matKind[i]; if (!k) return; const src = k === 'legs' ? p.legMat.color : p.bodyMat.color, hx = src.getHex(); if (hx === 0x6b4423 || hx === 0x3a2a1a) { m.color.copy(m.userData.base); return; } m.color.copy(m.userData.base).multiply(_tc.copy(_wc).lerp(src, 0.6).multiplyScalar(1.3)); });
+  let trig = null;
+  const a = pm.actionAnim || 0;
+  if (a > (R.pa || 0) + 0.3) trig = pm.actionKind === 'bow' ? 'shoot' : /melee|chop|mine|smith/.test(pm.actionKind) ? 'attack' : 'interact';
+  else if ((pm.hitT || 0) > (R.ph || 0) + 0.3) trig = 'hit';
+  R.pa = a; R.ph = pm.hitT || 0;
+  if (pm.dodge && R.curSt !== 'roll') trig = 'roll';
+  drive(R, dt, pm.moving ? (running ? 'run' : 'walk') : 'idle', trig);
+}
+
