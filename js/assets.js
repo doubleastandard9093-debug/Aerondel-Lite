@@ -50,7 +50,9 @@ function prep(gltf, path = '') {
   const palm = /palm/.test(path);
   gltf.scene.traverse(o => {
     if (!o.isMesh) return;
-    o.castShadow = true; o.receiveShadow = !palm;   // palms: fronds self-shadowed into near-black, so lit only
+    const bush = /bush/.test(path);
+    o.castShadow = true; o.receiveShadow = !palm && !bush;   // palms/bushes: dense leaves self-shadowed into near-black, so lit only
+    if (bush) for (const m of [].concat(o.material)) { if (m.emissive && !m.userData.lifted) { m.userData.lifted = 1; m.color.multiply(new THREE.Color(0.82, 1.0, 0.7)); m.emissive.copy(m.color).multiplyScalar(0.08); } }
     if (palm) for (const m of [].concat(o.material)) { m.side = THREE.DoubleSide; if (m.emissive) m.emissive.copy(m.color).multiplyScalar(0.22); }
     if (o.geometry) o.geometry.userData.shared = true;
     for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
