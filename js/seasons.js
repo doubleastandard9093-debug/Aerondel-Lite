@@ -11,6 +11,7 @@ export const SEASON_IDS = Object.keys(SEASONS);
 export function realSeason(d = new Date()) { const m = d.getMonth(); return m >= 2 && m <= 4 ? 'spring' : m >= 5 && m <= 7 ? 'summer' : m >= 8 && m <= 10 ? 'autumn' : 'winter'; }
 export function currentSeason(player, d) { const o = player && player.settings && player.settings.season; return SEASONS[o] ? o : realSeason(d); }
 
+import { applyLeafTint } from './assets.js';
 export function installSeasons(ctx) {
   const { player, gfx, setSeasonDetail, SEASON_GRASS, SEASON_SNOW, foliageMat } = ctx;
   let applied = null, appliedQ = null;
@@ -21,6 +22,7 @@ export function installSeasons(ctx) {
     SEASON_GRASS.value.set(S.grass[0], S.grass[1], S.grass[2]);
     SEASON_SNOW.value = S.snow;
     if (foliageMat && foliageMat.color) foliageMat.color.setHex(S.leaf);
+    applyLeafTint(S.leaf);
     setSeasonDetail(gfx.quality === 'low' ? 'summer' : s);
     return s;
   }

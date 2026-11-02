@@ -23,6 +23,7 @@ import { REGION_DATA, BIOMES } from './regiondata.js';
 import { vcMat, bake, col, place, prim } from './models.js';
 import { makeRng } from './rng.js';
 import { VILLAGES } from './villagedata.js';
+import { hasModel, dressProp, makeFolk, FOLK } from './assets.js';
 
 export const REGIONS = [
   // Example (uncomment and move to an empty area to try it):
@@ -89,6 +90,8 @@ const CLIMATE = {
   elfhall: [2.6, r => [C(place(prim.box(5.4, 2.8, 4.0), 0, 1.4), 0xf2f0e8), C(place(prim.cyl(0.01, 3.6, 2.2, 4), 0, 3.9, 0, 0, Math.PI / 4, 0, 1.08, 1, 0.8), 0x4a8a6a), ...[-2.3, -0.8, 0.8, 2.3].map(x => C(place(prim.cyl(0.18, 0.2, 2.8, 8), x, 1.4, 2.15), 0xffffff)), C(place(prim.box(1.2, 2.0, 0.15), 0, 1.0, 2.05), 0x6a8aa0)]],
   silvertree: [0.4, r => [C(place(prim.cyl(0.18, 0.3, 4.2, 7), 0, 2.1), 0xd8d8d0), C(lowpoly(place(new THREE.IcosahedronGeometry(1.8, 1), 0, 5.0, 0, 0, 0, 0, 1, 0.8, 1), r, 0.2), 0xa8d0b8), C(lowpoly(place(new THREE.IcosahedronGeometry(1.2, 0), 0.8, 5.8, 0.3), r, 0.2), 0xc8e8d8)]],
   moonlamp: [0.15, r => [C(place(prim.cyl(0.06, 0.08, 2.4, 6), 0, 1.2), 0xd8d8d0), C(place(prim.sphere(0.22, 8, 6), 0, 2.55), 0xc8f0ff)]],
+  cottage: [1.7, r => [C(place(prim.box(3.0, 2.4, 3.0), 0, 1.2), 0xc8b89a), C(place(prim.cyl(0.01, 2.5, 2.0, 4), 0, 3.4, 0, 0, Math.PI / 4), 0x7a4a2a), C(place(prim.box(0.9, 1.5, 0.1), 0, 0.75, 1.52), 0x4a3020)]],
+  stall: [0.9, r => [C(place(prim.box(2.0, 0.9, 1.0), 0, 0.45), 0x9a7246), ...[-0.9, 0.9].map(x => C(place(prim.cyl(0.05, 0.05, 2.2, 5), x, 1.1, 0.45), 0x6a4a2a)), C(place(prim.box(2.2, 0.08, 1.3), 0, 2.2, 0.2, 0.2), 0xb03a2a)]],
   mossrock: [0.7, r => [C(lowpoly(place(new THREE.DodecahedronGeometry(0.9, 0), 0, 0.35, 0, 0, 0, 0, 1.2, 0.7, 1.0), r, 0.35), 0x4a4a42), C(place(new THREE.DodecahedronGeometry(0.75, 0), 0, 0.62, 0, 0, 0, 0, 1.05, 0.3, 0.85), 0x4a6a2a)]],
 };
 
@@ -100,7 +103,7 @@ export const KINDS = {
   pillar: { solid: 0.55, build: () => mesh(G.pillar, M.stone, 1.6) },
   bush: { solid: 0, build: () => mesh(G.bush, M.leaf, 0.5) },
   fence: { solid: 0.15, build: () => { const o = mesh(G.box, M.wood, 0.5); o.scale.set(2, 1, 0.12); return o; } },
-  campfire: { solid: 0.4, build: () => { const g = new THREE.Group(); for (let i = 0; i < 3; i++) { const l = mesh(G.log, M.bark, 0.1); l.rotation.set(Math.PI / 2, 0, i * 2.1); g.add(l); } g.add(mesh(G.flame, M.ember, 0.4)); return g; } },
+  campfire: { solid: 0.4, build: () => { const g = new THREE.Group(); for (let i = 0; i < 3; i++) { const l = mesh(G.log, M.bark, 0.1); l.rotation.set(Math.PI / 2, 0, i * 2.1); g.add(l); } const f = mesh(G.flame, M.ember, 0.4); f.userData.part = 'flame'; g.add(f); return g; } },
 };
 for (const [k, [solid, fn]] of Object.entries(CLIMATE)) KINDS[k] = { solid, build: () => { const v = (Math.random() * 3) | 0; const m = new THREE.Mesh(g3(k, v, fn), vcMat); m.castShadow = true; m.receiveShadow = true; return m; } };
 
@@ -128,6 +131,12 @@ export function climateRegions(density = 1) {
         props.push([kind, x, z, 0.8 + rng() * 0.5, rng() * Math.PI * 2]); i++;
       }
     }
+    if (R.camp) {   // a few cottages and a market stall on the camp's outskirts (outside its 15 m clear zone)
+      const cx = R.x + R.camp.dx, cz = R.z + R.camp.dz;
+      for (let i = 0; i < 3; i++) { const a = 2.4 + i * 0.9, x = cx + Math.cos(a) * 19, z = cz + Math.sin(a) * 19;
+        if (!PATHS.some(p => distSeg(x, z, ...p) < 5) && !keep.slice(1).some(([kx, kz, kr]) => Math.hypot(x - kx, z - kz) < kr + 3)) props.push(['cottage', x, z, 1, Math.atan2(cx - x, cz - z)]); }
+      { const x = cx + Math.cos(1.5) * 17, z = cz + Math.sin(1.5) * 17; props.push(['stall', x, z, 1, Math.atan2(cx - x, cz - z)]); }
+    }
     return { id: R.id, name: R.name, biome: R.biome, bounds: [R.x - R.r, R.z - R.r, R.x + R.r, R.z + R.r], props };
   });
 }
@@ -150,7 +159,7 @@ export function villageRegions() {
 
 // Register every region prop with its chunk. Returns the regions in use (for the world map).
 // spawnMonster/registerDynamic come from main so mobs share the normal AI, loot and respawn code.
-export function loadRegions(scene, { spawnMonster, registerDynamic, density = 1 } = {}) {
+export function loadRegions(scene, { spawnMonster, registerDynamic, density = 1, withFolk = true } = {}) {
   const list = [...REGIONS, ...climateRegions(density), ...villageRegions()];
   if (typeof location !== 'undefined' && new URLSearchParams(location.search).get('regiontest')) list.push(TEST_REGION);
   let props = 0, mobs = 0;
@@ -160,7 +169,9 @@ export function loadRegions(scene, { spawnMonster, registerDynamic, density = 1 
       if (!K) { console.warn('[regions] unknown prop kind', kind, 'in', r.id); continue; }
       if (K.solid) { const h = K.solid * s; colliders.push({ minX: x - h, maxX: x + h, minZ: z - h, maxZ: z + h, prop: r.id + ':' + kind }); }
       registerChunkObject(x, z, () => {
-        const o = K.build(); o.position.set(x, terrainHeight(x, z), z); o.scale.multiplyScalar(s); o.rotation.y = rot;
+        let o = K.build();
+        if (hasModel(kind)) { const h = new THREE.Group(); h.add(o); o = dressProp(h, kind, x, z); }
+        o.position.set(x, terrainHeight(x, z), z); o.scale.multiplyScalar(s); o.rotation.y = rot;
         o.userData.region = r.id; return o;
       }, scene, { regen: true });
       props++;
@@ -171,5 +182,13 @@ export function loadRegions(scene, { spawnMonster, registerDynamic, density = 1 
       mobs++;
     }
   }
-  return { regions: list, props, mobs };
+  // ambient townsfolk (CC0 animated characters), chunk-streamed; skipped on Low/when models are off
+  let folk = 0;
+  if (withFolk) {
+    const spots = [...REGION_DATA.filter(R => R.camp).map(R => [R.x + R.camp.dx, R.z + R.camp.dz]), ...VILLAGES.filter(V => V.kind !== 'ogre').map(V => [V.x, V.z])];
+    spots.forEach(([sx, sz], i) => { for (let j = 0; j < (density < 1 ? 1 : 2); j++) {
+      const x = sx + (j ? 5 : -5), z = sz + 4 + j * 2, path = FOLK[(i * 2 + j) % (density < 1 ? 2 : FOLK.length)];
+      registerChunkObject(x, z, () => makeFolk(path, x, z, terrainHeight), scene); folk++; } });
+  }
+  return { regions: list, props, mobs, folk };
 }

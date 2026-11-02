@@ -15,6 +15,7 @@ import { createSky, tickGfx, resolveQuality, pixelRatioFor, SWAY, enableTexDetai
 import { createScene, createCamera, createRenderer, createLights, followLight, setShadows, tuneLights, IS_TOUCH } from './scene.js';
 import { adoptSceneObjects, registerDynamic, updateChunks, pumpChunks, primeChunks, setLoadRadius, radiusFor, isLoadedAt, chunkStats } from '../../js/chunk.js';
 import { loadRegions } from '../../js/regions.js';
+import { setModelQuality, updateFolk, modelStats } from '../../js/assets.js';
 import { createClimate } from '../../js/climate.js';
 import { PATHS, terrainHeight, insideLake, WORLD_HALF, TOWNS, CAVE, inCave } from '../../js/world.js';
 import { createWorld, createPileMesh, SPAWN, setDecorQuality, updateDecorChunks, updateLocalGrass } from '../../js/world.js';
@@ -115,12 +116,14 @@ const chunkSkip = new Set([ground, pm.mesh, ...monsters.map(m => m.mesh), ...wan
 adoptSceneObjects(scene, chunkSkip);
 for (const m of monsters) registerDynamic(m.mesh, () => m.mesh.position, scene);
 for (const n of wanderers) registerDynamic(n.mesh, () => n.mesh.position, scene);
+setModelQuality({ touch: IS_TOUCH });
 const regionInfo = loadRegions(scene, { spawnMonster, registerDynamic, density: IS_TOUCH ? 0.6 : 1 });   // data-only map regions (js/regions.js), built lazily per chunk
 primeChunks(pm.mesh.position.x, pm.mesh.position.z, scene);
 window.regionInfo = regionInfo;
 const climate = createClimate(scene, { lite: IS_TOUCH });   // climate-region fog + particles (js/climate.js)
 window.climate = climate;
 window.chunkStats = chunkStats;
+window.modelStats = modelStats;
 const updateCritters = createCritters(scene, terrainHeight, (x, z) => insideLake(x, z, 1) || blockedAt(x, z) || Math.abs(x) > WORLD_HALF - 4 || Math.abs(z) > WORLD_HALF - 4 || Object.values(TOWNS).some(t => Math.hypot(t.x - x, t.z - z) < 22));
 const skills = createSkills();
 const player = createPlayerState();
@@ -3671,6 +3674,7 @@ function animate(now) {
   updateSteed(dt, moved);
   updateSound(pm, dt, player.settings, DAY.night < 0.5);
   updateCrossing(dt);
+  updateFolk(Math.min(dt, 0.1));
   if (running && moved > 0) {
     player.runEnergy = Math.max(0, player.runEnergy - moved * 0.7);
     if (player.runEnergy <= 0) { player.settings.run = false; log('You have run out of energy.', 'warn'); markDirty(); }
@@ -3685,7 +3689,7 @@ function animate(now) {
 
   if (frame % 15 === 0) cullWorld();
   if (frame % 5 === 2) updateRoofs();
-  if (frame % 10 === 3) { setLoadRadius(radiusFor(gfx.quality, IS_TOUCH)); updateChunks(pm.mesh.position.x, pm.mesh.position.z, scene); }
+  if (frame % 10 === 3) { setModelQuality({ low: gfx.quality === 'low', touch: IS_TOUCH }); setLoadRadius(radiusFor(gfx.quality, IS_TOUCH)); updateChunks(pm.mesh.position.x, pm.mesh.position.z, scene); }
   else pumpChunks(scene);   // time-sliced chunk attach/detach
   if (frame % 300 === 11) { refreshStanding(true); finishErrands(); }
   if (frame % 30 === 13) refreshQuick();
