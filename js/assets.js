@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { clone as skClone } from 'three/addons/utils/SkeletonUtils.js';
+import { realify } from './realism.js';
 
 const BASE = new URL('../models/', import.meta.url);
 const Q = typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams();
@@ -122,6 +123,7 @@ function loadFolk(F) {
     if (F.tint != null) m.traverse(o => { if (o.isMesh) { o.material = o.material.clone(); o.material.color.multiply(new THREE.Color(1, 1, 1).lerp(new THREE.Color(F.tint), 0.4)); } });
     m.scale.multiplyScalar((F.height || 1.75) / Math.max(1e-3, _s.y));
     m.traverse(o => { if (o.isMesh) o.frustumCulled = false; });
+    if (Q.get('real') !== '0') { m.updateMatrixWorld(true); realify(m, F.path, F.height || 1.75); }   // folk only show on High/Epic
     holder.add(m);
     F.mixer = new THREE.AnimationMixer(m);
     const ALT = { 'pick-up': /^(pick-up|interact|eating)$/i, 'emote-yes': /^(emote-yes|yes|wave)$/i };

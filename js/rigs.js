@@ -4,9 +4,10 @@
 import * as THREE from 'three';
 import { clone as skClone } from 'three/addons/utils/SkeletonUtils.js';
 import { loadModel } from './assets.js';
+import { smoothGeometry, richMaterial } from './realism.js';
 
 const Q = typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams();
-const RS = { on: Q.get('models') !== '0' && typeof document !== 'undefined', low: false, touch: false, active: 0 };
+const RS = { on: Q.get('models') !== '0' && typeof document !== 'undefined', low: false, touch: false, active: 0, real: Q.get('real') !== '0' };
 export function setRigQuality({ low = false, touch = false } = {}) { RS.low = low; RS.touch = touch; }
 export function rigStats() { return { on: RS.on, low: RS.low, active: RS.active }; }
 
@@ -56,7 +57,8 @@ export function makeRig(name, { height = 1.75, len = 0, tint = null, k = 0.55 } 
       const tw = m => { const c = m.clone(); c.userData = {}; c.userData.base = c.color.clone(); mats.push(c); return c; };
       o.material = Array.isArray(o.material) ? o.material.map(tw) : tw(o.material);
     });
-    const R = { obj, mixer: new THREE.AnimationMixer(obj), clips: g.animations, acts: {}, cur: null, curSt: null, once: 0, mats, name, on: false };
+    const meshes = []; obj.traverse(o => { if (o.isMesh) meshes.push({ o, geo: o.geometry, mat: o.material }); });
+    const R = { meshes, fitH: len || height, rich: false, obj, mixer: new THREE.AnimationMixer(obj), clips: g.animations, acts: {}, cur: null, curSt: null, once: 0, mats, name, on: false };
     if (tint != null) tintRig(R, tint, k);
     play(R, 'idle');
     return R;
@@ -67,6 +69,25 @@ export function tintRig(R, hex, k = 0.55, filter = null) {
   _t.set(hex);
   for (const m of R.mats) { if (filter && !filter(m)) continue; m.color.copy(m.userData.base).multiply(_w.clone().lerp(_t, k)); }
 }
+// High/Epic: smooth normals + physical materials (realism.js); Low keeps the faceted cheap set.
+export function setRigRich(R, on) {
+  if (R.rich === on) return;
+  R.rich = on;
+  if (on && !R.richMats) {
+    const ext = new THREE.Box3(); let e = 0;
+    for (const M of R.meshes) { M.geo.computeBoundingBox(); ext.copy(M.geo.boundingBox); e = Math.max(e, ext.max.y - ext.min.y, ext.max.x - ext.min.x, ext.max.z - ext.min.z); }
+    const unit = R.fitH / Math.max(1e-4, e), add = [], kinds = [];
+    R.richMats = new Map();
+    for (const M of R.meshes) {
+      M.rgeo = M.geo.attributes.normal ? smoothGeometry(M.geo) : M.geo;
+      const up = m => { if (R.richMats.has(m)) return R.richMats.get(m); const r = richMaterial(m, R.name, unit); r.color.copy(m.color); r.userData.base = m.userData.base; R.richMats.set(m, r); add.push(r); if (R.matKind) kinds.push(R.matKind[R.mats.indexOf(m)]); return r; };
+      M.rmat = Array.isArray(M.mat) ? M.mat.map(up) : up(M.mat);
+    }
+    R.mats.push(...add); if (R.matKind) R.matKind.push(...kinds);
+  }
+  for (const M of R.meshes) { M.o.geometry = on ? M.rgeo : M.geo; M.o.material = on ? M.rmat : M.mat; M.o.receiveShadow = on; }
+}
+export const rigRichWanted = () => RS.real && !RS.low;
 function act(R, st) {
   if (!(st in R.acts)) { const c = findClip(R.clips, st); R.acts[st] = c ? R.mixer.clipAction(c) : null; }
   return R.acts[st];
@@ -83,6 +104,7 @@ export function play(R, st, { once = false, speed = 1 } = {}) {
 }
 // per frame: base looping state + one-shot triggers
 export function drive(R, dt, base, trigger = null) {
+  if (R.meshes && R.rich !== rigRichWanted()) setRigRich(R, rigRichWanted());
   if (trigger) play(R, trigger, { once: true });
   else if (R.once > 0) R.once -= dt;
   else if (R.curSt !== base) play(R, base);

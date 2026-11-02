@@ -18,6 +18,7 @@ import { createScene, createCamera, createRenderer, createLights, followLight, s
 import { adoptSceneObjects, registerDynamic, updateChunks, pumpChunks, primeChunks, setLoadRadius, radiusFor, isLoadedAt, chunkStats } from './chunk.js';
 import { loadRegions } from './regions.js';
 import { setModelQuality, updateFolk, modelStats } from './assets.js';
+import { initRealismEnv } from './realism.js';
 import { setRigQuality, rigStats, wantRigs, MONSTER_RIGS, monsterRig, showRig, driveMonster, rigRange, attachPlayerRig, showPlayerRig, drivePlayer, npcRig, driveNpc } from './rigs.js';
 import { createClimate } from './climate.js';
 import { PATHS, terrainHeight, insideLake, WORLD_HALF, TOWNS, CAVE, inCave } from './world.js';
@@ -97,6 +98,7 @@ import { QUIRKS, QUIRK_MAX, REMEDY, FIRE_RE, quirkById, normalizeQuirks, dueQuir
 const scene = createScene();
 const camera = createCamera();
 const renderer = createRenderer();
+initRealismEnv(renderer);   // PMREM room env for rigged characters' physical materials (High only)
 // Tier S #1: the composer's own target needs MSAA or renderer antialias is lost on High. Desktop: 4x MSAA; touch: SMAA pass (cheaper).
 const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, { type: THREE.HalfFloatType, samples: IS_TOUCH ? 0 : 4 }));
 composer.addPass(new RenderPass(scene, camera));
