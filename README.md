@@ -34,7 +34,7 @@ The UI is original art made in code: CSS, inline SVG and canvas. There are no im
   - A title and loading screen (`#loader` in index.html).
   - Optional interface clicks, synthesised with WebAudio.
 - **Adrenaline** (`ADREN` in abilities.js): basic abilities build +9%, thresholds cost 50% and ultimates cost 100%. The HUD owns the gauge, which you can control with `hud.spend` and `hud.gain`.
-- **Keybinds** (`js/keybinds.js`): every keyboard action can be rebound in Settings. Binds are saved to localStorage under `gielinor-keybinds`, binding a key unbinds any other action using it, and there's a reset to defaults.
+- **Keybinds** (`js/keybinds.js`): every keyboard action can be rebound in Settings. Binds are saved to localStorage under `aerondel-keybinds` (older `gielinor-keybinds` is still read), binding a key unbinds any other action using it, and there's a reset to defaults.
 - **Polish:** tab and window transitions, and a level-up banner with a ring flash and spark burst. Safe-area insets are respected, with layouts for phone portrait, phone landscape and desktop.
 
 ## Graphics

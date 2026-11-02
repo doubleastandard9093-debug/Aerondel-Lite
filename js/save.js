@@ -31,7 +31,12 @@ import { normalizeSiege } from './siege.js';
 
 export const SAVE_VERSION = 20;
 export const POS_LIMIT = 416; // world half-size (WORLD_HALF 420, climate regions) minus a margin
-const KEY = 'gielinor3d';
+const KEY = 'aerondel3d';
+const LEGACY_KEY = 'gielinor3d'; // pre-Aerondel saves: read as a fallback, never deleted
+// Read a localStorage value under its Aerondel key, falling back to the old Gielinor key (migrates on next write).
+export function lsRead(key, legacy) {
+  try { const v = localStorage.getItem(key); return v != null ? v : (legacy ? localStorage.getItem(legacy) : null); } catch (e) { return null; }
+}
 // Wanderer's Horizons (v15+): extra player fields saved and loaded as-is (normalized in migrateSave).
 export const EXTRA_KEYS = ['tongue', 'quirks', 'writs', 'still', 'path', 'delves', 'codex', 'aim', 'colossi', 'skywing', 'charter', 'siege', 'relicry', 'delving'];
 
@@ -265,12 +270,12 @@ export function saveToLocal(skills, player, playerMesh) {
 }
 
 export function hasLocalSave() {
-  try { return !!localStorage.getItem(KEY); } catch (e) { return false; }
+  try { return !!lsRead(KEY, LEGACY_KEY); } catch (e) { return false; }
 }
 
 export function loadFromLocal(skills, player, playerMesh) {
   try {
-    const data = localStorage.getItem(KEY);
+    const data = lsRead(KEY, LEGACY_KEY);
     if (data) return applySaveData(data, skills, player, playerMesh);
   } catch (e) {}
   return false;
@@ -282,7 +287,7 @@ export function exportSave(skills, player, playerMesh) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'gielinor-save.json';
+  a.download = 'aerondel-save.json';
   document.body.appendChild(a);
   a.click();
   a.remove();

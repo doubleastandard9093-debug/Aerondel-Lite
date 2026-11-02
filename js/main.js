@@ -3736,7 +3736,7 @@ document.addEventListener('pointerdown', e => {
     o.connect(g); g.connect(uiAudio.destination); o.start(t); o.stop(t + 0.1);
   } catch (er) { /* audio unavailable */ }
 }, true);
-window.gielinor = { EXT,
+window.aerondel = window.gielinor = { EXT,
   gfx, terrainHeight, applyLook() { applyEquipmentLook(pm, lookEquip()); }, setGfx(q) { player.settings.gfx = q; gfx.autoLow = false; applyGfx(); markDirty(); }, scene, camera,
   renderer, player, skills, flow, doDodge, toggleRide, steedShift, steedState, checkSteeds, monsters, nodes, piles, pm, rig, fires, buildings, ui, invUI, get hud() { return hud; }, giveXP, setAutocast, get crossing() { return crossing; }, gtao, get gfxQ() { return gfx.quality; }, useAbility, talkTo, startCraft, stopAction, startAction, useItem, RECIPES, optionsFor, walkTo,
   soundStats, get queued() { return queuedAbility; }, cooldowns, buffs,

@@ -280,7 +280,7 @@ const GIANT_GLOW = typeof location !== 'undefined' && /giantglow/.test(location.
 export function tickNodeMats() {
   charQ.value = CHAR.q.value; lK.value = DAY.dirK ?? 1;
   // received-light level relative to noon: sun/moon plus sky fill, dimmed in the cave
-  const g = typeof window !== 'undefined' ? window.gielinor : null, cave = g ? Math.min(1, g.caveK || 0) : 0;
+  const g = typeof window !== 'undefined' ? window.aerondel : null, cave = g ? Math.min(1, g.caveK || 0) : 0;
   const now = lum(DAY.lightCol) * (DAY.dirK ?? 1) + 0.6 * lum(DAY.hemiCol) * (DAY.hemiK ?? 1);
   ambK.value = GIANT_GLOW ? 1 : Math.min(1, Math.max(0.08, now / AMB_NOON)) * (1 - 0.7 * cave);
   for (const m of gearMats) { if (m.userData.gk) m.userData.gkU.value = m.userData.gk.value; m.userData.gearColorU.copy(m.color); }

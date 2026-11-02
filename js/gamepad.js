@@ -1,9 +1,9 @@
 // Xbox / standard gamepad (Bluetooth or USB) via the Gamepad API, for both the WebGL and WebGPU builds.
 // Idle cost: a 1 s probe until a pad appears; then one rAF poll per frame.
 const BT = { A: 0, B: 1, X: 2, Y: 3, LB: 4, RB: 5, LT: 6, RT: 7, BACK: 8, START: 9, L3: 10, R3: 11, UP: 12, DOWN: 13, LEFT: 14, RIGHT: 15 };
-const SKEY = 'gielinor-pad';
+const SKEY = 'aerondel-pad', OLD_SKEY = 'gielinor-pad';
 export const pad = { connected: false, active: false, id: '', sens: 1, invertY: false, dz: 0.18, rumbleOn: true };
-try { Object.assign(pad, JSON.parse(localStorage.getItem(SKEY) || '{}')); pad.connected = pad.active = false; } catch (e) {}
+try { Object.assign(pad, JSON.parse(localStorage.getItem(SKEY) || localStorage.getItem(OLD_SKEY) || '{}')); pad.connected = pad.active = false; } catch (e) {}
 export function savePad() { try { localStorage.setItem(SKEY, JSON.stringify({ sens: pad.sens, invertY: pad.invertY, dz: pad.dz, rumbleOn: pad.rumbleOn })); } catch (e) {} }
 export const PAD_LEGEND = 'Left stick walk · Right stick camera · LT/RT zoom out/in (hold LB: RT = True Aim) · A interact/talk/gather nearest · X attack nearest enemy · B dodge-roll (closes menus) · Y options for nearest · D-pad action bar 1–4, hold LB for 5–8 · RB Stillwatch · L3 toggle run · R3 ride/dismount · View world map · Start opens the side panel on Inventory (hold: Settings) · in menus/panel: D-pad or left stick move, A select, LB/RB switch tab, B back.';
 const pads = () => { try { return Array.from(navigator.getGamepads?.() || []).filter(Boolean); } catch (e) { return []; } };

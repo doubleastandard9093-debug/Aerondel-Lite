@@ -31,7 +31,7 @@ export function initGpuExtras(c) {
     'font:600 11px Georgia,serif;letter-spacing:.04em;padding:2px 8px;border-radius:9px;border:1px solid #d4af37;' +
     (BACKEND.name === 'WebGPU' ? 'background:rgba(20,60,30,.82);color:#bff5c8' : 'background:rgba(70,45,10,.82);color:#ffd99a');
   document.body.appendChild(badge);
-  window.gielinorBackend = BACKEND.name;
+  window.aerondelBackend = window.gielinorBackend = BACKEND.name;
   window.gpuStats = GPU_STATS;
   if (BACKEND.name === 'WebGPU' && !/notiled/.test(location.search)) {
     try {

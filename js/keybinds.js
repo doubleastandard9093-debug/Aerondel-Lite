@@ -1,5 +1,5 @@
 // Rebindable keyboard controls, saved in localStorage (separate from the game save).
-const STORE = 'gielinor-keybinds';
+const STORE = 'aerondel-keybinds', OLD_STORE = 'gielinor-keybinds';
 export const KEY_ACTIONS = [
   ['walkN', 'Walk forward', 'w'], ['walkS', 'Walk back', 's'], ['walkW', 'Walk left', 'a'], ['walkE', 'Walk right', 'd'],
   ['camL', 'Turn camera left', 'arrowleft'], ['camR', 'Turn camera right', 'arrowright'], ['camU', 'Tilt camera up', 'arrowup'], ['camD', 'Tilt camera down', 'arrowdown'],
@@ -10,7 +10,7 @@ export const KEY_ACTIONS = [
 export const DEFAULT_BINDS = Object.fromEntries(KEY_ACTIONS.map(([id, , k]) => [id, k]));
 let binds = load();
 function load() {
-  try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s && typeof s === 'object') return { ...DEFAULT_BINDS, ...s }; } catch (e) { /* bad data */ }
+  try { const s = JSON.parse(localStorage.getItem(STORE) || localStorage.getItem(OLD_STORE) || 'null'); if (s && typeof s === 'object') return { ...DEFAULT_BINDS, ...s }; } catch (e) { /* bad data */ }
   return { ...DEFAULT_BINDS };
 }
 function save() { try { localStorage.setItem(STORE, JSON.stringify(binds)); } catch (e) { /* private mode */ } }
