@@ -61,6 +61,7 @@ import { installRelicGear } from './relicgear.js';
 import { installDelving } from './delving.js';
 import { installSeasons } from './seasons.js';
 import { installEvents } from './events.js';
+import { installGuild } from './guild.js';
 import { foliageMat as seasonFoliage } from './models.js';
 import { WILDS, RIVAL, CAP, botCap, normalizeWilds, captureStep, heldCount } from './wilds.js';
 import { ARENA_RULES, ARENA_SHOP, normalizeArena, ladder, rankOf, rateDuel, weekRoll, weekNo, pickOpponent, duellistStats } from './arena.js';
@@ -1930,6 +1931,7 @@ installRelicry(aeroCtx);
 installDelving(aeroCtx);
 const seasonsX = installSeasons({ ...aeroCtx, setSeasonDetail, SEASON_GRASS, SEASON_SNOW, foliageMat: seasonFoliage });
 installEvents(aeroCtx);
+installGuild(aeroCtx);
 // ---- Stable Codex: mount collection, Skyrook flights between towns, wardrobe looks ----
 function lookEquip() {
   const L = player.codex && player.codex.looks; if (!L) return player.equipment;

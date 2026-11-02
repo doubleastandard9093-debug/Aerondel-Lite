@@ -33,6 +33,7 @@ const RAW = [
   ['bram', 'Bram the Brewer', -11, 1, 'cook', 'A jolly man with a barrel-shaped belly.', '🍺'],
   ['tamsin', 'Tamsin the Scholar', 4, 15, 'scholar', 'She is never seen without a book.', '📚'],
   ['aldo', 'Old Aldo', 11, 12, 'soldier', 'A retired soldier with many scars.', '👴'],
+  ['guildmaster', 'Guildmaster Halvard', -18, 23, 'knight', 'A grey-bearded veteran who charters adventuring guilds.', '🏰'],
   ['herald', 'Festival Herald Odelyn', 3, -6, 'noble', 'She runs every festival in Larkhaven square, season after season.', '🎪'],
   ['dell', 'Coach Dell', 14, 30, 'ranger', 'Larkhaven\u2019s agility coach. Fit as a fiddle.', '🏃'],
   // Wilds

@@ -38,7 +38,7 @@ export function lsRead(key, legacy) {
   try { const v = localStorage.getItem(key); return v != null ? v : (legacy ? localStorage.getItem(legacy) : null); } catch (e) { return null; }
 }
 // Wanderer's Horizons (v15+): extra player fields saved and loaded as-is (normalized in migrateSave).
-export const EXTRA_KEYS = ['tongue', 'quirks', 'writs', 'still', 'path', 'delves', 'codex', 'aim', 'colossi', 'skywing', 'charter', 'siege', 'relicry', 'delving', 'party', 'events'];
+export const EXTRA_KEYS = ['tongue', 'quirks', 'writs', 'still', 'path', 'delves', 'codex', 'aim', 'colossi', 'skywing', 'charter', 'siege', 'relicry', 'delving', 'party', 'events', 'guild'];
 
 export function getSaveData(skills, player, playerMesh) {
   return JSON.stringify({
