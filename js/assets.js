@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { clone as skClone } from 'three/addons/utils/SkeletonUtils.js';
-import { realify } from './realism.js';
+import { realify, registerWorldModel, setWorldRich } from './realism.js';
 
 const BASE = new URL('../models/', import.meta.url);
 const Q = typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams();
@@ -17,7 +17,7 @@ const cache = new Map();
 const leafMats = [];
 const leafTint = new THREE.Color(1, 1, 1);
 
-export function setModelQuality({ low = false, touch = false } = {}) { state.low = low; state.touch = touch; }
+export function setModelQuality({ low = false, touch = false } = {}) { state.low = low; state.touch = touch; setWorldRich(!low && Q.get('real') !== '0'); }
 export function modelStats() { return { on: state.on, files: cache.size, loaded: state.loaded, failed: state.failed }; }
 
 // kind -> variants (paths under models/, no .glb). fit: 'h' match placeholder height, 'w' match footprint.
@@ -58,6 +58,7 @@ function prep(gltf, path = '') {
       if (/leaf|leafs|foliage|green/i.test(m.name || '') && !m.userData.base) { m.userData.base = m.color.clone(); leafMats.push(m); m.color.copy(m.userData.base).multiply(leafTint); }
     }
   });
+  if (!/rigged|characters/.test(path)) registerWorldModel(gltf.scene, path);
   return gltf;
 }
 export function loadModel(path) {

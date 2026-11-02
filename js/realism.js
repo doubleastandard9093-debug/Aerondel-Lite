@@ -144,3 +144,88 @@ export function realify(obj, model = '', height = 1.75) {
   });
   return mats;
 }
+
+// ---- world props (Kenney trees, rocks, bushes, props, buildings): toggled in place, shared by every copy ----
+// Low: original faceted normals, original roughness, micro-normal strength 0 (uniform, no recompile).
+// High: smooth crease-aware normals, per-surface roughness/metalness, world-space micro-normal detail.
+const WORLD = { rich: false, geos: new Set(), mats: new Set() };
+const WK = {   // rough, metal, micro, scale(1/m)
+  bark: [0.92, 0, 0.45, 9], leaf: [0.7, 0, 0.25, 6], stone: [0.88, 0, 0.5, 4], wood: [0.78, 0, 0.35, 10],
+  dirt: [0.97, 0, 0.4, 6], grass: [0.75, 0, 0.25, 8], atlas: [0.8, 0, 0.3, 7], metal: [0.35, 0.85, 0.12, 20], other: [0.85, 0, 0.25, 6],
+};
+export function worldKind(name, path = '') {
+  const n = (name || '').toLowerCase();
+  if (/bark|birch/.test(n)) return 'bark';
+  if (/leaf|leafs/.test(n)) return 'leaf';
+  if (/stone|rock/.test(n) || /rock|pillar/.test(path)) return 'stone';
+  if (/wood/.test(n)) return 'wood';
+  if (/dirt/.test(n)) return 'dirt';
+  if (/grass/.test(n)) return 'grass';
+  if (/metal|iron|gold/.test(n)) return 'metal';
+  if (/colormap/.test(n)) return 'atlas';
+  return 'other';
+}
+function worldMicro(m, kind) {
+  const [, , k, sc] = WK[kind];
+  const U = { tMicro: { value: getNoiseTexture() }, microK: { value: 0 }, microS: { value: sc } };
+  m.userData.micro = U; m.userData.microOn = k;
+  const prev = m.onBeforeCompile, prevKey = m.customProgramCacheKey ? m.customProgramCacheKey.bind(m) : () => '';
+  m.onBeforeCompile = (sh, r) => {
+    if (prev) prev.call(m, sh, r);
+    Object.assign(sh.uniforms, U);
+    if (!sh.vertexShader.includes('vMicroW')) sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vMicroW;')
+      .replace('#include <project_vertex>', '#include <project_vertex>\nvMicroW = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vMicroW; uniform sampler2D tMicro; uniform float microK; uniform float microS;')
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+      if (microK > 0.003) {
+        float k = microK * (1.0 - smoothstep(18.0, 45.0, length(cameraPosition - vMicroW)));
+        if (k > 0.003) {
+          vec3 p = vMicroW * microS;
+          vec3 wn = normalize((vec4(normal, 0.0) * viewMatrix).xyz);
+          vec3 w = pow(abs(wn), vec3(4.0)); w /= (w.x + w.y + w.z + 1e-4);
+          vec2 g = (texture2D(tMicro, p.zy).rg - 0.5) * w.x + (texture2D(tMicro, p.xz).rg - 0.5) * w.y + (texture2D(tMicro, p.xy).rg - 0.5) * w.z;
+          g += (texture2D(tMicro, p.xz * 3.7 + p.y).gb - 0.5) * 0.5;
+          vec3 t = normalize(cross(normal, vec3(0.0, 1.0, 0.07))), bt = cross(normal, t);
+          normal = normalize(normal + (t * g.x + bt * g.y) * k * 2.0);
+        }
+      }`);
+  };
+  m.customProgramCacheKey = () => prevKey() + '-wmicro';
+  m.needsUpdate = true;
+}
+// Register a loaded static model. Bushes/leaf blobs get extra-smooth normals; buildings keep crisp corners.
+export function registerWorldModel(scene, path) {
+  const crease = /building/.test(path) ? 35 : /bush|broadleaf|autumn|rock/.test(path) ? 80 : 55;
+  scene.traverse(o => {
+    if (!o.isMesh) return;
+    const g = o.geometry;
+    if (g && g.attributes.normal && !g.userData.cheapN) {
+      g.userData.cheapN = g.attributes.normal;
+      g.userData.smoothN = smoothGeometry(g, crease).attributes.normal;
+      WORLD.geos.add(g);
+    }
+    for (const m of [].concat(o.material)) {
+      if (m.userData.wk) continue;
+      const kind = worldKind(m.name, path); m.userData.wk = kind;
+      m.userData.cheap = { roughness: m.roughness, metalness: m.metalness };
+      worldMicro(m, kind); WORLD.mats.add(m);
+    }
+  });
+  applyWorld(scene);
+}
+function applyWorld(only) {
+  const on = WORLD.rich;
+  const geos = only ? [] : WORLD.geos, mats = only ? [] : WORLD.mats;
+  if (only) only.traverse(o => { if (o.isMesh) { if (o.geometry.userData.cheapN) geos.push(o.geometry); mats.push(...[].concat(o.material)); } });
+  for (const g of geos) g.setAttribute('normal', on ? g.userData.smoothN : g.userData.cheapN);
+  for (const m of mats) {
+    if (!m.userData.wk) continue;
+    const [r, me] = WK[m.userData.wk];
+    m.roughness = on ? r : m.userData.cheap.roughness; m.metalness = on ? me : m.userData.cheap.metalness;
+    m.userData.micro.microK.value = on ? m.userData.microOn : 0;
+    if (ENV && m.userData.wk === 'metal') { m.envMap = on ? ENV : null; m.envMapIntensity = 0.25; m.needsUpdate = true; }
+  }
+}
+export function setWorldRich(on) { if (WORLD.rich === on) return; WORLD.rich = on; applyWorld(null); }
