@@ -29,18 +29,27 @@ export function convertXpV1(xp) {
   return Math.floor(xpForLevel(L) + f * (xpForLevel(L + 1) - xpForLevel(L)));
 }
 
+// v21: combat skills (Attack, Strength, Defence, Hitpoints, Ranged, Magic, Prayer) go to level 1000.
+// Up to 99 the curve is unchanged (old saves keep their levels). Past 99 each level costs the 98->99 step
+// times (1 + (L - 99) / 40), so 1000 is about 4.1 billion XP; other skills still stop at 99.
+export const COMBAT_SKILLS = ["Attack", "Strength", "Defence", "Hitpoints", "Ranged", "Magic", "Prayer"];
+export const COMBAT_MAX = 1000, SKILL_MAX = 99;
+export const maxLevelOf = s => COMBAT_SKILLS.includes(s) ? COMBAT_MAX : SKILL_MAX;
 const XP_TABLE = [0, 0];
 for (let l = 2; l <= 100; l++) XP_TABLE[l] = xpForLevel(l);
+{ const d99 = XP_TABLE[99] - XP_TABLE[98]; for (let l = 101; l <= COMBAT_MAX + 1; l++) XP_TABLE[l] = XP_TABLE[l - 1] + Math.floor(d99 * (1 + (l - 1 - 99) / 40)); }
+// keep the old 99->100 step only as the first step of the extended curve
+export const xpAtLevel = l => XP_TABLE[Math.max(1, Math.min(COMBAT_MAX + 1, l))];
 
-export function getLevel(xp) {
-  let level = 1;
-  while (level < 99 && xp >= XP_TABLE[level + 1]) level++;
-  return level;
+export function getLevel(xp, max = SKILL_MAX) {
+  let lo = 1, hi = max;   // binary search: the table has 1000 entries
+  while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (xp >= XP_TABLE[mid]) lo = mid; else hi = mid - 1; }
+  return lo;
 }
 
 export function createSkills() {
   const skills = {};
-  SKILLS.forEach(s => skills[s] = { level: 1, xp: 0 });
+  SKILLS.forEach(s => skills[s] = { level: 1, xp: 0, max: maxLevelOf(s) });
   skills.Hitpoints.level = 10;
   skills.Hitpoints.xp = XP_TABLE[10];
   return skills;
@@ -49,33 +58,37 @@ export function createSkills() {
 export function normalizeSkills(skills) {
   for (const s of SKILLS) {
     const k = skills[s];
-    if (!k || typeof k !== "object") { skills[s] = { level: s === "Hitpoints" ? 10 : 1, xp: s === "Hitpoints" ? XP_TABLE[10] : 0 }; continue; }
-    k.level = Math.max(1, Math.min(99, Math.floor(Number(k.level) || 1)));
+    if (!k || typeof k !== "object") { skills[s] = { level: s === "Hitpoints" ? 10 : 1, xp: s === "Hitpoints" ? XP_TABLE[10] : 0, max: maxLevelOf(s) }; continue; }
+    const max = maxLevelOf(s); k.max = max;
+    k.level = Math.max(1, Math.min(max, Math.floor(Number(k.level) || 1)));
     k.xp = Math.max(0, Number(k.xp) || 0);
+    if (!Number.isFinite(k.xp)) k.xp = 0;
     if (k.xp < XP_TABLE[k.level]) k.xp = XP_TABLE[k.level];
-    k.level = Math.max(k.level, getLevel(k.xp));
+    k.level = Math.max(k.level, getLevel(k.xp, max));
   }
   return skills;
 }
 
+const capOf = skill => skill.max || SKILL_MAX;
+export const isMaxed = skill => skill.level >= capOf(skill);
 export function xpToNext(skill) {
-  if (skill.level >= 99) return 0;
+  if (isMaxed(skill)) return 0;
   return Math.max(0, XP_TABLE[skill.level + 1] - skill.xp);
 }
 
 export function levelProgress(skill) {
-  if (skill.level >= 99) return 1;
+  if (isMaxed(skill)) return 1;
   const lo = XP_TABLE[skill.level], hi = XP_TABLE[skill.level + 1];
   return Math.max(0, Math.min(1, (skill.xp - lo) / (hi - lo)));
 }
 
 export function nextLevelXp(skill) {
-  return skill.level >= 99 ? XP_TABLE[99] : XP_TABLE[skill.level + 1];
+  return isMaxed(skill) ? XP_TABLE[capOf(skill)] : XP_TABLE[skill.level + 1];
 }
 
 export function addXP(skills, skill, amount, onLevelUp) {
   skills[skill].xp += amount;
-  const newLvl = getLevel(skills[skill].xp);
+  const newLvl = getLevel(skills[skill].xp, maxLevelOf(skill));
   if (newLvl > skills[skill].level) {
     const old = skills[skill].level;
     skills[skill].level = newLvl;

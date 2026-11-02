@@ -5,7 +5,7 @@ export const SKILL_NOTE = {
   Delving: "Delving: at the Delver's Descent in the Sunscour Dunes, enter a procedural floor with only your toolbelt. Gather, craft at the floor forge, cook, find coloured keys, pass skill gates and beat the floor guardian. XP grows with floor size and difficulty (a new difficulty every 10 levels); tokens buy Delver gear."
 };
 import { ITEMS, RECIPES, iconFor, CRAFT_TABS, METALS, TOOL_TYPES, statLine, setDesc, rarityColor } from './items.js';
-import { SKILLS, SKILL_ICONS, xpToNext, levelProgress, nextLevelXp, combatLevel, totalLevel, PERKS, maxPrayer, perkTotals, CAPS_TEXT, synergyLines } from './skills.js';
+import { SKILLS, SKILL_ICONS, xpToNext, levelProgress, nextLevelXp, combatLevel, totalLevel, PERKS, maxPrayer, perkTotals, CAPS_TEXT, synergyLines, isMaxed } from './skills.js';
 import { INV_SIZE, slotsUsed } from './playerState.js';
 import { stylesFor, currentStyle, equipmentBonuses, playerMaxHit, playerAccuracy, monsterAccuracy, MONSTER_TYPES, SHOP_STOCK, TOOL_STOCK, sellPrice, buyPrice, stockVisible, bestTool, SHOPS, SPELLS, canCast, castsLeft, runeCost, magicMaxHit, staffRune, BOUNTIES } from './gameplay.js';
 import { boostOf, POTIONS } from './potions.js';
@@ -309,8 +309,8 @@ export function createInventoryUI(api) {
     for (const s of SKILLS) {
       const k = skills[s];
       const bst = boostOf(player, s);
-      const tip = `<div class="tt-name">${s}</div><div class="tt-type">Level ${k.level}${bst ? ` (boosted ${k.level + bst})` : ''}</div><div class="tt-line">XP ${fmt(k.xp)}</div>` + (k.level >= 99 ? '<div class="tt-special">Maximum level</div>' : `<div class="tt-line">Next level at ${fmt(nextLevelXp(k))}</div><div class="tt-special">${fmt(xpToNext(k))} XP to level ${k.level + 1}</div>`);
-      html += `<div class="skill ${selectedSkill === s ? 'sel' : ''} ${k.level >= 99 ? 'maxed' : ''}" data-skill="${s}" data-tiphtml="${esc(tip)}"><span class="sk-ico">${SKILL_ICONS[s]}</span><b${bst ? ' class="boosted"' : ''}>${bst ? `${k.level + bst}/${k.level}` : k.level}</b><i style="width:${(levelProgress(k) * 100).toFixed(0)}%"></i></div>`;
+      const tip = `<div class="tt-name">${s}</div><div class="tt-type">Level ${k.level}${bst ? ` (boosted ${k.level + bst})` : ''}</div><div class="tt-line">XP ${fmt(k.xp)}</div>` + (isMaxed(k) ? '<div class="tt-special">Maximum level</div>' : `<div class="tt-line">Next level at ${fmt(nextLevelXp(k))}</div><div class="tt-special">${fmt(xpToNext(k))} XP to level ${k.level + 1}</div>`);
+      html += `<div class="skill ${selectedSkill === s ? 'sel' : ''} ${isMaxed(k) ? 'maxed' : ''}" data-skill="${s}" data-tiphtml="${esc(tip)}"><span class="sk-ico">${SKILL_ICONS[s]}</span><b${bst ? ' class="boosted"' : ''}>${bst ? `${k.level + bst}/${k.level}` : k.level}</b><i style="width:${(levelProgress(k) * 100).toFixed(0)}%"></i></div>`;
     }
     html += '</div>';
     if (selectedSkill) {
@@ -319,7 +319,7 @@ export function createInventoryUI(api) {
       html += `<div class="skilldetail"><b>${selectedSkill}</b> level ${bst ? `<span class="boosted">${k.level + bst}</span>/${k.level} (potion boost)` : k.level}<br>XP: ${fmt(k.xp)}<br>` +
         (SKILL_NOTE[selectedSkill] ? `<small>${SKILL_NOTE[selectedSkill]}</small><br>` : '') +
         (selectedSkill === 'Herbalism' ? '<small>Herbalism (herbology): pick grimy herbs from patches, clean them, then brew potions with a vial of water and a secondary from monster drops.</small><br>' : '') +
-        (k.level >= 99 ? 'Maximum level!' : `Next level at: ${fmt(nextLevelXp(k))}<br>Remaining: ${fmt(xpToNext(k))}`) +
+        (isMaxed(k) ? 'Maximum level!' : `Next level at: ${fmt(nextLevelXp(k))}<br>Remaining: ${fmt(xpToNext(k))}`) +
         `<div class="bar"><i style="width:${(levelProgress(k) * 100).toFixed(1)}%"></i></div>
         ${perkPanel(selectedSkill, k)}</div>`;
     } else {

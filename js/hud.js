@@ -1,6 +1,6 @@
 // HUD extras: adrenaline orb, target info panel, floating XP tracker and buff timer rings.
 import { esc } from './ui.js';
-import { SKILL_ICONS, levelProgress, xpToNext } from './skills.js';
+import { SKILL_ICONS, levelProgress, xpToNext, isMaxed } from './skills.js';
 
 const fmt = n => Math.floor(n).toLocaleString('en-US');
 const short = n => n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e4 ? (n / 1e3).toFixed(1) + 'K' : fmt(n);
@@ -75,7 +75,7 @@ export function createHud({ player, skills, monsters, getTarget, levelColor, com
       const k = skills[sk]; if (!k) return '';
       const hrs = Math.max(1 / 60, (now - s.start) / 3.6e6);
       return `<div class="xt-row"><span class="xt-ico">${SKILL_ICONS[sk] || '★'}</span><div class="xt-body"><div class="xt-top"><b>${esc(sk)} ${k.level}</b><span>+${short(s.gained)}</span></div>` +
-        `<div class="xt-bar"><i style="width:${(levelProgress(k) * 100).toFixed(1)}%"></i></div><div class="xt-sub">${k.level >= 99 ? 'Max level' : short(xpToNext(k)) + ' to go'} · ${short(s.gained / hrs)}/hr</div></div></div>`;
+        `<div class="xt-bar"><i style="width:${(levelProgress(k) * 100).toFixed(1)}%"></i></div><div class="xt-sub">${isMaxed(k) ? 'Max level' : short(xpToNext(k)) + ' to go'} · ${short(s.gained / hrs)}/hr</div></div></div>`;
     }).join('');
     if (html !== trHtml) { trHtml = html; tr.innerHTML = html; tr.classList.toggle('show', !!html); }
 

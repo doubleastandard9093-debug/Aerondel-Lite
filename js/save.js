@@ -29,7 +29,7 @@ import { normalizeSkywing } from './skywing.js';
 import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 
-export const SAVE_VERSION = 20;
+export const SAVE_VERSION = 21;
 export const POS_LIMIT = 616; // world half-size (WORLD_HALF 620, frontier ring) minus a margin
 const KEY = 'aerondel3d';
 const LEGACY_KEY = 'gielinor3d'; // pre-Aerondel saves: read as a fallback, never deleted
@@ -213,6 +213,8 @@ export function migrateSave(saved) {
   // v20 (Aerondel expansion): six climate regions, the Relicry skill and its relic dungeons.
   p.relicry = normalizeRelicry(p.relicry);
   p.delving = normalizeDelving(p.delving);
+  // v21: combat skills cap at 1000 (normalizeSkills sets skill.max); XP already banked past 99 now counts toward levels.
+  if (fromVersion < 21) notes.push('New: the Frontier ring. The map is bigger, with eight high-level zones, and combat skills now go to level 1000.');
   if (fromVersion < 20) notes.push('New: six climate regions beyond the old map edge, and the Relicry and Delving skills. Delve below Mirage Well in the Sunscour Dunes; dig at the Drowned Chapel in Mirelow Fen (south-west) to start.');
   if (fromVersion < 16) notes.push('New: Wanderer\'s Horizons part 2. Combat Paths, Delves of Three and the Stable Codex. See Settings → What\'s new.');
   if (fromVersion < 15) notes.push('New: Wanderer\'s Horizons part 1. Silver Tongue checks, Quirks, Daily Writs and Stillwatch. See Settings → What\'s new.');
