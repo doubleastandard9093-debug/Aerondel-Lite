@@ -162,7 +162,7 @@ const EXT = { extTalk, extTick, extSwing, extHit, extIncoming, extKill, extFrame
 function giveXP(skill, amount) {
   if (amount <= 0) return;
   amount *= xpMultiplier(player, skill); // quest + gear XP bonuses
-  amount *= 1 + companionXpBonus(player, skill) + standingXp(skill) + sagaXpBonus(player, skill) + houseXpBonus(player.house, skill); // Sworn Companion bond and faction Standing perks
+  amount *= 1 + partyXpBonus(skill) + standingXp(skill) + sagaXpBonus(player, skill) + houseXpBonus(player.house, skill); // Sworn Companion bond and faction Standing perks
   for (const f of extXp) amount *= f(skill);
   addXP(skills, skill, amount, (s, l, old) => {
     const perks = perksBetween(s, old, l);
@@ -1499,6 +1499,34 @@ function quartermasterTalk() {
 // ---- Sworn Companions: recruiting, gifts, following and combat assists ----
 player.companions = normalizeCompanions(player.companions);
 if (player.activeCompanion && !(player.companions[player.activeCompanion] || {}).recruited) player.activeCompanion = null;
+// Co-op party (Aerondel): every recruited companion can follow at once. activeCompanion is the party lead (used by
+// sailing, delves, saga); player.party holds the others. Roles: melee companions guard you (less damage taken),
+// ranged/magic ones strike from range, and the hedge-mage mends you between blows.
+player.party = Array.isArray(player.party) ? [...new Set(player.party.filter(id => typeof id === 'string' && (player.companions[id] || {}).recruited && id !== player.activeCompanion))] : [];
+function partyIds() { const a = player.activeCompanion; return (a ? [a] : []).concat(player.party || []).filter(id => (player.companions[id] || {}).recruited && !awayUntil(id)); }
+function inParty(id) { return player.activeCompanion === id || (player.party || []).includes(id); }
+function partyXpBonus(skill) {
+  let t = 0; const lead = player.activeCompanion;
+  for (const id of partyIds()) { player.activeCompanion = id; t += companionXpBonus(player, skill); }
+  player.activeCompanion = lead; return Math.min(0.25, t);
+}
+function sendHome(id) { const e = compEnts[id]; if (e && e.home) { const h = e.home; e.mesh.position.set(h.x, terrainHeight(h.x, h.z), h.z); e.x = h.x; e.z = h.z; } }
+function togglePartyMember(id) {
+  if (inParty(id)) {
+    if (player.activeCompanion === id) { const next = (player.party || []).shift() || null; sendHome(id); player.activeCompanion = next; }
+    else { player.party = player.party.filter(x => x !== id); sendHome(id); }
+  } else if (!player.activeCompanion) player.activeCompanion = id;
+  else player.party.push(id);
+  markDirty();
+}
+EXT.party = { ids: () => partyIds(), call: () => callWholeParty(), toggle: id => togglePartyMember(id), guard: () => partyGuard() };
+function callWholeParty() {
+  const rec = COMPANIONS.filter(c => (player.companions[c.id] || {}).recruited && !awayUntil(c.id)).map(c => c.id);
+  if (!rec.length) { log('Recruit a Sworn Companion first.', 'warn'); return; }
+  for (const id of rec) if (!inParty(id)) togglePartyMember(id);
+  const P = pm.mesh.position; rec.forEach((id, i) => { const e = compEnts[id]; if (e) { const a = i * 1.6 + 2.2; e.mesh.position.set(P.x + Math.cos(a) * 2, P.y, P.z + Math.sin(a) * 2); } });
+  log(`Your party gathers: ${rec.map(id => companionById(id).short).join(', ')}.`, 'game');
+}
 const compEnts = {};
 let compTalking = null;
 for (const n of nodes) if (n.companion) compEnts[n.companion] = n;
@@ -1561,9 +1589,11 @@ function companionTalk(ent) {
 function companionKill(name) {
   for (const d of COMPANIONS) { const s = compState(d.id); if (s.started && !s.recruited && d.recruit.kind === 'kill' && name === d.recruit.mon && s.task < d.recruit.n) { s.task++; log(`${d.short}: ${s.task}/${d.recruit.n} ${d.recruit.mon}s defeated.`, 'game'); markDirty(); } }
 }
-function updateCompanion(dt) {
-  const id = player.activeCompanion, e = id && compEnts[id]; if (!e) return;
-  const o = e.mesh, p = pm.mesh.position;
+function updateCompanion(dt) { partyIds().forEach((id, i) => updateOneCompanion(id, i, dt)); }
+const PARTY_SLOTS = [[-1.5, -1.5], [1.5, -1.5], [-2.6, -0.2], [2.6, -0.2], [0, -2.8]];
+function updateOneCompanion(id, slot, dt) {
+  const e = compEnts[id]; if (!e) return;
+  const o = e.mesh, p = { x: pm.mesh.position.x + PARTY_SLOTS[slot % 5][0] + 1.5, y: pm.mesh.position.y, z: pm.mesh.position.z + PARTY_SLOTS[slot % 5][1] + 1.5 };
   if (action && action.node === e) return;
   const dx = p.x - o.position.x, dz = p.z - o.position.z, d = Math.hypot(dx, dz);
   if (d > 25 || !o.parent) { o.position.set(p.x - 1.5, p.y, p.z - 1.5); }
@@ -1571,12 +1601,21 @@ function updateCompanion(dt) {
   o.position.y = terrainHeight(o.position.x, o.position.z) + (pm.rideLift && d < 3 ? 0 : 0);
   e.x = o.position.x; e.z = o.position.z;
 }
-function companionAssist(now) {
-  const id = player.activeCompanion, e = id && compEnts[id]; if (!e) return;
+function companionAssist(now) { for (const id of partyIds()) { companionMend(id); if (action && action.mon && action.mon.alive) companionAssistOne(id, now); } }
+function companionMend(id) {
+  const d = companionById(id), s = compState(id);
+  if (d.style !== 'magic' || tick % 10 !== 0 || player.hp <= 0 || player.hp >= player.maxHp * 0.6) return;
+  const h = 2 + Math.floor(s.bond / 2) * 2; player.hp = Math.min(player.maxHp, player.hp + h);
+  if (tick % 50 === 0) log(`${d.short} mends your wounds (+${h} HP).`, 'game');
+}
+function partyGuard() { let r = 0; for (const id of partyIds()) { const d = companionById(id); if (d.style === 'melee') r += 0.05 + (compState(id).bond >= 6 ? 0.03 : 0); } return Math.min(0.2, r); }
+extIncoming.push(dmg => { const r = partyGuard(); return r ? Math.max(1, Math.round(dmg * (1 - r))) : dmg; });
+function companionAssistOne(id, now) {
+  const e = compEnts[id]; if (!e) return;
   const s = compState(id); if (!(action && action.kind === 'attack' && action.mon && action.mon.alive)) return;
   if (tick % assistEvery(s.bond) !== 0) return;
   const mon = action.mon, mp = mon.mesh.position;
-  if (Math.hypot(mp.x - e.mesh.position.x, mp.z - e.mesh.position.z) > 14) return;
+  if (Math.hypot(mp.x - e.mesh.position.x, mp.z - e.mesh.position.z) > (companionById(id).style === 'melee' ? 14 : 20)) return;
   const dmg = Math.min(mon.hp, Math.floor(Math.random() * (assistMax(s.bond, combatLevel(skills)) + 1)));
   mon.hp -= dmg; overlays.splat(mon, dmg, now + 200); if (dmg > 0) mon.hitT = 1;
   e.mesh.rotation.y = Math.atan2(mp.x - e.mesh.position.x, mp.z - e.mesh.position.z);
@@ -2651,14 +2690,15 @@ function finishErrands() {
 }
 const bondsUI = createBondsUI({
   getData: () => ({
-    companions: COMPANIONS.map(d => { const s = compState(d.id); return { ...d, ...s, active: player.activeCompanion === d.id, away: awayUntil(d.id), crewText: Object.keys(s.crew || {}).map(k => `${k} ${crewOf(player, d.id, k)}`).join(', '), perks: BOND_PERKS, chance: errandChance(s.bond, houseErrandBonus(player.house)), task: s.started ? compTaskText(d, s) : `Talk to ${d.short}. ${d.examine}` }; }),
+    companions: COMPANIONS.map(d => { const s = compState(d.id); return { ...d, ...s, active: inParty(d.id), lead: player.activeCompanion === d.id, away: awayUntil(d.id), crewText: Object.keys(s.crew || {}).map(k => `${k} ${crewOf(player, d.id, k)}`).join(', '), perks: BOND_PERKS, chance: errandChance(s.bond, houseErrandBonus(player.house)), task: s.started ? compTaskText(d, s) : `Talk to ${d.short}. ${d.examine}` }; }),
     factions: FACTIONS.map(f => { const r = repOf(player, f.id), t = tierOf(r), n = nextTier(r), lo = TIERS[t][0]; return { ...f, rep: r, tier: t, tierName: TIERS[t][1], next: n, pct: n ? Math.round((r - lo) / (n - lo) * 100) : 100 }; }),
     running: player.errands.map(r => ({ ...r, name: (errandById(r.id) || {}).name || r.id, comp: (companionById(r.comp) || {}).name || r.comp })),
     errands: ERRANDS,
     saga: (() => { const sg = player.saga, ch = currentChapter(sg); return { calling: sg.calling && CALLINGS[sg.calling], title: sg.title, total: CHAPTERS.length, done: sg.ch, ch: ch && { n: ch.n, title: ch.title, active: sg.active, gate: sagaGate(ch), obj: ch.obj.text, prog: ch.obj.kind === 'kill' ? sg.prog : (player.inventory[ch.obj.item] || 0), need: objNeed(ch, sg) }, choices: sg.choices.map(c => ({ ...c, title: (CHAPTERS[c.ch - 1] || {}).title })) }; })()
   }),
   onAct: (a, o) => {
-    if (a === 'follow') { if (awayUntil(o.comp)) return; setCompanion(player.activeCompanion === o.comp ? null : o.comp); }
+    if (a === 'follow') { if (awayUntil(o.comp)) return; togglePartyMember(o.comp); }
+    else if (a === 'party') callWholeParty();
     else if (a === 'collect') finishErrands();
     else if (a === 'send') { const r = startErrand(player, o.errand, o.comp, Date.now()); if (r) { log(`${companionById(o.comp).short} sets off: ${errandById(o.errand).name}.`, 'game'); markDirty(); } }
   }
