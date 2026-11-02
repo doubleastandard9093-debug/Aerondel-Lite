@@ -15,7 +15,8 @@ import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { updateDrizzle } from './weather.js';
 import { createSky, tickGfx, resolveQuality, pixelRatioFor, SWAY, enableTexDetail, SUN_DIR, createWaterReflection } from './gfx.js';
 import { createScene, createCamera, createRenderer, createLights, followLight, setShadows, tuneLights, IS_TOUCH } from './scene.js';
-import { adoptSceneObjects, registerDynamic, updateChunks, setLoadRadius, chunkStats } from './chunk.js';
+import { adoptSceneObjects, registerDynamic, updateChunks, pumpChunks, primeChunks, setLoadRadius, radiusFor, isLoadedAt, chunkStats } from './chunk.js';
+import { loadRegions } from './regions.js';
 import { PATHS, terrainHeight, insideLake, WORLD_HALF, TOWNS, CAVE, inCave } from './world.js';
 import { createWorld, createPileMesh, SPAWN, setDecorQuality, updateDecorChunks, updateLocalGrass } from './world.js';
 import { updateLod, setLodRange, poseHumanoid } from './anatomy.js';
@@ -141,6 +142,9 @@ const chunkSkip = new Set([ground, pm.mesh, ...monsters.map(m => m.mesh), ...wan
 adoptSceneObjects(scene, chunkSkip);
 for (const m of monsters) registerDynamic(m.mesh, () => m.mesh.position, scene);
 for (const n of wanderers) registerDynamic(n.mesh, () => n.mesh.position, scene);
+const regionInfo = loadRegions(scene, { spawnMonster, registerDynamic });   // data-only map regions (js/regions.js), built lazily per chunk
+primeChunks(pm.mesh.position.x, pm.mesh.position.z, scene);
+window.regionInfo = regionInfo;
 window.chunkStats = chunkStats;
 const updateCritters = createCritters(scene, terrainHeight, (x, z) => insideLake(x, z, 1) || blockedAt(x, z) || Math.abs(x) > WORLD_HALF - 4 || Math.abs(z) > WORLD_HALF - 4 || Object.values(TOWNS).some(t => Math.hypot(t.x - x, t.z - z) < 22));
 const skills = createSkills();
@@ -3307,6 +3311,8 @@ function updateMonsters(dt, now) {
       continue;
     }
     if (!m.alive) continue;
+    // Chunk unloaded: pause AI. Out-of-fight monsters snap back to their spawn so they reappear deterministically.
+    if (m.state !== 'fight' && !isLoadedAt(pos.x, pos.z)) { if (m.state === 'return' || Math.hypot(pos.x - m.spawnX, pos.z - m.spawnZ) > 0.5) { pos.x = m.spawnX; pos.z = m.spawnZ; pos.y = terrainHeight(pos.x, pos.z); m.state = 'idle'; } continue; }
     let tx = null, tz = null, speed = 1.4, stop = 0.1;
     if (m.state === 'fight') { tx = pm.mesh.position.x; tz = pm.mesh.position.z; speed = 3.0; stop = m.range ? m.range - 1 : 1.3; }
     else if (m.state === 'return') {
@@ -3655,7 +3661,8 @@ function animate(now) {
 
   if (frame % 15 === 0) cullWorld();
   if (frame % 5 === 2) updateRoofs();
-  if (frame % 10 === 3) { setLoadRadius(gfx.quality === 'low' ? 2 : 3); updateChunks(pm.mesh.position.x, pm.mesh.position.z, scene); }
+  if (frame % 10 === 3) { setLoadRadius(radiusFor(gfx.quality, IS_TOUCH)); updateChunks(pm.mesh.position.x, pm.mesh.position.z, scene); }
+  else pumpChunks(scene);   // time-sliced chunk attach/detach
   if (frame % 300 === 11) { refreshStanding(true); finishErrands(); }
   if (frame % 30 === 13) refreshQuick();
   if (frame % 30 === 7) { const vm = onVisit(player, pm.mesh.position.x, pm.mesh.position.z); for (const m of vm) log(m, 'game'); if (vm.length) markDirty(); }

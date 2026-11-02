@@ -138,7 +138,7 @@ export const WHATS_NEW = `<p><b>Warband Siege.</b> Warcaptain Hesk (beside Delve
 <p><b>Better wolves.</b> Wolves have a proper head, pointed snout, upright ears, slimmer legs and a bushy tail instead of a stretched blob.</p>
 <p><b>World streaming (classic-style chunks)</b></p>
 <p>The map is now <b>600 × 600</b> (was 440). The new outer ring is open country with trees and grass, and no monsters yet.</p>
-<p>The map is now split into 32×32 chunks. Buildings, stalls, props and monsters only load in the chunks around you (5×5 on Low, 7×7 on High) and unload as you walk away, so the world can keep growing without slowing your phone. Monsters keep their health and respawn timers while unloaded.</p>
+<p>The map is now split into 32×32 chunks. Buildings, stalls, props and monsters only load in the chunks around you (5×5 on phones and Low, 7×7 on desktop High; they unload one chunk further out so edges never flicker, and load a little each frame so crossings never stutter) and unload as you walk away, so the world can keep growing without slowing your phone. Monsters keep their health and respawn timers while unloaded.</p>
 <p><b>Bigger world, smoother graphics</b></p>
 <p>The map is now about <b>440 × 440</b>. Grass and flowers load in nearby chunks only, and trees and rocks share draw calls so your phone stays smooth. Materials catch the light better, and distant trees stop swaying past about 50 steps. Graphics quality (Auto / High / Low) still controls the glow, clouds and shadows.</p>
 <p><b>100 new quests</b></p>
