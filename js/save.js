@@ -30,7 +30,7 @@ import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 
 export const SAVE_VERSION = 20;
-export const POS_LIMIT = 416; // world half-size (WORLD_HALF 420, climate regions) minus a margin
+export const POS_LIMIT = 616; // world half-size (WORLD_HALF 620, frontier ring) minus a margin
 const KEY = 'aerondel3d';
 const LEGACY_KEY = 'gielinor3d'; // pre-Aerondel saves: read as a fallback, never deleted
 // Read a localStorage value under its Aerondel key, falling back to the old Gielinor key (migrates on next write).

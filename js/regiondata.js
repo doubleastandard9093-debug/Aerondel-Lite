@@ -62,6 +62,43 @@ export const REGION_DATA = [
     dig: { name: 'Drowned Chapel', dx: -32, dz: -20, level: 1 } },
 ];
 
+// Frontier ring (v21): outer zones for high-level combat (levels 110 to 1000). Each has two mob camps:
+// a common group and an elite group; the last zone's elite is a single level-1000 boss.
+REGION_DATA.push(
+  { id: 'grimhollow', name: 'Grimhollow Barrens', biome: 'volcanic', x: 540, z: 0, r: 58, tier: [110, 140],
+    camp: { name: 'Ashgate Post', dx: 0, dz: 0 },
+    scatter: { lavarock: 34, deadtree: 20, vent: 8 },
+    mobs: [['Barrow Ghoul', 26, 24, 4], ['Barrow Ghoul', 32, 18, 4], ['Barrow Ghoul', 22, 32, 4], ['Cinder Warden', -28, -26, 3], ['Cinder Warden', -34, -20, 3]] },
+  { id: 'thornmere', name: 'Thornmere Wilds', biome: 'jungle', x: 380, z: 400, r: 58, tier: [180, 220],
+    camp: { name: 'Briarwatch', dx: 0, dz: 0 },
+    scatter: { palm: 30, junglebush: 46, fern: 30 },
+    mobs: [['Thornback Prowler', 26, 24, 4], ['Thornback Prowler', 32, 18, 4], ['Thornback Prowler', 22, 32, 4], ['Bramble Colossus', -28, -26, 3], ['Bramble Colossus', -34, -20, 3]] },
+  { id: 'hollowfrost', name: 'Hollowfrost Expanse', biome: 'tundra', x: 0, z: 540, r: 58, tier: [260, 320],
+    camp: { name: 'Whitecairn', dx: 0, dz: 0 },
+    scatter: { pine: 50, snowrock: 24, iceshard: 16 },
+    mobs: [['Hoarfrost Stalker', 26, 24, 4], ['Hoarfrost Stalker', 32, 18, 4], ['Hoarfrost Stalker', 22, 32, 4], ['Glacier Behemoth', -28, -26, 3], ['Glacier Behemoth', -34, -20, 3]] },
+  { id: 'stormcrown', name: 'Stormcrown Peaks', biome: 'alpine', x: -390, z: 400, r: 58, tier: [380, 450],
+    camp: { name: 'Thunderhold', dx: 0, dz: 0 },
+    scatter: { pine: 40, boulder: 34, fern: 14 },
+    mobs: [['Storm Gryphon', 26, 24, 4], ['Storm Gryphon', 32, 18, 4], ['Storm Gryphon', 22, 32, 4], ['Peak Warlord', -28, -26, 3], ['Peak Warlord', -34, -20, 3]] },
+  { id: 'duskmarsh', name: 'Duskmarsh Deeps', biome: 'swamp', x: -545, z: -10, r: 58, tier: [520, 600],
+    camp: { name: 'Lanternmoor', dx: 0, dz: 0 },
+    scatter: { deadtree: 34, reed: 56, mossrock: 18 },
+    mobs: [['Murk Leech', 26, 24, 4], ['Murk Leech', 32, 18, 4], ['Murk Leech', 22, 32, 4], ['Bog Revenant', -28, -26, 3], ['Bog Revenant', -34, -20, 3]] },
+  { id: 'glasswind', name: 'Glasswind Erg', biome: 'desert', x: -410, z: -440, r: 58, tier: [650, 720],
+    camp: { name: 'Mirrorsand Rest', dx: 0, dz: 0 },
+    scatter: { cactus: 36, sandstone: 26, bones: 14 },
+    mobs: [['Glass Scorpion', 26, 24, 4], ['Glass Scorpion', 32, 18, 4], ['Glass Scorpion', 22, 32, 4], ['Dune Tyrant', -28, -26, 3], ['Dune Tyrant', -34, -20, 3]] },
+  { id: 'emberdeep', name: 'Emberdeep Caldera', biome: 'volcanic', x: 0, z: -545, r: 58, tier: [800, 880],
+    camp: { name: 'Slagwatch', dx: 0, dz: 0 },
+    scatter: { lavarock: 44, vent: 14, deadtree: 10 },
+    mobs: [['Caldera Drake', 26, 24, 4], ['Caldera Drake', 32, 18, 4], ['Caldera Drake', 22, 32, 4], ['Molten Archon', -28, -26, 3], ['Molten Archon', -34, -20, 3]] },
+  { id: 'sundered', name: 'The Sundered Reach', biome: 'alpine', x: 420, z: -430, r: 58, tier: [950, 1000],
+    camp: { name: 'Last Light Bastion', dx: 0, dz: 0 },
+    scatter: { boulder: 40, pine: 24, deadtree: 16 },
+    mobs: [['Voidborn Knight', 26, 24, 4], ['Voidborn Knight', 32, 18, 4], ['Voidborn Knight', 22, 32, 4], ['Sunderlord Vexmar', -28, -26, 3]] },
+);
+
 // Weight 0..1 of region `R` at (x, z): 1 inside 70% of the radius, easing to 0 at the edge.
 export function regionWeight(R, x, z) {
   const d = Math.hypot(x - R.x, z - R.z) / R.r;

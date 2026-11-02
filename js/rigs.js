@@ -22,6 +22,11 @@ export const MONSTER_RIGS = {
   'Cinder Fiend': [T('demon'), T('demon_blue', 0xd06030)],
   'Bandit': [T('sam', 0x8a6a4a, 0.3), T('matt', 0x6a5a4a, 0.3)], 'Guard': [T('matt', 0xb0b0c0, 0.35)], 'Ironveil Knight': [T('matt', 0x9aa0b8, 0.5)],
   'Dark Archer': [T('sam', 0x4a4a5a, 0.5)], 'Duellist': [T('sam'), T('matt')], 'Ashen raider': [T('orc', 0x8a7a70, 0.4)],
+  'Barrow Ghoul': [T('zombie', 0x9ab08a, 0.4)], 'Cinder Warden': [T('demon', 0xc0502a, 0.4)], 'Thornback Prowler': [T('wolf', 0x5a7a3a, 0.5)],
+  'Bramble Colossus': [T('giant', 0x5a7a3a)], 'Hoarfrost Stalker': [T('wolf', 0xe0ecf8, 0.5)], 'Glacier Behemoth': [T('yeti', 0xa0c8f0, 0.4)],
+  'Storm Gryphon': [T('dragon', 0x9a8a6a)], 'Peak Warlord': [T('orc', 0x6a6a7a, 0.5)], 'Murk Leech': [T('spider', 0x2a3a2a)], 'Bog Revenant': [T('skeleton', 0x7a9a7a, 0.5)],
+  'Glass Scorpion': [T('spider', 0xd0d8e0)], 'Dune Tyrant': [T('giant', 0xc89a6a)], 'Caldera Drake': [T('dragon', 0xa0301a)], 'Molten Archon': [T('demon_blue', 0xff6a1a, 0.5)],
+  'Voidborn Knight': [T('matt', 0x4a3a7a, 0.6)], 'Sunderlord Vexmar': [T('demon', 0x6a4aa0, 0.6)],
   'Drowned Deckhand': [T('skeleton', 0x6ab0a0, 0.4)], 'Drowned Gunner': [T('zombie', 0x5a9ab0, 0.4)], 'Captain Saltgrave': [T('orc', 0x4a8a9a, 0.5)]
 };
 

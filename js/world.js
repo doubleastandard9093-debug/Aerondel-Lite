@@ -14,7 +14,7 @@ import { buildCreatureRig, rollVariant, namedVariant, loColours } from './creatu
 import { vcMat, foliageMat, bakedMesh, treeGeometry, rockGeometry, stumpGeometry, emptyRockGeometry, blob, paint, place as put, prim, col, snoise, bake, makeFoliageMat, tuftGeometry, flowerGeometry, humanoidParts, npcExtras, legPivot, creatureParts, hairCap, treeMat, treeDepthMat, setMat, woodAxis, buildMat, addFadeDither } from './models.js';
 
 // The world is about 440 x 440. Chunked decor + instance packing keep phones smooth.
-export const WORLD_HALF = 420; // was 300; the climate regions (regiondata.js) fill the outer ring
+export const WORLD_HALF = 620; // was 420; v21 frontier ring (regiondata.js) of high-level zones
 export const CHUNK_SIZE = 64; // decor / clutter streaming grid
 
 export const SPAWN = { x: 0, z: 0 };

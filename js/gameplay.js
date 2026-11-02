@@ -1000,3 +1000,24 @@ Object.assign(MONSTER_TYPES, {
   Object.assign(WEAKNESS, { 'Fen Crawler': 'fire', 'Mire Hag': 'wind', 'Crag Ram': 'earth', 'Skyreach Harpy': 'earth', 'Frostfang Wolf': 'fire', 'Rime Wraith': 'fire',
     'Dune Scuttler': 'water', 'Sand Reaver': 'water', 'Vine Lurker': 'fire', 'Canopy Stalker': 'fire', 'Ember Imp': 'water', 'Magma Brute': 'water' });
 }
+// ---- Frontier ring (regiondata.js, v21): levels 110 to 1000, stats scale linearly with level ----
+{
+  const M = (name, level, o = {}) => ({ name, level, hp: Math.round(level * 10.5), maxHit: Math.round(level * 0.95), att: Math.round(level * 0.82), def: Math.round(level * 0.72), speed: 4, scale: 1.1, ...o });
+  const F = [
+    M('Barrow Ghoul', 110, { color: 0x6a7a5a, skin: 0x9ab08a, undead: true }), M('Cinder Warden', 140, { color: 0x4a2a1a, skin: 0xc0502a, scale: 1.5 }),
+    M('Thornback Prowler', 180, { color: 0x3a5a2a, shape: 'quad', scale: 1.2 }), M('Bramble Colossus', 220, { color: 0x4a3a1a, skin: 0x5a7a3a, scale: 2.0, speed: 5 }),
+    M('Hoarfrost Stalker', 260, { color: 0xd8e4f0, shape: 'quad', scale: 1.2 }), M('Glacier Behemoth', 320, { color: 0xa0c0e0, skin: 0xd0e8ff, scale: 2.1, speed: 5 }),
+    M('Storm Gryphon', 380, { color: 0x8a7a5a, shape: 'dragon', scale: 1.5 }), M('Peak Warlord', 450, { color: 0x5a5a6a, skin: 0xb08a6a, scale: 1.3 }),
+    M('Murk Leech', 520, { color: 0x2a3a2a, shape: 'spider', poison: { chance: 0.3, dmg: 120 } }), M('Bog Revenant', 600, { color: 0x3a4a3a, skin: 0x7a9a7a, undead: true, scale: 1.4 }),
+    M('Glass Scorpion', 650, { color: 0xc8d0d8, shape: 'spider', scale: 1.4, poison: { chance: 0.25, dmg: 160 } }), M('Dune Tyrant', 720, { color: 0x8a6a3a, skin: 0xc89a6a, scale: 2.0, speed: 5 }),
+    M('Caldera Drake', 800, { color: 0xa0301a, shape: 'dragon', scale: 1.8, ranged: true, range: 7 }), M('Molten Archon', 880, { color: 0x2a1a10, skin: 0xff6a1a, scale: 2.0 }),
+    M('Voidborn Knight', 950, { color: 0x1a1a2a, skin: 0x6a5aa0, scale: 1.3 }), M('Sunderlord Vexmar', 1000, { color: 0x120a1a, skin: 0x9a6ad0, scale: 2.6, speed: 5, boss: true, hp: 25000, maxHit: 1100, respawn: 300000, title: 'Sunderlord Vexmar, the Last Eclipse' }),
+  ];
+  for (const t of F) MONSTER_TYPES[t.name] = t;
+  for (const t of F) {
+    const L = t.level, c = [Math.round(L * 2), Math.round(L * 6)];
+    LOOT_TABLES[t.name] = [{ item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.9, qty: c }, { item: 'Relic shard', chance: 0.35, qty: [1, 2 + Math.floor(L / 250)] }, { item: 'Ancient fragment', chance: Math.min(0.5, 0.05 + L / 4000) }];
+    WEAKNESS[t.name] = ['fire', 'water', 'earth', 'wind'][L % 4];
+  }
+}
+
