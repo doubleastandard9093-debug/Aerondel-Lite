@@ -27,3 +27,9 @@ names are original; pack names are only listed here. License: https://creativeco
 | `models/props/`, `models/buildings/gob_*` | Survival Kit (Kenney) | https://kenney.nl/assets/survival-kit | crates, barrels, fire pit, goblin tents and huts |
 | `models/props/`, `models/buildings/human_*`, `elf_*` | Fantasy Town Kit (Kenney) | https://kenney.nl/assets/fantasy-town-kit | fences, market stalls, cart; cottages and elven towers composed from its wall/roof modules |
 | `models/characters/` | Mini Characters (Kenney) | https://kenney.nl/assets/mini-characters | animated townsfolk (idle, walk, gather, emote) |
+
+### Rigged, animated characters (`models/rigged/`)
+All by **Quaternius** (quaternius.com), released under **CC0 1.0** (public domain), downloaded from poly.pizza and
+rebuilt with `tools/build-rigged.mjs` (duplicate clips removed, animations resampled, meshopt-compressed):
+Goblin, Orc Enemy, Orc, Giant, Yeti, Skeleton, Zombie, Ghost, Dragon, Demon, Blue Demon, Cow, Wolf, Spider,
+Characters "Matt" and "Sam", Adventurer, Wizard. Used for monsters, the player, NPCs, companions and ogre-village folk.

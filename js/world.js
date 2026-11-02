@@ -1000,7 +1000,7 @@ export function createWorld(scene) {
     scene.add(root);
     pickables.push(root);
     const e = tag(root, {
-      ...t, mesh: root, body, legs, loLegs: legs, maxHp: t.hp, hp: t.hp, alive: true, variant,
+      ...t, typeName, rigSeed: seed, mesh: root, body, legs, loLegs: legs, maxHp: t.hp, hp: t.hp, alive: true, variant,
       x, z, spawnX: x, spawnZ: z, roam, bounds, radius: 0.7 * Math.max(1, t.scale * 0.8),
       state: 'idle', target: null, wanderAt: 0, nextAttackTick: 0, deathT: 0, respawnAt: 0, lastHitAt: -1e9
     });

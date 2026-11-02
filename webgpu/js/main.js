@@ -16,6 +16,7 @@ import { createScene, createCamera, createRenderer, createLights, followLight, s
 import { adoptSceneObjects, registerDynamic, updateChunks, pumpChunks, primeChunks, setLoadRadius, radiusFor, isLoadedAt, chunkStats } from '../../js/chunk.js';
 import { loadRegions } from '../../js/regions.js';
 import { setModelQuality, updateFolk, modelStats } from '../../js/assets.js';
+import { setRigQuality, rigStats, wantRigs, MONSTER_RIGS, monsterRig, showRig, driveMonster, rigRange } from '../../js/rigs.js';
 import { createClimate } from '../../js/climate.js';
 import { PATHS, terrainHeight, insideLake, WORLD_HALF, TOWNS, CAVE, inCave } from '../../js/world.js';
 import { createWorld, createPileMesh, SPAWN, setDecorQuality, updateDecorChunks, updateLocalGrass } from '../../js/world.js';
@@ -116,14 +117,14 @@ const chunkSkip = new Set([ground, pm.mesh, ...monsters.map(m => m.mesh), ...wan
 adoptSceneObjects(scene, chunkSkip);
 for (const m of monsters) registerDynamic(m.mesh, () => m.mesh.position, scene);
 for (const n of wanderers) registerDynamic(n.mesh, () => n.mesh.position, scene);
-setModelQuality({ touch: IS_TOUCH });
+setModelQuality({ touch: IS_TOUCH }); setRigQuality({ touch: IS_TOUCH });
 const regionInfo = loadRegions(scene, { spawnMonster, registerDynamic, density: IS_TOUCH ? 0.6 : 1 });   // data-only map regions (js/regions.js), built lazily per chunk
 primeChunks(pm.mesh.position.x, pm.mesh.position.z, scene);
 window.regionInfo = regionInfo;
 const climate = createClimate(scene, { lite: IS_TOUCH });   // climate-region fog + particles (js/climate.js)
 window.climate = climate;
 window.chunkStats = chunkStats;
-window.modelStats = modelStats;
+window.modelStats = modelStats; window.rigStats = rigStats;
 const updateCritters = createCritters(scene, terrainHeight, (x, z) => insideLake(x, z, 1) || blockedAt(x, z) || Math.abs(x) > WORLD_HALF - 4 || Math.abs(z) > WORLD_HALF - 4 || Object.values(TOWNS).some(t => Math.hypot(t.x - x, t.z - z) < 22));
 const skills = createSkills();
 const player = createPlayerState();
@@ -3325,8 +3326,9 @@ function updateMonsters(dt, now) {
       const D = m.deathT, side = m.deathSide ??= (Math.random() < 0.5 ? -1 : 1), ez = k => 1 - (1 - k) * (1 - k);
       const stag = Math.min(1, D / 0.35), fall = Math.min(1, Math.max(0, (D - 0.25) / 0.55)), bounce = D > 0.8 && D < 1.05 ? Math.sin((D - 0.8) / 0.25 * Math.PI) * 0.08 : 0;
       const quad = m.legs && m.legs.length >= 4;
-      m.mesh.rotation.z = side * (ez(fall) * (quad ? 1.45 : 1.5) - bounce);
-      m.mesh.rotation.x = quad ? 0 : -0.25 * Math.sin(stag * Math.PI) * (1 - fall);
+      const rg = m.rig && m.rig.on; if (rg) driveMonster(m, dt, false);   // rigged: the death clip does the fall
+      m.mesh.rotation.z = rg ? 0 : side * (ez(fall) * (quad ? 1.45 : 1.5) - bounce);
+      m.mesh.rotation.x = quad || rg ? 0 : -0.25 * Math.sin(stag * Math.PI) * (1 - fall);
       if (m.body) m.body.position.z = -0.25 * Math.sin(stag * Math.PI * 0.5) * (1 - fall * 0.5);
       if (m.rigHi) { const u = m.rigHi.userData; if (u && u.legs) { u.legs.forEach(l => { if (l.userData.knee) l.userData.knee.rotation.x = 0.9 * Math.min(1, D / 0.5); }); u.arms?.forEach((a, i) => { a.rotation.z = (i ? 1 : -1) * 0.9 * fall; }); } }
       if (!m.thumped && D > 0.8) { m.thumped = true; burst('dust', pos.x + side * 0.6, pos.y, pos.z, 14); if (Math.hypot(pos.x - pm.mesh.position.x, pos.z - pm.mesh.position.z) < 12) shakeRig(rig, 0.3); }
@@ -3371,6 +3373,7 @@ function updateMonsters(dt, now) {
       }
     }
     pos.y = terrainHeight(pos.x, pos.z);
+    if (m.rig && m.rig.on) driveMonster(m, dt, moving);
     m.walkT = (m.walkT || 0) + (moving ? dt * 9 : 0);
     const sw = moving ? Math.sin(m.walkT) * 0.6 : 0;
     const hiQuad = m.lod && m.lod.hi && !m.rigHi && m.lod.hi.userData.legs && m.lod.hi.userData.legs === m.legs;
@@ -3644,7 +3647,11 @@ function cullWorld() {
     FADE.c.value.set(px, pz); if (imp) FADE.r.value.set(R - 10, R - 1); else FADE.r.value.set(1e6, 1e6 + 1); }   // 9 m dithered crossfade mesh -> card   // desktop High only
   const cx = camera.position.x, cz = camera.position.z;
   for (const e of lodList) if (e.mesh.parent || e.lod.hi) updateLod(e, px, pz);
-  for (const m of monsters) if (m.lod && updateLod(m, px, pz)) syncMonsterRig(m);
+  const rigOn = wantRigs();
+  for (const m of monsters) {
+    if (MONSTER_RIGS[m.typeName]) { monsterRig(m, m.typeName, m.rigSeed, px, pz); if (m.rig) showRig(m, rigOn && Math.hypot(m.mesh.position.x - px, m.mesh.position.z - pz) < rigRange() + 3); }
+    if (m.lod && updateLod(m, px, pz)) syncMonsterRig(m);
+  }
   updateDecorChunks(px, pz, gfx.quality === 'low' ? 45 : 80); // fine clutter fades in fog well before this
 }
 
@@ -3689,7 +3696,7 @@ function animate(now) {
 
   if (frame % 15 === 0) cullWorld();
   if (frame % 5 === 2) updateRoofs();
-  if (frame % 10 === 3) { setModelQuality({ low: gfx.quality === 'low', touch: IS_TOUCH }); setLoadRadius(radiusFor(gfx.quality, IS_TOUCH)); updateChunks(pm.mesh.position.x, pm.mesh.position.z, scene); }
+  if (frame % 10 === 3) { setModelQuality({ low: gfx.quality === 'low', touch: IS_TOUCH }); setRigQuality({ low: gfx.quality === 'low', touch: IS_TOUCH }); setLoadRadius(radiusFor(gfx.quality, IS_TOUCH)); updateChunks(pm.mesh.position.x, pm.mesh.position.z, scene); }
   else pumpChunks(scene);   // time-sliced chunk attach/detach
   if (frame % 300 === 11) { refreshStanding(true); finishErrands(); }
   if (frame % 30 === 13) refreshQuick();
