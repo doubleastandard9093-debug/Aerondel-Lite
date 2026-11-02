@@ -26,6 +26,20 @@ export const RELIC_GEAR = [
 ];
 RELIC_GEAR.forEach(([n, o]) => G(n, { ...o, source: 'Relicry' }));
 
+// ---- Delving gear (defined here so the hooks know every key; awarded by delving.js) ----
+export const DELVE_GEAR = [
+  ['Deepwarden greatblade', { type: 'weapon', atk: 72, str: 72, speed: 5, rarity: 'legendary', glow: 0xb060ff, eff: { lifesteal: 0.1, burn: { chance: 0.1, dmg: 10 } }, special: 'Hungering Edge: heals 10% of damage dealt; 10% chance of shadowflame (10 a tick)', req: { Attack: 75, Delving: 70 }, value: 300000, tokens: 2600 }],
+  ['Gloomstring longbow', { type: 'weapon', ranged: 84, speed: 5, rarity: 'legendary', glow: 0x8060ff, eff: { pierce: 0.25 }, special: 'Opening Volley: +25% damage while the target is above half health', req: { Ranged: 75, Delving: 65 }, value: 280000, tokens: 2400 }],
+  ['Voidlantern staff', { type: 'weapon', atk: 12, str: 8, mag: 32, speed: 5, rarity: 'legendary', glow: 0x70a0ff, eff: { chain: 0.25 }, special: 'Lantern Arc: 25% chance for spells to arc to another foe for half damage', req: { Magic: 75, Delving: 60 }, value: 280000, tokens: 2400 }],
+  ["Delver's warhelm", { type: 'head', def: 36, rdef: 32, rarity: 'epic', glow: 0xa080ff, eff: { crit: 0.04 }, special: 'Keen Eye: 4% chance of a critical hit', req: { Defence: 75, Delving: 50 }, value: 110000, tokens: 1100 }],
+  ["Delver's warplate", { type: 'body', def: 84, rdef: 70, rarity: 'legendary', glow: 0xa080ff, eff: { dr: 0.05 }, special: 'Deep Bulwark: take 5% less damage', req: { Defence: 75, Delving: 70 }, value: 260000, tokens: 2200 }],
+  ["Delver's bulwark", { type: 'shield', def: 66, rdef: 64, rarity: 'epic', glow: 0xa080ff, eff: { dr: 0.04 }, special: 'Stone Heart: take 4% less damage', req: { Defence: 75, Delving: 55 }, value: 170000, tokens: 1500 }],
+  ['Shadowhide jerkin', { type: 'body', def: 46, rdef: 78, ranged: 16, rarity: 'epic', glow: 0x6070c0, eff: { echo: 0.1 }, special: 'Twin Shadow: 10% chance of a free second arrow', req: { Ranged: 70, Delving: 50 }, value: 160000, tokens: 1500 }],
+  ['Gloamweave robe', { type: 'body', def: 32, rdef: 32, mag: 24, rarity: 'epic', glow: 0x7090ff, eff: { dr: 0.03, frost: 0.05 }, special: 'Gloam Chill: take 3% less damage; 5% chance for spells to freeze', req: { Magic: 70, Delving: 50 }, value: 150000, tokens: 1500 }],
+  ["Delver's signet", { type: 'ring', atk: 6, str: 6, ranged: 6, mag: 6, rarity: 'epic', glow: 0, eff: { dmgPct: 0.04 }, special: '+4% damage with every style', req: { Delving: 40 }, value: 60000, tokens: 800 }]
+];
+DELVE_GEAR.forEach(([n, o]) => G(n, { ...o, source: 'Delving' }));
+
 function sumEff(player) {
   const o = { dr: 0, echo: 0, pierce: 0, frost: 0, chain: 0, burn: null, glow: 0 };
   for (const slot of ['weapon', 'body', 'shield', 'head', 'legs', 'ring']) {

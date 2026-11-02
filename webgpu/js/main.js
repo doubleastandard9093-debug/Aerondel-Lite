@@ -56,6 +56,7 @@ import { DEED_COST, ROOMS, FURNITURE, BOSS_TROPHIES, normalizeHouse, hasRoom, ha
 import { HEARTH, ARENA, inInstance, instanceAt } from '../../js/instances.js';
 import { installRelicry } from '../../js/relicry.js';
 import { installRelicGear } from '../../js/relicgear.js';
+import { installDelving } from '../../js/delving.js';
 import { WILDS, RIVAL, CAP, botCap, normalizeWilds, captureStep, heldCount } from '../../js/wilds.js';
 import { ARENA_RULES, ARENA_SHOP, normalizeArena, ladder, rankOf, rateDuel, weekRoll, weekNo, pickOpponent, duellistStats } from '../../js/arena.js';
 import { TASK, HUNT_SHOP, normalizeTasks, assignTask, taskKill, taskLabel, isDrowned } from '../../js/tasks.js';
@@ -1846,6 +1847,7 @@ const aeroCtx = { scene, nodes, pickables, player, skills, pm, EXT, giveXP, give
   stopAction: () => stopAction(), tick: () => tick };
 installRelicGear(aeroCtx);
 installRelicry(aeroCtx);
+installDelving(aeroCtx);
 // ---- Stable Codex: mount collection, Skyrook flights between towns, wardrobe looks ----
 function lookEquip() {
   const L = player.codex && player.codex.looks; if (!L) return player.equipment;

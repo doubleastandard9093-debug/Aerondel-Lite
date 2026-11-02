@@ -1,9 +1,9 @@
-export const SKILLS = ["Attack","Strength","Defence","Hitpoints","Ranged","Magic","Prayer","Agility","Thieving","Mining","Woodcutting","Fishing","Smithing","Crafting","Cooking","Fletching","Herbalism","Glyphcraft","Relicry"];
+export const SKILLS = ["Attack","Strength","Defence","Hitpoints","Ranged","Magic","Prayer","Agility","Thieving","Mining","Woodcutting","Fishing","Smithing","Crafting","Cooking","Fletching","Herbalism","Glyphcraft","Relicry","Delving"];
 
 export const SKILL_ICONS = {
   Attack: "⚔️", Strength: "💪", Defence: "🛡️", Hitpoints: "❤️", Ranged: "🏹", Magic: "🔮", Prayer: "🙏",
   Agility: "🏃", Thieving: "🦹", Mining: "⛏️", Woodcutting: "🪓", Fishing: "🎣", Smithing: "🔨",
-  Crafting: "🧶", Cooking: "🍳", Fletching: "🪶", Herbalism: "🌿", Glyphcraft: "💠", Relicry: "🏺"
+  Crafting: "🧶", Cooking: "🍳", Fletching: "🪶", Herbalism: "🌿", Glyphcraft: "💠", Relicry: "🏺", Delving: "🕳️"
 };
 
 // v13: classic-shaped exponential curve (l + 300*2^(l/7)) / 4, scaled to 30%. Level 99 is about 3.9M XP.
@@ -118,7 +118,8 @@ export const FX_LABEL = {
   thieveXp: v => `+${P(v)} Thieving XP`, lootChance: v => `+${P(v)} chance of better loot`,
   dodgeMs: v => `+${Math.round(v)} ms dodge i-frames`, rareDrop: v => `+${P(v)} rare drop chance`, magicAdren: v => `+${P(v)} adrenaline from Magic skills`,
   rcXp: v => `+${P(v)} Glyphcraft XP`, runeDouble: v => `${P(v)} chance of double runes`,
-  rareFind: v => `${P(v)} chance of an Ancient fragment while excavating`, gateEase: v => `dungeon gates need ${Math.round(v * 20)} fewer levels`
+  rareFind: v => `${P(v)} chance of an Ancient fragment while excavating`, gateEase: v => `dungeon gates need ${Math.round(v * 20)} fewer levels`,
+  tokenBonus: v => `+${P(v)} Delving tokens`, floorHeal: v => `heal ${P(v)} of your life whenever a floor door opens`
 };
 export const PERK_MULT = 5;
 const FLAGS = new Set(["fastMake", "lowRegen"]);
@@ -127,7 +128,7 @@ export const PERK_CAPS = {
   saveBar: 0.75, saveMat: 0.75, crit: 0.5, rcrit: 0.5, quick: 0.5, reflect: 0.5, dr: 0.6, acc: 0.6, racc: 0.6, speed: 0.6,
   abilityCd: 0.6, drainLess: 0.75, burnLess: 1, critMult: 1, execute: 0.75, healBonus: 1, regen: 2, killHeal: 0.1,
   extraArrows: 15, xpBonus: 1, buryXp: 1, potionTime: 1, ppRegen: 0.3, maxHp: 100, maxHit: 60, rmaxHit: 40,
-  magicAcc: 0.6, magicDmg: 0.5, runeSave: 0.75, agilityXp: 1, failLess: 0.75, thieveXp: 1, lootChance: 0.5, rcXp: 1, runeDouble: 0.5, dodgeMs: 120, rareDrop: 0.25, magicAdren: 0.4, rareFind: 0.5, gateEase: 0.75
+  magicAcc: 0.6, magicDmg: 0.5, runeSave: 0.75, agilityXp: 1, failLess: 0.75, thieveXp: 1, lootChance: 0.5, rcXp: 1, runeDouble: 0.5, dodgeMs: 120, rareDrop: 0.25, magicAdren: 0.4, rareFind: 0.5, gateEase: 0.75, tokenBonus: 1, floorHeal: 0.5
 };
 export const CAPS_TEXT = "Level bonuses are 5x. Caps: chance effects 75% (crits 50%), damage reduction 60% total, accuracy +60%, food heals +100%, HP regen +200%, heal on kill 10% of max HP, actions never faster than 1 tick.";
 function describe(fx) { return Object.entries(fx).map(([k, v]) => FX_LABEL[k] ? FX_LABEL[k](v) : k).join(", "); }
@@ -181,7 +182,9 @@ export const PERKS = {
   Glyphcraft: build(["Rune Focus", { rcXp: 0.01 }, "Efficient", { runeDouble: 0.01 }], {
     25: ["Better Runes", { rcXp: 0.05 }], 50: ["Double Runes", { runeDouble: 0.1 }], 75: ["Master Glyphcrafter", { rcXp: 0.05 }], 99: ["Glyphcraft Mastery", { runeDouble: 0.1, rcXp: 0.05 }] }),
   Relicry: build(["Gentle Brush", { xpBonus: 0.01 }, "Keen Sieve", { double: 0.01 }], {
-    25: ["Swift Trowel", { fastGather: 0.08 }], 50: ["Curator", { saveMat: 0.08 }], 75: ["Lost Hoards", { rareFind: 0.02 }], 99: ["Relicry Mastery", { xpBonus: 0.05, gateEase: 0.1 }] })
+    25: ["Swift Trowel", { fastGather: 0.08 }], 50: ["Curator", { saveMat: 0.08 }], 75: ["Lost Hoards", { rareFind: 0.02 }], 99: ["Relicry Mastery", { xpBonus: 0.05, gateEase: 0.1 }] }),
+  Delving: build(["Pathfinder", { xpBonus: 0.01 }, "Token Hoarder", { tokenBonus: 0.01 }], {
+    25: ["Scavenger", { double: 0.06 }], 50: ["Gatebreaker", { gateEase: 0.1 }], 75: ["Delver's Resolve", { floorHeal: 0.03 }], 99: ["Delving Mastery", { xpBonus: 0.05, tokenBonus: 0.05 }] })
 };
 
 export function setPerkBoost(skills, boosts) {

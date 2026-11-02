@@ -1,7 +1,8 @@
 // RS-style side panel with tabs, plus the bank, shop and help windows and the combat-skill quick bar.
 // Short how-to lines for newer skills on the skill detail panel.
 export const SKILL_NOTE = {
-  Relicry: 'Relicry: excavate dig sites in the six climate regions with a mattock, restore damaged artifacts at the site bench, turn in collections of three, and use a restored artifact on the vault door to enter a relic dungeon whose gates test every skill. Relic arms come from collections and reforging.'
+  Relicry: 'Relicry: excavate dig sites in the six climate regions with a mattock, restore damaged artifacts at the site bench, turn in collections of three, and use a restored artifact on the vault door to enter a relic dungeon whose gates test every skill. Relic arms come from collections and reforging.',
+  Delving: "Delving: at the Delver's Descent in the Sunscour Dunes, enter a procedural floor with only your toolbelt. Gather, craft at the floor forge, cook, find coloured keys, pass skill gates and beat the floor guardian. XP grows with floor size and difficulty (a new difficulty every 10 levels); tokens buy Delver gear."
 };
 import { ITEMS, RECIPES, iconFor, CRAFT_TABS, METALS, TOOL_TYPES, statLine, setDesc, rarityColor } from './items.js';
 import { SKILLS, SKILL_ICONS, xpToNext, levelProgress, nextLevelXp, combatLevel, totalLevel, PERKS, maxPrayer, perkTotals, CAPS_TEXT, synergyLines } from './skills.js';
