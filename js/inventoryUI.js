@@ -424,6 +424,7 @@ export function createInventoryUI(api) {
     return html;
   }
 
+  let questLimit = 60;
   function renderQuests() {
     const qp = questPoints(player);
     const sts = QUESTS.map(qd => questStatus(player, qd.id));
@@ -440,8 +441,8 @@ export function createInventoryUI(api) {
       const lines = qd.journal(player); const doneN = lines.filter(l => l.done).length;
       html += `<div class="journal"><button class="jback" data-quest="${qd.id}">← All quests</button><b>${esc(qd.name)}</b><div class="jprog"><i style="width:${st === 'complete' ? 100 : Math.round(100 * doneN / Math.max(1, lines.length))}%"></i></div><div class="qmeta">${esc(qd.town)} · ${esc(qd.diff)}</div>${qd.journal(player).map(l => `<div class="${l.done ? 'done' : ''}">${esc(l.text)}</div>`).join('')}
         ${st === 'complete' ? '<div class="qdone">QUEST COMPLETE!</div>' : ''}
-        <div class="rewards">Rewards: ${qd.points} quest point${qd.points > 1 ? 's' : ''}, ${qd.rewards.map(esc).join(', ')}</div>
-        <div class="qbonus ${st === 'complete' ? 'on' : ''}">★ Lasting bonus: ${esc(qd.bonus.desc)}${st === 'complete' ? ' (active)' : ''}</div></div>`;
+        <div class="rewards">Rewards: ${qd.points} quest point${qd.points > 1 ? 's' : ''}, ${(qd.rewards || []).map(esc).join(', ')}</div>
+        ${qd.bonus && qd.bonus.desc ? `<div class="qbonus ${st === 'complete' ? 'on' : ''}">★ Lasting bonus: ${esc(qd.bonus.desc)}${st === 'complete' ? ' (active)' : ''}</div>` : ''}</div>`;
     }
     // repeatable bounties: status and progress
     const bs = player.bounties || {}, plural = m => /f$/.test(m) ? m.slice(0, -1) + 'ves' : m + 's';
@@ -459,9 +460,11 @@ export function createInventoryUI(api) {
       if (questState !== 'all' && st !== questState) return;
       if (questDiff !== 'All' && qd.diff !== questDiff) return;
       shown++;
+      if (shown > questLimit) return;   // 1,200+ quests: render a page at a time (phones)
       html += `<div class="quest q-${st.replace(' ', '-')} ${selectedQuest === qd.id ? 'sel' : ''}" data-quest="${qd.id}">${esc(qd.name)}<small>${esc(qd.town)} · ${esc(qd.diff)}</small></div>`;
     });
     if (!shown) html += '<div class="hint">No quests match this filter.</div>';
+    else if (shown > questLimit) html += `<button class="qmore" data-qmore="1" style="width:100%;margin-top:4px">Show more (${shown - questLimit} more)</button>`;
     html += '</div>';
     if (!selectedQuest) html += '<div class="hint">Red: not started · Yellow: in progress · Green: complete. Tap a quest for its journal. Quest givers have a blue dot on the minimap.</div>';
     const qb = activeQuestBonuses(player);
@@ -657,8 +660,9 @@ export function createInventoryUI(api) {
     if (sk) { selectedSkill = selectedSkill === sk.dataset.skill ? null : sk.dataset.skill; render(); return; }
     const qq = e.target.closest('[data-quest]');
     if (qq) { selectedQuest = selectedQuest === qq.dataset.quest ? null : qq.dataset.quest; render(); if (selectedQuest) { const j = content.querySelector('.journal'); if (j) j.scrollIntoView({ block: 'nearest' }); } return; }
+    if (e.target.closest('[data-qmore]')) { questLimit += 120; render(); return; }
     const qt = e.target.closest('[data-qtown]');
-    if (qt) { questTown = qt.dataset.qtown; render(); return; }
+    if (qt) { questTown = qt.dataset.qtown; questLimit = 60; render(); return; }
     const qdf = e.target.closest('[data-qdiff]');
     if (qdf) { questDiff = qdf.dataset.qdiff; render(); return; }
     const qs = e.target.closest('[data-qstate]');

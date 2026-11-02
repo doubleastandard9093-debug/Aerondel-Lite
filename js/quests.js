@@ -864,7 +864,7 @@ export const QP_MILESTONES = [
 // Sum of one bonus from every completed quest and reached milestone.
 export function questFx(player, key) {
   let v = 0;
-  for (const x of QUESTS) if (x.bonus && x.bonus.fx[key] && isDone(player, x.id)) v += x.bonus.fx[key];
+  for (const x of QUESTS) if (x.bonus && x.bonus.fx && x.bonus.fx[key] && isDone(player, x.id)) v += x.bonus.fx[key];
   const qp = questPoints(player);
   for (const m of QP_MILESTONES) if (qp >= m.qp && m.fx[key]) v += m.fx[key];
   return v;
@@ -872,7 +872,7 @@ export function questFx(player, key) {
 export function activeQuestBonuses(player) {
   const qp = questPoints(player);
   return {
-    quests: QUESTS.map(x => ({ name: x.name, desc: x.bonus.desc, active: isDone(player, x.id) })),
+    quests: QUESTS.filter(x => x.bonus && x.bonus.desc).map(x => ({ name: x.name, desc: x.bonus.desc, active: isDone(player, x.id) })),
     milestones: QP_MILESTONES.map(m => ({ ...m, active: qp >= m.qp }))
   };
 }
