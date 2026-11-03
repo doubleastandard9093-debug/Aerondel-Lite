@@ -17,6 +17,8 @@ const [,,tier='low',savef]=process.argv;
    P.equipment.weapon=w;g.applyLook();
    for(const id of ['iaido','crescent','whirl','gale','ricochet','eclipse','thousand']){const sw=[{acc:0,dmg:0}];A.arsenalSwing(P,g.skills,mon,sw,false,id,{tick:g.tick,log:()=>{},gain:()=>{}});res[w+':'+id]=sw.length;}}
   o.swings=res;o.blade=A.isBlade('Steel katana')&&!A.isBlade('Steel war fan');
+  o.swLoaded=g.skills.Swordsmanship.level;P.equipment.body='Rimeplate cuirass';P.equipment.head='Eclipse Sovereign helm';g.applyLook();o.tint=g.pm.parts.bodyMat.color.getHex().toString(16);
+  o.recipes=g.RECIPES.filter(x=>x.group==='Arsenal').length;o.cape=!!I.ITEMS['Swordsmanship cape'];o.magic=['frostspire','leyrend','astralnova','voidcollapse'].every(id=>AB.abilityById(id));
   g.giveXP('Swordsmanship',5e6);o.swordAfter=g.skills.Swordsmanship.level;
   g.invUI&&g.invUI.render&&g.invUI.render();
   const sv=JSON.parse((await import('/js/save.js')).getSaveData(g.skills,P,g.pm));o.ver=sv.version;o.savedSword=!!sv.skills.Swordsmanship;
