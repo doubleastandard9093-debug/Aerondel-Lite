@@ -801,6 +801,19 @@ function magicKit(special, spell, mon, res, now) {
     }
     if (gfx.quality !== 'low') burst('hit', mp.x, mp.y + 2, mp.z, 18);
   }
+  else if (ab.scale) { // v22 high-level Magic techniques: grow with Magic level up to 1000
+    const k = 1 + skills.Magic.level / 500, mp = mon.mesh.position;
+    if (special === 'frostspire') { extra = Math.floor(mh * 1.2 * k); mon.stunUntil = Math.max(mon.stunUntil || 0, tick + 4); log(`The ${mon.name} is frozen solid!`, 'combat'); }
+    else if (special === 'leyrend') { extra = Math.floor(mh * (1.5 + Math.random()) * k); mon.witherUntil = Math.max(mon.witherUntil || 0, tick + 10); }
+    else if (special === 'astralnova') {
+      extra = Math.floor(mh * 2 * k);
+      for (const m of monsters) if (m !== mon && m.alive && m.hp > 0 && m.mesh.position.distanceTo(mp) < 6) {
+        const d = Math.min(m.hp, Math.floor(mh * 1.2 * k * (0.6 + Math.random() * 0.4))); m.hp -= d; overlays.splat(m, d, now + 350);
+        if (m.state !== 'fight') { m.state = 'fight'; m.nextAttackTick = tick + 1; } giveXP('Magic', d * 0.6); if (m.hp <= 0) killMonster(m, now);
+      }
+      if (gfx.quality !== 'low') burst('hit', mp.x, mp.y + 2, mp.z, 24);
+    } else if (special === 'voidcollapse') { extra = Math.floor(mh * 5 * k * (mon.hp < mon.maxHp * 0.25 ? 2 : 1)); }
+  }
   // Flow: Magic skills chain like the others.
   const fl = flowOnSkillHit(flow, tick, special);
   if (fl.repeat) log('Flow holds: use a different skill to add a link.', 'combat');

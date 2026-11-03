@@ -32,6 +32,10 @@ export const ABILITIES = [
   { id: 'starfall', tier: 'threshold', name: 'Starfall Volley', icon: '🌠', skill: 'Ranged', level: 400, cd: 50, style: 'ranged', desc: 'Four shots at +30% damage.' },
   { id: 'eclipse', tier: 'ultimate', name: 'Eclipse Severance', icon: '🌑', skill: 'Strength', level: 500, cd: 120, style: 'melee', desc: 'One cut at +400% damage; +900% against foes under 15% HP.' },
   { id: 'thousand', tier: 'ultimate', name: 'Thousand Cuts', icon: '✴️', skill: 'Swordsmanship', level: 750, cd: 110, style: 'melee', desc: 'Six blinding cuts at +10% damage and accuracy.' },
+  { id: 'frostspire', tier: 'basic', name: 'Frost Spire', icon: '🧊', skill: 'Magic', level: 150, cd: 24, style: 'magic', scale: true, runes: { 'Water rune': 6, 'Havoc rune': 2 }, desc: 'A spear of ice that freezes the target for 2 seconds. Grows with Magic level. Uses 6 Water and 2 Havoc runes.' },
+  { id: 'leyrend', tier: 'threshold', name: 'Ley Rend', icon: '🌌', skill: 'Magic', level: 350, cd: 45, style: 'magic', scale: true, runes: { 'Havoc rune': 5 }, desc: 'Tears the leylines through your target and weakens it. Grows with Magic level. Uses 5 Havoc runes.' },
+  { id: 'astralnova', tier: 'ultimate', name: 'Astral Nova', icon: '🌟', skill: 'Magic', level: 600, cd: 100, style: 'magic', scale: true, runes: { 'Air rune': 10, 'Grave rune': 4 }, desc: 'A starburst on your target that also hits every foe within 6 m. Grows with Magic level. Uses 10 Air and 4 Grave runes.' },
+  { id: 'voidcollapse', tier: 'ultimate', name: 'Void Collapse', icon: '🕳️', skill: 'Magic', level: 900, cd: 120, style: 'magic', scale: true, runes: { 'Grave rune': 6, 'Havoc rune': 6 }, desc: 'Crushes the target in a collapsing void; double damage under 25% HP. Uses 6 Grave and 6 Havoc runes.' },
   { id: 'rejuv', tier: 'ultimate',    name: 'Rejuvenate',    icon: '✨', skill: 'Defence',  level: 40, cd: 100, style: 'any',  desc: 'Heal 20% of your hitpoints.' }
 ];
 
