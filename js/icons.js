@@ -279,6 +279,9 @@ function paint(c, item) {
   if (/throwing axe/.test(low)) return axe(c, m);
   if (/pickaxe$/.test(low)) return axe(c, m, true);
   if (/ axe$/.test(low)) return axe(c, m);
+  if (/chakram$/.test(low)) return ring(c, m);
+  if (/war fan$/.test(low)) return dagger(c, m);
+  if (/katana$|scimitar$|glaive$/.test(low)) return sword(c, m, /katana|glaive/.test(low));
   if (/sword$|blade$|cutlass$|longsword$/.test(low)) return sword(c, item === 'Vampyric blade' ? '#8a1a2a' : item === "Captain's cutlass" ? '#c8c8d8' : m, /long/.test(low));
   if (/maul|warhammer/.test(low)) { c.save(); c.translate(32, 32); c.rotate(-Math.PI / 4); c.beginPath(); c.roundRect(-3, -6, 6, 32, 2); finish(c, WOODHANDLE); c.beginPath(); c.roundRect(-16, -22, 32, 17, 3); finish(c, metalFill(c, item === 'Basalt maul' ? '#7a7a70' : '#8a8aa0', 0, -22, 0, -5)); c.restore(); return; }
   if (item === 'Battlestaff' || /^staff|staff$/.test(low)) { const r = info.runeSource && RUNES.find(x => x[0] === info.runeSource); return staff(c, r ? r[2] : item === 'Starweave staff' ? '#9a5aff' : '#8a8a9a', !!(r || /starweave|battle/i.test(item))); }

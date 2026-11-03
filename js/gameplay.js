@@ -596,6 +596,7 @@ export const WEAPON_STOCK = [
   ...['Steel', 'Bluesteel', 'Verdite', 'Cobalt'].map(m => sell(`${m} sword`)),
   ...['Willow shortbow', 'Maple shortbow', 'Yew shortbow', 'Magic shortbow'].map(b => sell(b)),
   ...['Iron', 'Steel', 'Bluesteel', 'Verdite', 'Cobalt'].map(m => ({ item: `${m} arrows`, price: Math.max(2, Math.round(itemValue(`${m} arrows`) * 1.6)) })),
+  ...['Iron', 'Steel', 'Bluesteel', 'Verdite'].flatMap(m => ['katana', 'scimitar', 'glaive', 'war fan', 'chakram'].map(c => sell(`${m} ${c}`))),
   sell('Warrior ring'), sell('Archer ring'), sell('Amulet of strength')
 ];
 // Every shop in the game. NPC/stall entities carry shop: '<id>'.

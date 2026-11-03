@@ -68,6 +68,21 @@ METALS.forEach((m, t) => {
   def(`${m} arrows`, { type: 'ammo', count: 15, rstr: [3, 6, 10, 15, 22, 32, 45][t], tier: t, metal: m, value: [1, 2, 4, 8, 16, 40, 100][t] });
 });
 
+// ---- Arsenal (v22): weapon classes with their own styles (see arsenal.js) ----
+// katana: opening strike on each new foe; scimitar: fast, every 4th swing flourishes; glaive: long, slow, may sweep;
+// war fan: builds adrenaline and can stagger; chakram: light disc that may return for a second cut.
+export const WCLASSES = {
+  katana:   { suffix: 'katana',   atk: [6, 11, 17, 24, 33, 45, 62], str: [4, 7, 12, 18, 26, 37, 54], speed: 4 },
+  scimitar: { suffix: 'scimitar', atk: [5, 9, 14, 20, 28, 38, 52], str: [2, 5, 8, 12, 18, 27, 40], speed: 3 },
+  glaive:   { suffix: 'glaive',   atk: [6, 10, 16, 23, 32, 44, 60], str: [6, 10, 16, 24, 34, 48, 68], speed: 6 },
+  warfan:   { suffix: 'war fan',  atk: [4, 7, 11, 16, 22, 30, 42], str: [2, 4, 7, 10, 15, 22, 32], speed: 3, def: [2, 3, 5, 7, 10, 14, 20] },
+  chakram:  { suffix: 'chakram',  atk: [5, 9, 13, 19, 26, 36, 50], str: [3, 5, 9, 13, 19, 28, 40], speed: 3 }
+};
+METALS.forEach((m, t) => {
+  for (const [cls, w] of Object.entries(WCLASSES))
+    def(`${m} ${w.suffix}`, { type: 'weapon', wclass: cls, atk: w.atk[t], str: w.str[t], def: w.def ? w.def[t] : 0, speed: w.speed, tier: t, metal: m, req: { Attack: TIER_REQ[t] }, value: Math.round(18 * VALUE_MULT[t] * (cls === 'glaive' ? 1.4 : 1)) });
+});
+
 // ---- Bows ----
 export const BOWS = [['Shortbow', 1, 8], ['Oak shortbow', 15, 14], ['Willow shortbow', 20, 20], ['Maple shortbow', 30, 28], ['Yew shortbow', 40, 36], ['Magic shortbow', 50, 48]];
 BOWS.forEach(([n, req, r], t) => def(n, { type: 'weapon', ranged: r, speed: 4, tier: t, req: { Ranged: req }, value: [20, 40, 80, 160, 400, 1000][t] }));

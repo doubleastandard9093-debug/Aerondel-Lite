@@ -5,6 +5,7 @@ import { shapes, contactShadow, gearDetail, ANIM } from './anatomy.js';
 import { terrainHeight } from './world.js';
 import { WORLD_HALF, waterAt, colliders } from './world.js';
 import { inSound, clampToIsland } from './sea.js';
+import { ITEMS } from './items.js';
 
 export const WALK_SPEED = 3.3;  // world units per second
 export const RUN_SPEED = 6.2;
@@ -225,6 +226,10 @@ export function applyEquipmentLook(pm, equipment) {
   p.sword.visible = !!w && !isBow;
   p.bow.visible = isBow;
   if (w && !isBow) p.swordMat.color.setHex(metalColor(w, 0xb87333));
+  { // v22 weapon classes reuse the held blade, reshaped: long thin katana, short scimitar, long glaive, flat fan/disc
+    const cls = (ITEMS[w] || {}).wclass, S = { katana: [0.8, 1.25, 0.8], scimitar: [1.1, 0.85, 1.1], glaive: [0.9, 1.6, 0.9], warfan: [1.6, 0.45, 0.6], chakram: [1.5, 0.35, 1.5] }[cls] || [1, 1, 1];
+    p.sword.scale.set(S[0], S[1], S[2]);
+  }
   if (isBow) p.bowMat.color.setHex(metalColor(w, 0x8a5a2a));
   p.shield.visible = !!equipment.shield && !isBow;
   if (equipment.shield) p.shieldMat.color.setHex(metalColor(equipment.shield, 0x8a5a2a));
