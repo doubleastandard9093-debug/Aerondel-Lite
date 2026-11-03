@@ -205,7 +205,7 @@ function gearKind(item) {
   if (!item) return 0;
   if (/chain/i.test(item)) return 1;
   if (/leather|cowl|chaps|Wooden|Oak|Willow|Maple|Yew/i.test(item)) return 3;
-  if (/^(Bronze|Iron|Steel|Bluesteel|Verdite|Cobalt|Emberite)/.test(item)) return 2;
+  if (/^(Bronze|Iron|Steel|Bluesteel|Verdite|Cobalt|Emberite)/.test(item) || (ITEMS[item] && ITEMS[item].tint != null)) return 2;
   return 0;
 }
 function setGear(mat, item, rough, metal) {
@@ -215,6 +215,7 @@ function setGear(mat, item, rough, metal) {
 
 function metalColor(item, fallback) {
   if (!item) return fallback;
+  if (ITEMS[item] && ITEMS[item].tint != null) return ITEMS[item].tint; // v22 frontier sets and weapons
   const k = Object.keys(METAL).find(m => item.startsWith(m));
   return k ? METAL[k] : fallback;
 }

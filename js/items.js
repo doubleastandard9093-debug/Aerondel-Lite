@@ -243,12 +243,14 @@ export const FRONTIER_UNIQUES = [
   ['Sunderlord Vexmar', 1000, 'Eclipse Sovereign', 'Vexmar, the Last Eclipse', 'katana', { bigHit: 0.25, doubleHit: 0.25, lifesteal: 0.1, dmgPct: 0.1 }, 'The Sunderlord\'s own blade: 25% chance to strike twice, 25% chance of a +50% hit, heals 10% of damage dealt, +10% damage', { dr: 0.2, dmgPct: 0.2, acc: 0.15 }]
 ];
 export const FRONTIER_PIECES = [['head', 'helm', 0.42], ['body', 'cuirass', 1], ['legs', 'greaves', 0.78], ['shield', 'aegis', 0.8]];
+export const FRONTIER_TINTS = { Ashwarden: 0x8a3a1a, Thornroot: 0x4a6a2a, Rimeplate: 0xb8d8f0, Stormforged: 0x6a7aa0, Gravemire: 0x3a4a3a, Sandsovereign: 0xc8a060, "Archon's Caldera": 0xd0501a, Voidwrought: 0x3a2a5a, 'Eclipse Sovereign': 0x6a3aa0 };
 for (const [mob, L, set, wName, cls, eff, txt, fx] of FRONTIER_UNIQUES) {
+  const tint = FRONTIER_TINTS[set];
   const rarity = L >= 900 ? 'legendary' : 'epic', boss = L >= 1000;
   U(wName, { type: 'weapon', wclass: cls, atk: Math.round(L * 0.95 + 20) + (boss ? 150 : 0), str: Math.round(L * 0.9 + 15) + (boss ? 150 : 0), speed: WCLASSES[cls].speed,
-    rarity, eff, highTier: true, icon: { katana: '🗡️', scimitar: '🗡️', glaive: '🔱', warfan: '🪭', chakram: '💿' }[cls], special: `${txt}. Dropped by ${mob}`, req: { Attack: L, Swordsmanship: Math.round(L / 2) }, value: L * 900, frontier: mob });
+    rarity, eff, tint, highTier: true, icon: { katana: '🗡️', scimitar: '🗡️', glaive: '🔱', warfan: '🪭', chakram: '💿' }[cls], special: `${txt}. Dropped by ${mob}`, req: { Attack: L, Swordsmanship: Math.round(L / 2) }, value: L * 900, frontier: mob });
   for (const [slot, word, k] of FRONTIER_PIECES)
-    U(`${set} ${word}`, { type: slot, set, def: Math.round(L * 0.75 * k), rdef: Math.round(L * 0.7 * k), str: slot === 'body' ? Math.round(L * 0.06) : 0, rarity, highTier: true,
+    U(`${set} ${word}`, { type: slot, set, def: Math.round(L * 0.75 * k), rdef: Math.round(L * 0.7 * k), str: slot === 'body' ? Math.round(L * 0.06) : 0, rarity, tint, highTier: true,
       special: `${set} set piece. Dropped by ${mob}`, req: { Defence: L }, value: L * 500, frontier: mob });
   SETS[set] = { pieces: ['head', 'body', 'legs', 'shield'], fx };
 }
