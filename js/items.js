@@ -479,6 +479,14 @@ XBOW_METALS.forEach((m, t) => {
   R({ name: `Smith ${m} thrown dagger`, cat: 'Smithing', group: 'Thrown weapons', skill: 'Smithing', level: Math.min(99, SMITH_BASE[t] + 3), inputs: { [`${m} bar`]: 1 }, output: `${m} thrown dagger`, xp: BAR_XP[t], station: 'anvil', tool: 'hammer' });
   R({ name: `Smith ${m} throwing axe`, cat: 'Smithing', group: 'Thrown weapons', skill: 'Smithing', level: Math.min(99, SMITH_BASE[t] + 7), inputs: { [`${m} bar`]: 2 }, output: `${m} throwing axe`, xp: BAR_XP[t] * 2, station: 'anvil', tool: 'hammer' });
 });
+// Arsenal (v22): the 5 weapon classes at the anvil. [bars, level offset over the metal's base]
+const WCLASS_SMITH = { katana: [2, 5], scimitar: [2, 3], glaive: [3, 9], warfan: [1, 4], chakram: [1, 6] };
+METALS.forEach((m, t) => {
+  for (const [cls, w] of Object.entries(WCLASSES)) {
+    const [bars, off] = WCLASS_SMITH[cls];
+    R({ name: `Smith ${m} ${w.suffix}`, cat: 'Smithing', group: 'Arsenal', skill: 'Smithing', level: Math.min(99, SMITH_BASE[t] + off), inputs: { [`${m} bar`]: bars }, output: `${m} ${w.suffix}`, xp: BAR_XP[t] * bars, station: 'anvil', tool: 'hammer' });
+  }
+});
 // Magic gear: weave cloth, sew robes, carve staves; a battlestaff needs the anvil
 R({ name: 'Weave Cloth', cat: 'Crafting', group: 'Magic gear', skill: 'Crafting', level: 5, inputs: { Flax: 2 }, output: 'Cloth', xp: 12 });
 R({ name: 'Sew Wizard hat', cat: 'Crafting', group: 'Magic gear', skill: 'Crafting', level: 10, inputs: { Cloth: 1 }, output: 'Wizard hat', xp: 20, tool: 'needle' });
