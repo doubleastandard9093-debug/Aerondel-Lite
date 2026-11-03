@@ -90,6 +90,7 @@ import { SIEGE, FRIEND_CAP, HOSTILE_CAP, SELLSWORDS, BOSSES, MECH, LOOT, BOSS_CO
 import { PATHS as CPATHS, PATH_LEVEL, TALENTS, rowsOpen, normalizePath, pathFx } from './paths.js';
 import { STILL, SPOT, normalizeStill, addFocus } from './stillwatch.js';
 import { WRIT_FACTIONS, WRIT_REWARD, normalizeWrits, maybeRoll, writProgress, writLabel } from './writs.js';
+import { arsenalSwing, arsenalXp } from './arsenal.js';
 import { QUIRKS, QUIRK_MAX, REMEDY, FIRE_RE, quirkById, normalizeQuirks, dueQuirk, has as hasQuirk, quirkXp, quirkIncoming } from './quirks.js';
 
 // ---------------------------------------------------------------------------
@@ -3044,8 +3045,9 @@ function playerAttack(mon, now) {
     if (hud && hud.setFlow) hud.setFlow(fl.finisher ? FLOW.maxLinks : fl.links);
   }
   for (const f of extSwing) f(mon, swings, ranged, special);
+  arsenalSwing(player, skills, mon, swings, ranged, special, { tick, log, gain: n => hud && hud.gain(n) });
   let dmg = 0;
-  for (let i = 0; i < swings.length && i < 6; i++) {
+  for (let i = 0; i < swings.length && i < 8; i++) {
     const mods = { ...swings[i] };
     if (mon.hp <= 0) break;
     const d = rollPlayerHit(player, skills, mon, Math.random, mods);
@@ -3071,6 +3073,7 @@ function playerAttack(mon, now) {
   mon.lastHitAt = now;
   const xp = combatXp(player, dmg);
   for (const [s, v] of Object.entries(xp)) giveXP(s, v);
+  { const sx = arsenalXp(player, dmg, ranged); if (sx) giveXP('Swordsmanship', sx); }
   lastCombatTick = tick;
   if (mon.state !== 'fight') { mon.state = 'fight'; mon.nextAttackTick = tick + 1; }
   if (mon.hp <= 0) killMonster(mon, now);

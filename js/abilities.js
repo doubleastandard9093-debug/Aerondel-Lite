@@ -23,6 +23,15 @@ export const ABILITIES = [
   { id: 'ward', tier: 'threshold', name: 'Warding Hymn', icon: '🎶', skill: 'Prayer', level: 1, path: 'mender', cd: 60, style: 'any', desc: 'Mender: take 40% less damage and heal a little each tick for 6 seconds.' },
   { id: 'rend', tier: 'basic', name: 'Rending Blow', icon: '🩸', skill: 'Strength', level: 1, path: 'striker', cd: 20, style: 'any', desc: 'Striker: a heavy hit with +90% damage.' },
   { id: 'flurry', tier: 'threshold', name: 'Flurry', icon: '🌪️', skill: 'Attack', level: 1, path: 'striker', cd: 45, style: 'any', desc: 'Striker: three fast hits at -15% damage each.' },
+  // v22 high-level techniques (Arsenal). Each gets stronger with its matching weapon class.
+  { id: 'iaido', tier: 'threshold', name: 'Iaido Draw', icon: '🗡️', skill: 'Attack', level: 110, cd: 40, style: 'melee', desc: 'A lightning draw: +150% damage and much more accurate (+250% with a katana).' },
+  { id: 'crescent', tier: 'basic', name: 'Crescent Cut', icon: '🌙', skill: 'Strength', level: 150, cd: 22, style: 'melee', desc: 'Two arcing cuts at +20% damage (three with a scimitar).' },
+  { id: 'whirl', tier: 'threshold', name: 'Reaping Whirl', icon: '🌀', skill: 'Attack', level: 200, cd: 45, style: 'melee', desc: 'Four spinning cuts at -10% damage (five with a glaive).' },
+  { id: 'gale', tier: 'basic', name: 'Gale Fan', icon: '🪭', skill: 'Defence', level: 250, cd: 30, style: 'melee', desc: 'A buffeting strike that stuns for 3 seconds (almost 5 with a war fan).' },
+  { id: 'ricochet', tier: 'basic', name: 'Ricochet', icon: '💿', skill: 'Attack', level: 300, cd: 28, style: 'melee', desc: 'Three rebounding hits, each harder than the last (harder with a chakram).' },
+  { id: 'starfall', tier: 'threshold', name: 'Starfall Volley', icon: '🌠', skill: 'Ranged', level: 400, cd: 50, style: 'ranged', desc: 'Four shots at +30% damage.' },
+  { id: 'eclipse', tier: 'ultimate', name: 'Eclipse Severance', icon: '🌑', skill: 'Strength', level: 500, cd: 120, style: 'melee', desc: 'One cut at +400% damage; +900% against foes under 15% HP.' },
+  { id: 'thousand', tier: 'ultimate', name: 'Thousand Cuts', icon: '✴️', skill: 'Swordsmanship', level: 750, cd: 110, style: 'melee', desc: 'Six blinding cuts at +10% damage and accuracy.' },
   { id: 'rejuv', tier: 'ultimate',    name: 'Rejuvenate',    icon: '✨', skill: 'Defence',  level: 40, cd: 100, style: 'any',  desc: 'Heal 20% of your hitpoints.' }
 ];
 

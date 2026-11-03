@@ -29,7 +29,7 @@ import { normalizeSkywing } from './skywing.js';
 import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 
-export const SAVE_VERSION = 21;
+export const SAVE_VERSION = 22; // v22: Swordsmanship skill (added at level 1 by normalizeSkills)
 export const POS_LIMIT = 616; // world half-size (WORLD_HALF 620, frontier ring) minus a margin
 const KEY = 'aerondel3d';
 const LEGACY_KEY = 'gielinor3d'; // pre-Aerondel saves: read as a fallback, never deleted
@@ -113,6 +113,7 @@ export function migrateSave(saved) {
   if (typeof p.gold !== 'number') p.gold = Number(p.gold) || 0;
 
   const fromVersion = Number(saved.version) || 1;
+  if (fromVersion < 22 && fromVersion > 1) notes.push('New: Swordsmanship (trained by fighting with blades), high-level techniques, katanas, scimitars, glaives, war fans, chakrams and frontier uniques.');
 
   // Toolbelt (v4). Older saves get the starter tools, and any tools in the pack move onto the belt.
   if (!p.tools || typeof p.tools !== 'object') {

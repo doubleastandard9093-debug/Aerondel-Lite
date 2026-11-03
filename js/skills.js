@@ -1,9 +1,9 @@
-export const SKILLS = ["Attack","Strength","Defence","Hitpoints","Ranged","Magic","Prayer","Agility","Thieving","Mining","Woodcutting","Fishing","Smithing","Crafting","Cooking","Fletching","Herbalism","Glyphcraft","Relicry","Delving"];
+export const SKILLS = ["Attack","Strength","Defence","Hitpoints","Ranged","Magic","Prayer","Agility","Thieving","Mining","Woodcutting","Fishing","Smithing","Crafting","Cooking","Fletching","Herbalism","Glyphcraft","Relicry","Delving","Swordsmanship"];
 
 export const SKILL_ICONS = {
   Attack: "⚔️", Strength: "💪", Defence: "🛡️", Hitpoints: "❤️", Ranged: "🏹", Magic: "🔮", Prayer: "🙏",
   Agility: "🏃", Thieving: "🦹", Mining: "⛏️", Woodcutting: "🪓", Fishing: "🎣", Smithing: "🔨",
-  Crafting: "🧶", Cooking: "🍳", Fletching: "🪶", Herbalism: "🌿", Glyphcraft: "💠", Relicry: "🏺", Delving: "🕳️"
+  Crafting: "🧶", Cooking: "🍳", Fletching: "🪶", Herbalism: "🌿", Glyphcraft: "💠", Relicry: "🏺", Delving: "🕳️", Swordsmanship: "🗡️"
 };
 
 // v13: classic-shaped exponential curve (l + 300*2^(l/7)) / 4, scaled to 30%. Level 99 is about 3.9M XP.
@@ -32,7 +32,7 @@ export function convertXpV1(xp) {
 // v21: combat skills (Attack, Strength, Defence, Hitpoints, Ranged, Magic, Prayer) go to level 1000.
 // Up to 99 the curve is unchanged (old saves keep their levels). Past 99 each level costs the 98->99 step
 // times (1 + (L - 99) / 40), so 1000 is about 4.1 billion XP; other skills still stop at 99.
-export const COMBAT_SKILLS = ["Attack", "Strength", "Defence", "Hitpoints", "Ranged", "Magic", "Prayer"];
+export const COMBAT_SKILLS = ["Attack", "Strength", "Defence", "Hitpoints", "Ranged", "Magic", "Prayer", "Swordsmanship"];
 export const COMBAT_MAX = 1000, SKILL_MAX = 99;
 export const maxLevelOf = s => COMBAT_SKILLS.includes(s) ? COMBAT_MAX : SKILL_MAX;
 const XP_TABLE = [0, 0];
@@ -136,6 +136,7 @@ export const FX_LABEL = {
   dodgeMs: v => `+${Math.round(v)} ms dodge i-frames`, rareDrop: v => `+${P(v)} rare drop chance`, magicAdren: v => `+${P(v)} adrenaline from Magic skills`,
   rcXp: v => `+${P(v)} Glyphcraft XP`, runeDouble: v => `${P(v)} chance of double runes`,
   rareFind: v => `${P(v)} chance of an Ancient fragment while excavating`, gateEase: v => `dungeon gates need ${Math.round(v * 20)} fewer levels`,
+  bladeAcc: v => `+${P(v)} accuracy with blades`, bladeDmg: v => `+${P(v)} damage with blades`,
   tokenBonus: v => `+${P(v)} Delving tokens`, floorHeal: v => `heal ${P(v)} of your life whenever a floor door opens`
 };
 export const PERK_MULT = 5;
@@ -200,6 +201,8 @@ export const PERKS = {
     25: ["Better Runes", { rcXp: 0.05 }], 50: ["Double Runes", { runeDouble: 0.1 }], 75: ["Master Glyphcrafter", { rcXp: 0.05 }], 99: ["Glyphcraft Mastery", { runeDouble: 0.1, rcXp: 0.05 }] }),
   Relicry: build(["Gentle Brush", { xpBonus: 0.01 }, "Keen Sieve", { double: 0.01 }], {
     25: ["Swift Trowel", { fastGather: 0.08 }], 50: ["Curator", { saveMat: 0.08 }], 75: ["Lost Hoards", { rareFind: 0.02 }], 99: ["Relicry Mastery", { xpBonus: 0.05, gateEase: 0.1 }] }),
+  Swordsmanship: build(["Clean Cut", { bladeAcc: 0.004 }, "Keen Edge", { bladeDmg: 0.004 }], {
+    25: ["Flowing Steel", { bladeAcc: 0.03 }], 50: ["Twin Draw", { bladeDmg: 0.04 }], 75: ["Sword Dancer", { bladeAcc: 0.03, bladeDmg: 0.03 }], 99: ["Swordsmanship Mastery", { bladeDmg: 0.05, bladeAcc: 0.03 }] }),
   Delving: build(["Pathfinder", { xpBonus: 0.01 }, "Token Hoarder", { tokenBonus: 0.01 }], {
     25: ["Scavenger", { double: 0.06 }], 50: ["Gatebreaker", { gateEase: 0.1 }], 75: ["Delver's Resolve", { floorHeal: 0.03 }], 99: ["Delving Mastery", { xpBonus: 0.05, tokenBonus: 0.05 }] })
 };
@@ -212,6 +215,7 @@ const HIGH = {
   Hitpoints: [["Deep Vigor", "Troll Blood", "Undying", "Heartforge", "Phoenix Pulse", "Evergreen", "Lifewell", "Immortal Coil", "Sunblood", "Hitpoints Ascendant"], { maxHp: 40, regen: 0.05, killHeal: 0.002 }, { maxHp: 10 }],
   Ranged: [["Hawkeye", "Windreader", "Piercer", "Skybreaker", "Storm of Arrows", "Starshot", "Horizon", "Farseer", "Eclipse Arrow", "Ranged Ascendant"], { racc: 0.01, rmaxHit: 5, doubleShot: 0.005 }, { rmaxHit: 1, racc: 0.002 }],
   Magic: [["Archmage", "Spellweaver", "Leyline", "Astral Mind", "Runeheart", "Starweaver", "Voidcaller", "Aether Crown", "Eclipse Sigil", "Magic Ascendant"], { magicDmg: 0.02, magicAcc: 0.01, runeSave: 0.005 }, { magicDmg: 0.004 }],
+  Swordsmanship: [["Kensei", "Mirror Edge", "Wind Splitter", "Ghost Step", "Hundred Steels", "Moonblade", "Sky Cleaver", "Unsheathed", "Eclipse Edge", "Swordsmanship Ascendant"], { bladeAcc: 0.01, bladeDmg: 0.02 }, { bladeDmg: 0.004 }],
   Prayer: [["Anointed", "Sanctified", "Lightbearer", "Hallowed", "Saintly", "Exalted", "Seraphic", "Divine Echo", "Eclipse Litany", "Prayer Ascendant"], { ppRegen: 0.01, drainLess: 0.02, buryRestore: 2 }, { drainLess: 0.005 }]
 };
 for (const [skill, [names, big, small]] of Object.entries(HIGH)) {
