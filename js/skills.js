@@ -240,15 +240,28 @@ export const SYNERGY = [
   ['Attack', 'Thieving', 'thieveXp', 0.004], ['Agility', 'Combat', 'dodgeMs', 12], ['Thieving', 'Combat', 'rareDrop', 0.02],
   ['Prayer', 'Combat', 'magicAdren', 0.04], ['Defence', 'Agility', 'failLess', 0.004], ['Hitpoints', 'Prayer', 'drainLess', 0.004]
 ];
+// v22: combat skills now reach 1000. Steps: one per 10 levels up to 99, then one per 25 levels past 99,
+// plus a Resonance bonus (+5 steps) at 500 and again at 1000, so links keep growing without exploding.
+export const SYNERGY_HIGH = [
+  ['Attack', 'Strength', 'crit', 0.002], ['Strength', 'Attack', 'acc', 0.002], ['Defence', 'Hitpoints', 'maxHp', 4],
+  ['Hitpoints', 'Defence', 'block', 0.002], ['Ranged', 'Attack', 'counter', 0.002], ['Magic', 'Prayer', 'ppRegen', 0.002],
+  ['Prayer', 'Defence', 'reflect', 0.002], ['Attack', 'Ranged', 'racc', 0.002], ['Strength', 'Ranged', 'rmaxHit', 0.5]
+];
+SYNERGY.push(...SYNERGY_HIGH);
+export function synergySteps(level) {
+  const lo = Math.floor(Math.min(level, 99) / 10);
+  const hi = level > 99 ? Math.floor((level - 99) / 25) : 0;
+  return lo + hi + (level >= 500 ? 5 : 0) + (level >= 1000 ? 5 : 0);
+}
 export function synergy(skills, skill, key) {
   let v = 0;
-  for (const [f, t, k, per] of SYNERGY) if (t === skill && k === key && skills[f]) v += Math.floor(skills[f].level / 10) * per;
+  for (const [f, t, k, per] of SYNERGY) if (t === skill && k === key && skills[f]) v += synergySteps(skills[f].level) * per;
   return v;
 }
 export function synergyLines(skills, skill) {
   return SYNERGY.filter(s => s[0] === skill || s[1] === skill).map(([f, t, k, per]) => {
-    const v = Math.floor((skills[f] ? skills[f].level : 1) / 10) * per;
-    return { from: f, to: t, gives: f === skill, text: `${f} → ${t}: ${FX_LABEL[k] ? FX_LABEL[k](v) : k} (+${FX_LABEL[k] ? FX_LABEL[k](per).replace(/^\+/, '') : per} per 10 ${f} levels)` };
+    const v = synergySteps(skills[f] ? skills[f].level : 1) * per;
+    return { from: f, to: t, gives: f === skill, text: `${f} → ${t}: ${FX_LABEL[k] ? FX_LABEL[k](v) : k} (+${FX_LABEL[k] ? FX_LABEL[k](per).replace(/^\+/, '') : per} per 10 ${f} levels to 99, then per 25; Resonance at 500 and 1000)` };
   });
 }
 export function perk(skills, skill, key) {
