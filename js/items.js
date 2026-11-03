@@ -228,6 +228,30 @@ U('Reefward amulet', { type: 'neck', def: 6, rdef: 6, rarity: 'rare', special: '
 U("Saltgrave's signet", { type: 'ring', atk: 6, str: 6, ranged: 6, rarity: 'rare', special: 'Drowned Crew Exalted reward', value: 500 });
 U('Ring of rebuke', { type: 'ring', def: 2, rdef: 2, rarity: 'uncommon', eff: { reflect: 0.1 }, special: 'Reflects 10% of damage you take', value: 1500 });
 U("Captain's cutlass", { type: 'weapon', atk: 35, str: 32, speed: 4, rarity: 'rare', eff: { doubleHit: 0.1 }, special: '10% chance to strike twice', req: { Attack: 40 }, value: 8000 });
+// ---- Frontier uniques (v22): named weapons and armour sets from the frontier elites and Sunderlord Vexmar.
+// Stats scale with the dropper's level L; wearing all 4 set pieces gives the set bonus (SETS).
+// [dropper, level, set name, weapon name, weapon class, weapon eff, eff text, set fx]
+export const FRONTIER_UNIQUES = [
+  ['Cinder Warden', 140, 'Ashwarden', 'Emberfang katana', 'katana', { bigHit: 0.15 }, 'Cleave: 15% chance of a hit with +50% damage', { dr: 0.06, dmgPct: 0.06 }],
+  ['Bramble Colossus', 220, 'Thornroot', 'Briarhook scimitar', 'scimitar', { poison: { chance: 0.3, dmg: 260 } }, '30% chance to poison (260 damage, fading)', { dr: 0.08, acc: 0.06 }],
+  ['Glacier Behemoth', 320, 'Rimeplate', 'Glacierfall glaive', 'glaive', { stun: 0.15 }, '15% chance to freeze the foe for 3 seconds', { dr: 0.1, dmgPct: 0.08 }],
+  ['Peak Warlord', 450, 'Stormforged', 'Thunderwing war fan', 'warfan', { doubleHit: 0.2 }, 'Thunderclap: 20% chance to strike twice', { dr: 0.11, acc: 0.1 }],
+  ['Bog Revenant', 600, 'Gravemire', 'Mirewraith chakram', 'chakram', { lifesteal: 0.12 }, 'Heals you for 12% of the damage you deal', { dr: 0.12, dmgPct: 0.1 }],
+  ['Dune Tyrant', 720, 'Sandsovereign', 'Mirage scimitar', 'scimitar', { crit: 0.08, bigHit: 0.1 }, '+8% critical hit chance; 10% chance of a +50% hit', { dr: 0.13, acc: 0.12 }],
+  ['Molten Archon', 880, 'Archon\'s Caldera', 'Magmaheart glaive', 'glaive', { dmgPct: 0.08, bigHit: 0.2 }, '+8% damage; 20% chance of a +50% hit', { dr: 0.14, dmgPct: 0.12 }],
+  ['Voidborn Knight', 950, 'Voidwrought', 'Nulledge katana', 'katana', { doubleHit: 0.2, lifesteal: 0.06 }, '20% chance to strike twice; heals 6% of damage dealt', { dr: 0.15, acc: 0.14 }],
+  ['Sunderlord Vexmar', 1000, 'Eclipse Sovereign', 'Vexmar, the Last Eclipse', 'katana', { bigHit: 0.25, doubleHit: 0.25, lifesteal: 0.1, dmgPct: 0.1 }, 'The Sunderlord\'s own blade: 25% chance to strike twice, 25% chance of a +50% hit, heals 10% of damage dealt, +10% damage', { dr: 0.2, dmgPct: 0.2, acc: 0.15 }]
+];
+export const FRONTIER_PIECES = [['head', 'helm', 0.42], ['body', 'cuirass', 1], ['legs', 'greaves', 0.78], ['shield', 'aegis', 0.8]];
+for (const [mob, L, set, wName, cls, eff, txt, fx] of FRONTIER_UNIQUES) {
+  const rarity = L >= 900 ? 'legendary' : 'epic', boss = L >= 1000;
+  U(wName, { type: 'weapon', wclass: cls, atk: Math.round(L * 0.95 + 20) + (boss ? 150 : 0), str: Math.round(L * 0.9 + 15) + (boss ? 150 : 0), speed: WCLASSES[cls].speed,
+    rarity, eff, highTier: true, icon: { katana: '🗡️', scimitar: '🗡️', glaive: '🔱', warfan: '🪭', chakram: '💿' }[cls], special: `${txt}. Dropped by ${mob}`, req: { Attack: L, Swordsmanship: Math.round(L / 2) }, value: L * 900, frontier: mob });
+  for (const [slot, word, k] of FRONTIER_PIECES)
+    U(`${set} ${word}`, { type: slot, set, def: Math.round(L * 0.75 * k), rdef: Math.round(L * 0.7 * k), str: slot === 'body' ? Math.round(L * 0.06) : 0, rarity, highTier: true,
+      special: `${set} set piece. Dropped by ${mob}`, req: { Defence: L }, value: L * 500, frontier: mob });
+  SETS[set] = { pieces: ['head', 'body', 'legs', 'shield'], fx };
+}
 U('Highcrag warhammer', { type: 'weapon', atk: 48, str: 55, speed: 5, rarity: 'epic', eff: { stun: 0.1, dmgPct: 0.05 }, special: '10% chance to stun, +5% damage', req: { Attack: 50 }, value: 20000 });
 U("Herbalist's amulet", { type: 'neck', def: 3, rdef: 3, prayer: 4, rarity: 'rare', eff: { potionTime: 0.25 }, special: 'Potions last 25% longer', value: 5000 });
 for (const [piece, type, d, rd, extra] of [['helm', 'head', 30, 32, {}], ['body', 'body', 75, 80, { ranged: -6 }], ['legs', 'legs', 55, 58, { ranged: -3 }], ['shield', 'shield', 60, 60, {}]]) {

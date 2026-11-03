@@ -1,6 +1,6 @@
 // Pure game rules (no rendering), so they can be unit-tested in node.
 import { addItem, removeItem, canAdd } from './playerState.js';
-import { ITEMS, HEAL_SCALE, slotFor, isRangedWeapon, itemValue, isTool, toolType, FOODS, SETS, SKILL_CAPE_SKILLS, HERBS, grimyOf, METALS, RUNES } from './items.js';
+import { FRONTIER_UNIQUES, FRONTIER_PIECES, ITEMS, HEAL_SCALE, slotFor, isRangedWeapon, itemValue, isTool, toolType, FOODS, SETS, SKILL_CAPE_SKILLS, HERBS, grimyOf, METALS, RUNES } from './items.js';
 import { boostedLevel, effectFx } from './potions.js';
 import { perk, maxPrayer } from './skills.js';
 import { prayerFx } from './prayer.js';
@@ -1018,6 +1018,13 @@ Object.assign(MONSTER_TYPES, {
     const L = t.level, c = [Math.round(L * 2), Math.round(L * 6)];
     LOOT_TABLES[t.name] = [{ item: 'Big bones', chance: 1 }, { item: 'Coins', chance: 0.9, qty: c }, { item: 'Relic shard', chance: 0.35, qty: [1, 2 + Math.floor(L / 250)] }, { item: 'Ancient fragment', chance: Math.min(0.5, 0.05 + L / 4000) }];
     WEAKNESS[t.name] = ['fire', 'water', 'earth', 'wind'][L % 4];
+    // v22 frontier uniques: the named weapon (1/150, boss 1/30) and each set piece (1/100, boss 1/20)
+    const fu = FRONTIER_UNIQUES.find(u => u[0] === t.name);
+    if (fu) {
+      const boss = !!t.boss;
+      LOOT_TABLES[t.name].push({ item: fu[3], chance: boss ? 1 / 30 : 1 / 150 });
+      for (const [, word] of FRONTIER_PIECES) LOOT_TABLES[t.name].push({ item: `${fu[2]} ${word}`, chance: boss ? 1 / 20 : 1 / 100 });
+    }
   }
 }
 
