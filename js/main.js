@@ -3045,7 +3045,7 @@ function playerAttack(mon, now) {
     if (hud && hud.setFlow) hud.setFlow(fl.finisher ? FLOW.maxLinks : fl.links);
   }
   for (const f of extSwing) f(mon, swings, ranged, special);
-  arsenalSwing(player, skills, mon, swings, ranged, special, { tick, log, gain: n => hud && hud.gain(n) });
+  arsenalSwing(player, skills, mon, swings, ranged, special, { tick, log, gain: n => hud && hud.gain(n), useArrow });
   let dmg = 0;
   for (let i = 0; i < swings.length && i < 8; i++) {
     const mods = { ...swings[i] };

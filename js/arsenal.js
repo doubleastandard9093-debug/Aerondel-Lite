@@ -21,7 +21,7 @@ const TECH = {
   whirl: (sw, c) => { sw[0].dmg -= 0.1; const n = c.cls === 'glaive' ? 4 : 3; for (let i = 0; i < n; i++) sw.push({ ...sw[0], extra: true }); },
   gale: (sw, c) => { sw[0].acc += 0.3; c.mon.stunUntil = c.tick + (c.cls === 'warfan' ? 8 : 5); c.log(`A gale pins the ${c.mon.name} in place!`); },
   ricochet: (sw, c) => { const bonus = c.cls === 'chakram' ? 0.4 : 0.25; sw.push({ ...sw[0], dmg: sw[0].dmg + bonus, extra: true }, { ...sw[0], dmg: sw[0].dmg + bonus * 2, extra: true }); },
-  starfall: (sw) => { sw[0].dmg += 0.3; for (let i = 0; i < 3; i++) sw.push({ ...sw[0], extra: true }); },
+  starfall: (sw, c) => { sw[0].dmg += 0.3; for (let i = 0; i < 3; i++) if (!c.useArrow || c.useArrow()) sw.push({ ...sw[0], extra: true }); }, // each extra shot uses ammo
   eclipse: (sw, c) => { sw[0].dmg += c.mon.hp < c.mon.maxHp * 0.15 ? 9 : 4; sw[0].acc += 0.5; },
   thousand: (sw) => { sw[0].dmg += 0.1; sw[0].acc += 0.2; for (let i = 0; i < 5; i++) sw.push({ ...sw[0], extra: true }); }
 };
@@ -41,7 +41,7 @@ export function arsenalSwing(player, skills, mon, swings, ranged, special, ctx) 
   for (const s of swings) { s.acc = s.acc || 0; s.dmg = s.dmg || 0; }
   const w = player.equipment && player.equipment.weapon;
   const cls = weaponClass(w);
-  const c = { mon, tick: ctx.tick, cls, log: m => ctx.log(m, 'combat'), gain: ctx.gain };
+  const c = { mon, tick: ctx.tick, cls, log: m => ctx.log(m, 'combat'), gain: ctx.gain, useArrow: ctx.useArrow };
   if (special && TECH[special]) TECH[special](swings, c);
   if (!ranged && cls && CLASS[cls]) CLASS[cls](swings, c, state[cls] || (state[cls] = { n: 0 }));
   if (!ranged && isBlade(w)) {
