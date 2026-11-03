@@ -238,6 +238,8 @@ button.on, .style.on, .subtabs button.on, .chips button.on, .qtybar button.on, #
   background: radial-gradient(circle at 35% 30%, #4a4d55, #121317); box-shadow: 0 0 0 1px #000, 0 0 0 2px var(--c-gold-lo); }
 .skill b { font: bold 13px var(--f-num); color: #ffe75a; text-shadow: 0 1px 0 #000; }
 .skill i { left: 3px; bottom: 2px; height: 3px; border-radius: 2px; max-width: calc(100% - 6px); }
+.skill { min-width: 0; white-space: nowrap; }
+.skill b.lv4 { font-size: 11px; letter-spacing: -0.4px; }
 .skill.maxed { box-shadow: inset 0 0 0 1px var(--c-gold), inset 0 0 10px rgba(255, 210, 110, .35); }
 .skill.maxed .sk-ico { box-shadow: 0 0 0 1px #000, 0 0 0 2px var(--c-gold-hi), 0 0 6px var(--c-gold); }
 

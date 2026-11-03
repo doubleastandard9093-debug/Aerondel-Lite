@@ -310,7 +310,7 @@ export function createInventoryUI(api) {
       const k = skills[s];
       const bst = boostOf(player, s);
       const tip = `<div class="tt-name">${s}</div><div class="tt-type">Level ${k.level}${bst ? ` (boosted ${k.level + bst})` : ''}</div><div class="tt-line">XP ${fmt(k.xp)}</div>` + (isMaxed(k) ? '<div class="tt-special">Maximum level</div>' : `<div class="tt-line">Next level at ${fmt(nextLevelXp(k))}</div><div class="tt-special">${fmt(xpToNext(k))} XP to level ${k.level + 1}</div>`);
-      html += `<div class="skill ${selectedSkill === s ? 'sel' : ''} ${isMaxed(k) ? 'maxed' : ''}" data-skill="${s}" data-tiphtml="${esc(tip)}"><span class="sk-ico">${SKILL_ICONS[s]}</span><b${bst ? ' class="boosted"' : ''}>${bst ? `${k.level + bst}/${k.level}` : k.level}</b><i style="width:${(levelProgress(k) * 100).toFixed(0)}%"></i></div>`;
+      html += `<div class="skill ${selectedSkill === s ? 'sel' : ''} ${isMaxed(k) ? 'maxed' : ''}" data-skill="${s}" data-tiphtml="${esc(tip)}"><span class="sk-ico">${SKILL_ICONS[s]}</span><b class="${bst ? 'boosted' : ''}${String(k.level + (bst || 0)).length > 3 || bst ? ' lv4' : ''}">${bst ? `${k.level + bst}/${k.level}` : k.level}</b><i style="width:${(levelProgress(k) * 100).toFixed(0)}%"></i></div>`;
     }
     html += '</div>';
     if (selectedSkill) {
