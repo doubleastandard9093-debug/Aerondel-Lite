@@ -110,7 +110,11 @@ export function totalLevel(skills) {
 
 export const PERK_LEVELS = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 99];
 export const MILESTONES = [25, 50, 75, 99];
-const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
+// v22: combat skills keep earning bonuses past 99, every 25 levels up to 1000; each 100 is a named milestone.
+export const HIGH_PERK_LEVELS = [];
+for (let l = 125; l <= 1000; l += 25) HIGH_PERK_LEVELS.push(l);
+export const HIGH_MILESTONES = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI", "XXVII", "XXVIII", "XXIX", "XXX"];
 
 const P = v => `${+(v * 100).toFixed(1)}%`;
 export const FX_LABEL = {
@@ -199,6 +203,28 @@ export const PERKS = {
   Delving: build(["Pathfinder", { xpBonus: 0.01 }, "Token Hoarder", { tokenBonus: 0.01 }], {
     25: ["Scavenger", { double: 0.06 }], 50: ["Gatebreaker", { gateEase: 0.1 }], 75: ["Delver's Resolve", { floorHeal: 0.03 }], 99: ["Delving Mastery", { xpBonus: 0.05, tokenBonus: 0.05 }] })
 };
+
+// Past 99: [name of the 100s milestones, fx per milestone (grows with the tier), small fx every 25 levels]
+const HIGH = {
+  Attack: [["Blademaster", "Edge of Dawn", "Tempest Hand", "Unerring", "Thousand Cuts", "Swordsaint", "Moonsplitter", "Worldedge", "Eclipse Form", "Attack Ascendant"], { acc: 0.01, counter: 0.01, abilityCd: 0.005 }, { acc: 0.002 }],
+  Strength: [["Titan Grip", "Bonebreaker", "Earthshaker", "Ruinous", "Colossal Might", "Mountain Splitter", "Godslayer", "Cataclysm", "Starfall", "Strength Ascendant"], { maxHit: 6, crit: 0.004, critMult: 0.04 }, { maxHit: 2 }],
+  Defence: [["Bastion", "Unbroken", "Aegis", "Ironheart", "Living Fortress", "Unmovable", "Adamant Soul", "Warden Eternal", "Eclipse Shell", "Defence Ascendant"], { dr: 0.004, block: 0.004, reflect: 0.005 }, { dr: 0.001 }],
+  Hitpoints: [["Deep Vigor", "Troll Blood", "Undying", "Heartforge", "Phoenix Pulse", "Evergreen", "Lifewell", "Immortal Coil", "Sunblood", "Hitpoints Ascendant"], { maxHp: 40, regen: 0.05, killHeal: 0.002 }, { maxHp: 10 }],
+  Ranged: [["Hawkeye", "Windreader", "Piercer", "Skybreaker", "Storm of Arrows", "Starshot", "Horizon", "Farseer", "Eclipse Arrow", "Ranged Ascendant"], { racc: 0.01, rmaxHit: 5, doubleShot: 0.005 }, { rmaxHit: 1, racc: 0.002 }],
+  Magic: [["Archmage", "Spellweaver", "Leyline", "Astral Mind", "Runeheart", "Starweaver", "Voidcaller", "Aether Crown", "Eclipse Sigil", "Magic Ascendant"], { magicDmg: 0.02, magicAcc: 0.01, runeSave: 0.005 }, { magicDmg: 0.004 }],
+  Prayer: [["Anointed", "Sanctified", "Lightbearer", "Hallowed", "Saintly", "Exalted", "Seraphic", "Divine Echo", "Eclipse Litany", "Prayer Ascendant"], { ppRegen: 0.01, drainLess: 0.02, buryRestore: 2 }, { drainLess: 0.005 }]
+};
+for (const [skill, [names, big, small]] of Object.entries(HIGH)) {
+  const list = PERKS[skill]; let n = 0;
+  for (let level = 100; level <= 1000; level += 25) {
+    const hundred = level % 100 === 0, tier = Math.floor(level / 100);
+    let name, fx;
+    if (hundred) { name = names[tier - 1]; fx = Object.fromEntries(Object.entries(big).map(([k, v]) => [k, +(v * (1 + (tier - 1) / 9)).toFixed(4)])); } // 1x at 100 up to 2x at 1000
+    else { name = `${skill} Prowess ${ROMAN[n++]}`; fx = small; }
+    fx = Object.fromEntries(Object.entries(fx).map(([k, v]) => [k, +(v * PERK_MULT).toFixed(4)]));
+    list.push({ level, name, fx, milestone: hundred, desc: describe(fx) });
+  }
+}
 
 export function setPerkBoost(skills, boosts) {
   Object.defineProperty(skills, "_boost", { value: boosts, enumerable: false, writable: true, configurable: true });
