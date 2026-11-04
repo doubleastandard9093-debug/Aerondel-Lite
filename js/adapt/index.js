@@ -8,7 +8,8 @@ import reliquary from './reliquary.js';
 import loot from './loot.js';
 import crestbreak from './crestbreak.js';
 import sigils from './sigils.js';
-const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils];
+import grafts from './grafts.js';
+const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts];
 export function installAdapt(ctx) {
   const A = installCore(ctx);
   for (const f of FEATURES) { try { f(A); } catch (e) { console.error('Ventures feature failed to start', e); } }
