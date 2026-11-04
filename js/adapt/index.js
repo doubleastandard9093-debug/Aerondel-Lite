@@ -3,7 +3,8 @@
 import { installCore } from './core.js';
 import overflare from './overflare.js';
 import wardrobe from './wardrobe.js';
-const FEATURES = [overflare, wardrobe];
+import ledger from './ledger.js';
+const FEATURES = [overflare, wardrobe, ledger];
 export function installAdapt(ctx) {
   const A = installCore(ctx);
   for (const f of FEATURES) { try { f(A); } catch (e) { console.error('Ventures feature failed to start', e); } }
