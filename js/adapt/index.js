@@ -22,6 +22,8 @@ import vigil from './vigil.js';
 import attune from './attune.js';
 import hearthhold from './hearthhold.js';
 import chronicle from './chronicle.js';
+import glidewalk from './glidewalk.js';
+const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk];
 export function installAdapt(ctx) {
   const A = installCore(ctx);
   for (const f of FEATURES) { try { f(A); } catch (e) { console.error('Ventures feature failed to start', e); } }
