@@ -13,8 +13,8 @@ const [,,tier='low',savef='/workspace/aerondel-save-max.json']=process.argv;
   o.core=!!A&&!!document.getElementById('advWin');o.tabs=A.tabs.map(t=>t.id);
   A.open('overview');o.hubOpen=document.getElementById('advWin').classList.contains('on');A.close();
   const near=()=>{const pp=A.pos();let m=g.monsters.find(m=>m.alive&&!m.boss&&m.level<30);if(!m)return null;m.mesh.position.set(pp.x+1.2,pp.y,pp.z);m.hp=m.maxHp=5000;return m;};
-  if(A.flare){const f=A.S('flare');f.meter=99;const m=near();A.flareAdd(5);o.flareFull=f.meter===100;await T(1600);o.hubBtn=!!document.querySelector('#flowbtns [data-q="ventures"]');o.flareBtn=!!document.querySelector('#flowbtns [data-q="flare"]');
-   const hp0=m.hp;o.flareFired=!!A.flare();await T(1200);o.flareHit=m.hp<hp0;o.flareReset=f.meter<5;}
+  if(A.flare){const f=A.S('flare');f.meter=99;A.flareAdd(5);o.flareFull=f.meter===100;await T(1600);o.hubBtn=!!document.querySelector('#flowbtns [data-q="ventures"]');o.flareBtn=!!document.querySelector('#flowbtns [data-q="flare"]');
+   const m=near();const hp0=m.hp;o.flareFired=!!A.flare();await T(1200);o.flareHit=m.hp<hp0;o.flareReset=f.meter<5;}
   for(const t of A.tabs){A.open(t.id);await T(30);}A.close();o.fit=document.getElementById('flowbtns').dataset.fit;
   // tests added per feature
   if(A.vtests)for(const [k,fn] of Object.entries(A.vtests)){try{o[k]=await fn(g,A,near,T);}catch(e){o[k]='ERR '+e.message;}}
