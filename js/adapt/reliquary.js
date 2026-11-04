@@ -20,7 +20,7 @@ export default function reliquary(A) {
   let puz = null;
   const start = s => { const n = 3 + s.tier, secs = 6 + s.tier * 2 + Math.floor(A.lvl('Thieving') / 10);
     puz = { s, seq: Array.from({ length: n }, () => Math.floor(Math.random() * 4)), at: 0, end: Date.now() + secs * 1000, secs }; A.open('reliq'); };
-  A.relicDig = () => { if (!A.owns('Dowsing rod')) { A.log('You need a dowsing rod (Crafting 10: 1 Logs + 1 Iron bar, or buy one from Wayfinder Tamsin in Larkhaven).', 'warn'); return; }
+  A.relicDig = () => { if (!A.owns('Dowsing rod')) { A.log('You need a dowsing rod (Crafting 10: 1 Logs + 1 Iron bar, or buy one from Wayfinder Orla in Larkhaven).', 'warn'); return; }
     const n = near(); if (!n) { A.log('Every reliquary has been dug up today. They reseal at midnight UTC.', 'info'); return; }
     if (n.d > 3) { const dir = Math.atan2(n.s.x - A.pos().x, n.s.z - A.pos().z); const comp = ['south', 'south-east', 'east', 'north-east', 'north', 'north-west', 'west', 'south-west'][((Math.round(dir / (Math.PI / 4)) % 8) + 8) % 8];
       A.log(`The rod pulls ${comp}. ${n.d < 15 ? 'Very close!' : n.d < 40 ? 'Warm.' : `Far (about ${Math.round(n.d)} paces).`}`, 'info'); return; }
@@ -32,9 +32,9 @@ export default function reliquary(A) {
   A.relicPress = r => { if (!puz) return; if (Date.now() > puz.end) return finish(false); if (r !== puz.seq[puz.at]) return finish(false); if (++puz.at >= puz.seq.length) finish(true); };
   A.onQuick('dig', A.relicDig);
   A.quick(() => { if (!A.owns('Dowsing rod')) return null; const n = near(); return n && n.d < 3 ? [['dig', '🪄Dig', 'Open the hidden reliquary']] : null; });
-  A.npc('tamsin', '🧭', 'Wayfinder Tamsin', 'Reliquaries lie hidden near every town. A dowsing rod will find them — and the seals reset every day.', 'reliq',
+  A.npc('wayfinder', '🧭', 'Wayfinder Orla', 'Reliquaries lie hidden near every town. A dowsing rod will find them — and the seals reset every day.', 'reliq',
     [['Buy a dowsing rod (150 coins).', () => { if (player.gold < 150) return [['npc', 'Come back with 150 coins.']]; player.gold -= 150; A.give('Dowsing rod'); A.dirty(); return [['npc', 'Tap Dowse in the Reliquaries tab and follow the pull.']]; }]]);
-  A.guide.push(['Hidden Reliquaries', 'Get a Dowsing rod (Crafting 10, or Wayfinder Tamsin in Larkhaven, 150 coins). Ventures ✦ → Reliquaries → Dowse points you to the nearest cache; on it tap 🪄Dig and repeat the rune order before time runs out. Higher Thieving gives more time and coins. 16 caches, reset daily.']);
+  A.guide.push(['Hidden Reliquaries', 'Get a Dowsing rod (Crafting 10, or Wayfinder Orla in Larkhaven, 150 coins). Ventures ✦ → Reliquaries → Dowse points you to the nearest cache; on it tap 🪄Dig and repeat the rune order before time runs out. Higher Thieving gives more time and coins. 16 caches, reset daily.']);
   A.tab({ id: 'reliq', icon: '🪄', name: 'Reliquaries', render: () => {
     if (puz) { const left = Math.max(0, Math.ceil((puz.end - Date.now()) / 1000));
       return `<h4>Seal (tier ${puz.s.tier}) — ${left}s</h4><p style="font-size:26px;letter-spacing:6px">${puz.seq.map((r, i) => `<span style="opacity:${i < puz.at ? 0.3 : 1}">${RUNES[r]}</span>`).join('')}</p><div class="row">${RUNES.map((r, i) => `<button data-a="rune" data-r="${i}" style="font-size:24px;min-width:56px;min-height:48px">${r}</button>`).join('')}</div><small>Tap the runes in order.</small>`; }
