@@ -1604,6 +1604,7 @@ export function createWorld(scene) {
       { id: 'wayfinder', name: 'Wayfinder Orla', x: -12, z: 23, look: { body: 0x4a5a3a, legs: 0x3a3022, hat: 0x7a5a2a, hatH: 0.12 }, flag: { ext: 'wayfinder' } },
       { id: 'graftwright', name: 'Graftwright Oren', x: 13, z: -16, look: { body: 0x5a4a3a, legs: 0x2a2a2a, apron: 0x6a5a4a, hat: 0x3a3a3a, hatH: 0.1, beard: 0x5a3a2a }, flag: { ext: 'graftwright' } },
       { id: 'breachwarden', name: 'Breachwarden Kael', x: -14, z: -14, look: { body: 0x3a4a6a, legs: 0x22222a, hat: 0x5a5a7a, hatH: 0.16 }, flag: { ext: 'breachwarden' } },
+      { id: 'harbourwynn', name: 'Harbourmaster Wynn', x: -18, z: 8, look: { body: 0x2a4a6a, legs: 0x2a2a2a, hat: 0x1a2a3a, hatH: 0.14, beard: 0xa0a0a0 }, flag: { ext: 'hold' } },
       { id: 'sorrel', name: 'Mama Sorrel', x: -88, z: 54, look: { body: 0x3a5a2a, legs: 0x2a2a1a, hat: 0x5a3a2a, hatW: 0.6, hatH: 0.12 }, flag: { sea: 'hexer' } }
     ];
     for (const c of SARIM) {
