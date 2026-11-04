@@ -37,7 +37,7 @@ export default function zone(A) {
     A.run = { id, start: Date.now(), ...run }; ctx.EXT.dungeonRun = { kind: id, end: win => A.runEnd(win) }; const c = A.zoneC(id); ctx.travelTo(c.x, c.z + VENTURE_HALF - 3); A.dirty(); return true; };
   A.runEnd = (win) => { const r = A.run; if (!r) return; A.run = null; ctx.EXT.dungeonRun = null; try { r.end && r.end(win, r); } catch (e) { console.warn(e); }
     A.zonePark(r.id); for (const e of [...(built[r.id] ? built[r.id].props : [])]) if (e.temp) A.zonePropRemove(e); if (built[r.id]) built[r.id].props = built[r.id].props.filter(e => !e.temp);
-    const back = player.instanceReturn || { x: 0, z: 10 }; if (!r.stay) setTimeout(() => { if (!A.run && instanceAt(A.pos().x, A.pos().z) === 'venture') { player.instanceReturn = null; ctx.travelTo(back.x, back.z); } }, win ? 1500 : 10); A.dirty(); };
+    const back = player.instanceReturn || { x: 0, z: 10 }; if (!r.stay) setTimeout(() => { if (!A.run && instanceAt(A.pos().x, A.pos().z) === 'venture' && Math.abs(A.pos().z - A.zoneC(r.id).z) < VENTURE_HALF + 2) { player.instanceReturn = null; ctx.travelTo(back.x, back.z); } }, win ? 1500 : 10); A.dirty(); };
   ctx.EXT.extDeath.push(() => { if (A.run) A.runEnd(false); });
   ctx.EXT.extTick.push(() => { const r = A.run; if (!r) return; const p = A.pos(); if (instanceAt(p.x, p.z) !== 'venture' || Math.abs(p.z - A.zoneC(r.id).z) > VENTURE_HALF + 2) { if (++r.away > 3) A.runEnd(false); return; } r.away = 0; if (r.tick) r.tick(r); });
   // Safety: standing on a Ventures pad with no run (e.g. after a reload) sends you home.
