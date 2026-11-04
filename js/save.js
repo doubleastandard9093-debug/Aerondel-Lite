@@ -28,8 +28,9 @@ import { normalizeColossi } from './colossi.js';
 import { normalizeSkywing } from './skywing.js';
 import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
+import { normalizeAdapt } from './adapt/state.js';
 
-export const SAVE_VERSION = 22; // v22: Swordsmanship skill (added at level 1 by normalizeSkills)
+export const SAVE_VERSION = 23; // v23: Ventures systems (player.adapt, defaults filled by adapt/state.js); v22: Swordsmanship skill
 export const POS_LIMIT = 616; // world half-size (WORLD_HALF 620, frontier ring) minus a margin
 const KEY = 'aerondel3d';
 const LEGACY_KEY = 'gielinor3d'; // pre-Aerondel saves: read as a fallback, never deleted
@@ -38,7 +39,7 @@ export function lsRead(key, legacy) {
   try { const v = localStorage.getItem(key); return v != null ? v : (legacy ? localStorage.getItem(legacy) : null); } catch (e) { return null; }
 }
 // Wanderer's Horizons (v15+): extra player fields saved and loaded as-is (normalized in migrateSave).
-export const EXTRA_KEYS = ['tongue', 'quirks', 'writs', 'still', 'path', 'delves', 'codex', 'aim', 'colossi', 'skywing', 'charter', 'siege', 'relicry', 'delving', 'party', 'events', 'guild'];
+export const EXTRA_KEYS = ['tongue', 'quirks', 'writs', 'still', 'path', 'delves', 'codex', 'aim', 'colossi', 'skywing', 'charter', 'siege', 'relicry', 'delving', 'party', 'events', 'guild', 'adapt'];
 
 export function getSaveData(skills, player, playerMesh) {
   return JSON.stringify({
@@ -113,6 +114,9 @@ export function migrateSave(saved) {
   if (typeof p.gold !== 'number') p.gold = Number(p.gold) || 0;
 
   const fromVersion = Number(saved.version) || 1;
+  // v23: Ventures (player.adapt): every system starts empty; the normalizer fills defaults and drops bad values.
+  p.adapt = normalizeAdapt(p.adapt);
+  if (fromVersion < 23 && fromVersion > 1) notes.push('New: Ventures. Overflare, the Wayfarer\'s Ledger, hidden reliquaries and more. Tap ✦ (or press J) to see them all.');
   if (fromVersion < 22 && fromVersion > 1) notes.push('New: Swordsmanship (trained by fighting with blades), high-level techniques, katanas, scimitars, glaives, war fans, chakrams and frontier uniques.');
 
   // Toolbelt (v4). Older saves get the starter tools, and any tools in the pack move onto the belt.

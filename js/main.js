@@ -66,6 +66,7 @@ import { installSeasons } from './seasons.js';
 import { installEvents } from './events.js';
 import { installGuild } from './guild.js';
 import { installVillages } from './villages.js';
+import { installAdapt } from './adapt/index.js';
 import { foliageMat as seasonFoliage } from './models.js';
 import { WILDS, RIVAL, CAP, botCap, normalizeWilds, captureStep, heldCount } from './wilds.js';
 import { ARENA_RULES, ARENA_SHOP, normalizeArena, ladder, rankOf, rateDuel, weekRoll, weekNo, pickOpponent, duellistStats } from './arena.js';
@@ -579,6 +580,7 @@ const inputCtl = setupInput(renderer.domElement, {
     else if (act === 'map') minimap.toggleMap();
     else if (act === 'firePort') sailing.fire('port');
     else if (act === 'fireStar') sailing.fire('star');
+    else if (EXT.keys && EXT.keys[act]) EXT.keys[act]();
     else if (act.startsWith('tab')) invUI.showTab({ tabInv: 'inv', tabEquip: 'equip', tabSkills: 'skills', tabQuests: 'quests', tabPrayer: 'prayer', tabSettings: 'settings' }[act]);
   }
 });
@@ -1065,6 +1067,7 @@ function quickExtras() {
   const x = [];
   if (player.still && (player.still.meter >= STILL.max || stillX.active())) x.push(['still', stillX.active() ? SPOT[player.still.spot].icon + SPOT[player.still.spot].name : 'Still', 'Stillwatch: slow the world (V); tap again to change aim']);
   if (EXT.aim && (aimOn() || (action && action.kind === 'attack'))) x.push(['aim', aimOn() ? '🎯Aim' : 'Aim', 'True Aim: skills hit everything in a shape where you face (tap to toggle)']);
+  for (const f of (EXT.quickX || [])) { const r = f(); if (r) x.push(...r); }
   if (EXT.skywing && player.skywing && player.skywing.unlocked && !inInstance(pm.mesh.position.x)) { x.push(['fly', skyS.on ? 'Land' : 'Fly', 'Skywing: take off or land (Y)']); if (skyS.on) x.push(['climb', 'Up', 'Climb higher'], ['dive', 'Dive', 'Dive lower (costs run energy)']); }
   return x;
 }
@@ -1955,6 +1958,10 @@ const seasonsX = installSeasons({ ...aeroCtx, setSeasonDetail, SEASON_GRASS, SEA
 installEvents(aeroCtx);
 installGuild(aeroCtx);
 installVillages(aeroCtx, isDone);
+// ---- Adaptations (Ventures): PSO2 / Lost Ark / The First Descent / Destiny 2 inspired systems in js/adapt/ ----
+const adaptX = installAdapt({ ...aeroCtx, strike, target: () => (action && action.mon) || null, applyLook: () => applyEquipmentLook(pm, lookEquip()), refreshQuick: () => refreshQuick(),
+  useAbility: id => useAbility(id), cooldowns, buffs, rig, overlays, burst, ui, isRangedWeapon, steedState, playerDied: () => playerDied(), doDodge: () => doDodge(), gfxQ: () => gfx.quality, combatXp: d => { for (const [s, v] of Object.entries(combatXp(player, d))) giveXP(s, v); } });
+EXT.adapt = adaptX;
 // ---- Stable Codex: mount collection, Skyrook flights between towns, wardrobe looks ----
 function lookEquip() {
   const L = player.codex && player.codex.looks; if (!L) return player.equipment;
@@ -3102,6 +3109,17 @@ function playerAttack(mon, now) {
   markDirty();
 }
 
+// A single extra hit from an adaptation system (Overflare, Tetherline, supers...). Rolls like a normal swing with the given bonuses.
+function strike(mon, mods = {}, now = performance.now(), opts = {}) {
+  if (!mon || !mon.alive || mon.hp <= 0) return 0;
+  const d = Math.min(mon.hp, rollPlayerHit(player, skills, mon, Math.random, { acc: 0, dmg: 0, ...mods }));
+  mon.hp -= d; overlays.splat(mon, d, now); if (d > 0) mon.hitT = 1;
+  if (!opts.quiet) for (const f of extHit) f(mon, d, now, 'strike');
+  if (mon.state !== 'fight') { mon.state = 'fight'; mon.nextAttackTick = tick + 1; }
+  if (d > 0) for (const [s, v] of Object.entries(combatXp(player, d))) giveXP(s, v);
+  if (mon.hp <= 0) killMonster(mon, now);
+  return d;
+}
 function killMonster(mon, now) {
   mon.alive = false;
   mon.dying = true;
