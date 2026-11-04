@@ -10,8 +10,10 @@ import crestbreak from './crestbreak.js';
 import sigils from './sigils.js';
 import grafts from './grafts.js';
 import twinstance from './twinstance.js';
+import zone from './zone.js';
 import tides from './tides.js';
-const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, tides];
+import breach from './breach.js';
+const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach];
 export function installAdapt(ctx) {
   const A = installCore(ctx);
   for (const f of FEATURES) { try { f(A); } catch (e) { console.error('Ventures feature failed to start', e); } }

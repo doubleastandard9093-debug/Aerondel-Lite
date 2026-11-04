@@ -9,11 +9,15 @@ export function instanceAt(x, z) {
   if (z > 300) return 'dungeon';   // relic dungeons and Delving floors (dungeon.js)
   if (z < -560) return 'siege';
   if (z < -340) return 'delve';
+  if (z > 100) return 'venture';   // Ventures zones (js/adapt/zone.js): Vigil z 135, Breach z 205, Hold z 270
   return Math.abs(z - HEARTH.z) < 60 ? 'hearth' : 'arena';
 }
 // Keep a walker inside the instance it's in.
 // dungeon.js sets the active dungeon's outer box here (walls are colliders).
 export const DUNGEON_BOX = { box: null };
+export const VENTURE_ZONES = [{ id: 'vigil', z: 135 }, { id: 'breach', z: 205 }, { id: 'hold', z: 270 }];
+export const VENTURE_HALF = 14;
+export const ventureZone = z => VENTURE_ZONES.reduce((b, v) => (Math.abs(v.z - z) < Math.abs(b.z - z) ? v : b));
 export function clampInstance(pos) {
   if (instanceAt(pos.x, pos.z) === 'dungeon') {
     const b = DUNGEON_BOX.box; if (!b) return;
@@ -26,6 +30,9 @@ export function clampInstance(pos) {
   } else if (instanceAt(pos.x, pos.z) === 'siege') {
     const dx = pos.x + 1000, dz = pos.z + 640, d = Math.hypot(dx, dz), R = 15.4;
     if (d > R) { pos.x = -1000 + dx / d * R; pos.z = -640 + dz / d * R; }
+  } else if (instanceAt(pos.x, pos.z) === 'venture') {
+    const c = ventureZone(pos.z).z, h = VENTURE_HALF - 0.6;
+    pos.x = Math.max(-1000 - h, Math.min(-1000 + h, pos.x)); pos.z = Math.max(c - h, Math.min(c + h, pos.z));
   } else if (instanceAt(pos.x, pos.z) === 'delve') {
     const cz = pos.z > -440 ? -400 : -480;
     pos.x = Math.max(-1000 - 10.4, Math.min(-1000 + 10.4, pos.x));
