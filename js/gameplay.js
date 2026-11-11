@@ -552,11 +552,14 @@ export function buyPrice(price, player = null) {
   return player ? Math.max(1, Math.ceil(price * (1 - questFx(player, 'shopDiscount') - (player.saga && player.saga.flags && player.saga.flags.ashfordFriend ? 0.05 : 0) - tie))) : price;
 }
 // Shop entries can need a quest (`unlock`), all quests ('all') or a 99 skill (`skill99`).
-export function stockVisible(entry, player, skills) {
+export function stockVisible(entry, player, skills, shopId) {
   if (entry.unlock && !isDone(player, entry.unlock)) return false;
   if (entry.skill99 && (!skills || skills[entry.skill99].level < 99)) return false;
+  if (bannerStockHook && player && bannerStockHook(entry, player, shopId) === false) return false;
   return true;
 }
+let bannerStockHook = null;
+export function setBannerStockHook(fn) { bannerStockHook = typeof fn === 'function' ? fn : null; }
 export const SELL_PRICES = new Proxy({}, { get: (t, k) => sellPrice(k) });
 
 // `unlock` = quest id needed before the item shows up.
