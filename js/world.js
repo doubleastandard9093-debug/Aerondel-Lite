@@ -1619,6 +1619,7 @@ export function createWorld(scene) {
       { id: 'waycamp', name: 'Campwright Noll', x: 27, z: -18, look: { body: 0x3a4a2a, legs: 0x1a2a14, apron: 0xc8b070, hat: 0x4a3a1a, hatH: 0.16 }, flag: { ext: 'waycamp' } },
       { id: 'skywyrms', name: 'Wyrmwatcher Cald', x: 29, z: -20, look: { body: 0x3a3a4a, legs: 0x1a1a22, apron: 0xa0b0c8, hat: 0x2a2a33, hatH: 0.16 }, flag: { ext: 'skywyrms' } },
       { id: 'veilcraft', name: 'Veilwright Ise', x: 118, z: -32, look: { body: 0x3a2a4a, legs: 0x1a1422, apron: 0xc8b8e0, hat: 0x4a3a6a, hatH: 0.18 }, flag: { ext: 'veilcraft' } },
+      { id: 'shadework', name: 'Shadeguide Vess', x: 31, z: -16, look: { body: 0x1a1a22, legs: 0x12121a, apron: 0x3a3a4a, hat: 0x2a2a33, hatH: 0.14 }, flag: { ext: 'shadework' } },
       { id: 'huntwright', name: 'Huntwright Sable', x: 16, z: -13, look: { body: 0x4a3a2a, legs: 0x2a2218, apron: 0x6a4a2a, hat: 0x3a2a1a, hatH: 0.12 }, flag: { ext: 'huntwright' } },
       { id: 'breachwarden', name: 'Breachwarden Kael', x: -14, z: -14, look: { body: 0x3a4a6a, legs: 0x22222a, hat: 0x5a5a7a, hatH: 0.16 }, flag: { ext: 'breachwarden' } },
       { id: 'harbourwynn', name: 'Harbourmaster Wynn', x: -18, z: 8, look: { body: 0x2a4a6a, legs: 0x2a2a2a, hat: 0x1a2a3a, hatH: 0.14, beard: 0xa0a0a0 }, flag: { ext: 'hold' } },
