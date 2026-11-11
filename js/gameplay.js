@@ -128,6 +128,15 @@ export function nextGatherWait(skills, skill, rng = Math.random) {
   return rng() < perk(skills, skill, 'fastGather') ? 0 : 1;
 }
 
+// Occasional Mining extras: a Stone slab (rare) or Limestone (more often) beside the ore, never from essence rocks.
+export function mineSideDrop(oreItem, rng = Math.random) {
+  if (!oreItem || oreItem === 'Glyph essence' || oreItem === 'Clear essence') return null;
+  const r = rng();
+  if (r < 0.04) return 'Stone slab';
+  if (r < 0.14) return 'Limestone';
+  return null;
+}
+
 // ---- Making things ---------------------------------------------------------
 export function burnChance(recipe, skills, player = null) {
   if (!recipe.burnStop) return 0;

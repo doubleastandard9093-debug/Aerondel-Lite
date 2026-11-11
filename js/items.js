@@ -335,7 +335,8 @@ const FIXED_ICONS = {
   'Ruby': ['💎', '#ff406060'], 'Diamond': ['💎', '#e0e0e060'],
   'Gold ore': ['🪨', '#ffd70040'], 'Gold bar': ['🧱', '#ffd70060'],
   'Bird nest': ['🪺', ''], 'Raw pike': ['🐟', ''], 'Raw tuna': ['🐟', '#c0a06040'],
-  'Cooked pike': ['🍣', ''], 'Cooked tuna': ['🍣', '#c0a06040']
+  'Cooked pike': ['🍣', ''], 'Cooked tuna': ['🍣', '#c0a06040'],
+  Limestone: ['🪨', '#d8c8a050'], 'Stone slab': ['🧱', '#c8b89060']
 };
 const WOOD_TINT = ['', '#c49a5a40', '#7a9a4a40', '#c0702a40', '#4a6a3a50', '#3a5ad050'];
 const UNIQUE_ICON = { 'Venom dagger': '🗡️', 'Vampyric blade': '🗡️', 'Basalt maul': '🔨', 'Emberite dagger': '🗡️', 'Emberite longsword': '⚔️', 'Dusk bow': '🏹',
@@ -608,4 +609,6 @@ R({ name: 'Craft Bind vessel (Hunter)', cat: 'Crafting', group: 'Kinbeasts', ski
 R({ name: 'Craft Sturdy vessel', cat: 'Crafting', group: 'Kinbeasts', skill: 'Hunter', level: 30, inputs: { 'Oak logs': 2, 'Hard leather': 1, Bones: 4 }, output: 'Sturdy vessel', xp: 36 });
 R({ name: 'Craft Fine vessel', cat: 'Crafting', group: 'Kinbeasts', skill: 'Hunter', level: 75, inputs: { 'Yew logs': 2, 'Hard leather': 2, 'Relic shard': 1 }, output: 'Fine vessel', xp: 80 });
 
+def('Limestone', { type: 'resource', value: 3, special: 'Soft building stone. Cut it into a Stone slab with Crafting, or find a finished slab while mining.' });
 def('Stone slab', { type: 'resource', value: 8, special: 'Cut stone for Freeframe walls and reinforced plates. Crafted from limestone or found while mining.' });
+R({ name: 'Cut Stone slab', cat: 'Crafting', group: 'Stonework', skill: 'Crafting', level: 12, inputs: { Limestone: 1 }, output: 'Stone slab', xp: 20, tool: 'hammer' });
