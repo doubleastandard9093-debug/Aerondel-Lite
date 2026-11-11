@@ -39,6 +39,7 @@ export default function wayfreight(A) {
     list.push({ id: 'hold', name: 'Hearthhold', kind: 'hold' });
     list.push({ id: 'green', name: 'Greenstead', kind: 'green' });
     list.push({ id: 'claim', name: 'Claimridge', kind: 'frame' });
+    list.push({ id: 'camp', name: 'Waycamp', kind: 'camp' });
     return list;
   };
   A.freightHomes = HOME;
@@ -48,6 +49,7 @@ export default function wayfreight(A) {
     if (h.kind === 'hold') return !!(A.S('hold') && A.S('hold').owned);
     if (h.kind === 'green') return !!(A.S('green') && A.S('green').deed);
     if (h.kind === 'frame') return !!(A.frameClaimed && A.frameClaimed());
+    if (h.kind === 'camp') return !!(A.S('camp') && A.S('camp').owned);
     return false;
   };
   A.freightLinked = (a, b) => S().lines.some(l => lineKey(l.a, l.b) === lineKey(a, b));

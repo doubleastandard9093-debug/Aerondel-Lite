@@ -376,6 +376,8 @@ function useItem(item) {
     }
   } else if (slotFor(item)) {
     if (equip(player, skills, item, log)) afterEquip();
+  } else if (item === 'Waycamp kit' && EXT.adapt && EXT.adapt.campPlace) {
+    EXT.adapt.campPlace();
   } else {
     // No direct use: show what it's for
     const r = RECIPES.find(rc => rc.inputs[item] && canCraft(skills, player.inventory, rc));
@@ -453,6 +455,7 @@ function itemMenu(item, x, y, mode) {
       if (have > 1) opts.push({ action: 'Bury all', target: `${item} (${have})`, color: c, fn: () => startBury(item, Infinity) });
     } else if (item === 'Treasure chart') { opts.push({ action: 'Read', target: item, color: c, fn: () => readChart() }); opts.push({ action: 'Dig here', target: item, color: c, fn: () => digHere() });
     } else if (info.type === 'tool') opts.push({ action: 'Add to toolbelt', target: item, color: c, fn: () => beltFromInventory(item) });
+    else if (item === 'Waycamp kit' && EXT.adapt && EXT.adapt.campPlace) opts.push({ action: 'Place', target: item, color: c, fn: () => EXT.adapt.campPlace() });
     else if (slotFor(item)) opts.push({ action: info.type === 'weapon' ? 'Wield' : 'Wear', target: item, color: c, fn: () => useItem(item) });
     if (WOODS.includes(item)) opts.push({ action: 'Light', target: item, color: c, fn: () => startAction({ kind: 'light', item, wait: 2 }) });
     const recipes = RECIPES.filter(r => r.inputs[item] && skills[r.skill].level >= r.level && hasInputs(player.inventory, r)).slice(0, 3);

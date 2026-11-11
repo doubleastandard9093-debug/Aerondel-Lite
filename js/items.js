@@ -631,4 +631,7 @@ R({ name: 'Craft Hush-string kit', cat: 'Fletching', group: 'Kits', skill: 'Flet
 R({ name: 'Craft Lamp-rim kit', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 10, inputs: { 'Iron bar': 1, Coal: 2 }, output: 'Lamp-rim kit', xp: 40 });
 R({ name: 'Craft Padded collar kit', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 12, inputs: { 'Soft leather': 2, Wool: 1 }, output: 'Padded collar kit', xp: 50 });
 R({ name: 'Craft Watch-sight kit', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 15, inputs: { 'Iron bar': 1, 'Clear essence': 5 }, output: 'Watch-sight kit', xp: 55 });
+// Waycamp (v32): one portable camp pack. Construction XP is small; Freeframe stays the grind.
+def('Waycamp kit', { type: 'kit', value: 80, special: 'A packed camp. Place it in the wild and pack it up again. One at a time. Not in a town, not on Greenstead, not on Claimridge.' });
+R({ name: 'Craft Waycamp kit', cat: 'Crafting', group: 'Camps', skill: 'Construction', level: 8, inputs: { Logs: 8, 'Iron bar': 2 }, output: 'Waycamp kit', xp: 40 });
 

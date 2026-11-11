@@ -1616,6 +1616,7 @@ export function createWorld(scene) {
       { id: 'skillwords', name: 'Wordwise Tavian', x: 21, z: -18, look: { body: 0x4a3a2a, legs: 0x2a1a14, apron: 0xe8d8a8, hat: 0x3a2a1a, hatH: 0.16 }, flag: { ext: 'skillwords' } },
       { id: 'kitwright', name: 'Kitwright Osha', x: 23, z: -14, look: { body: 0x5a3a22, legs: 0x2a1a10, apron: 0xc8a060, hat: 0x3a2a18, hatH: 0.14 }, flag: { ext: 'kitwright' } },
       { id: 'wayfreight', name: 'Freighter Wend', x: 25, z: -16, look: { body: 0x3a4a3a, legs: 0x1a2a1a, apron: 0xb8a070, hat: 0x2a3a22, hatH: 0.14 }, flag: { ext: 'wayfreight' } },
+      { id: 'waycamp', name: 'Campwright Noll', x: 27, z: -18, look: { body: 0x3a4a2a, legs: 0x1a2a14, apron: 0xc8b070, hat: 0x4a3a1a, hatH: 0.16 }, flag: { ext: 'waycamp' } },
       { id: 'huntwright', name: 'Huntwright Sable', x: 16, z: -13, look: { body: 0x4a3a2a, legs: 0x2a2218, apron: 0x6a4a2a, hat: 0x3a2a1a, hatH: 0.12 }, flag: { ext: 'huntwright' } },
       { id: 'breachwarden', name: 'Breachwarden Kael', x: -14, z: -14, look: { body: 0x3a4a6a, legs: 0x22222a, hat: 0x5a5a7a, hatH: 0.16 }, flag: { ext: 'breachwarden' } },
       { id: 'harbourwynn', name: 'Harbourmaster Wynn', x: -18, z: 8, look: { body: 0x2a4a6a, legs: 0x2a2a2a, hat: 0x1a2a3a, hatH: 0.14, beard: 0xa0a0a0 }, flag: { ext: 'hold' } },
