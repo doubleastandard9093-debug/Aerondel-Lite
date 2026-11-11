@@ -50,3 +50,7 @@ export function updateDrizzle(scene, camera, dt, quality, indoors) {
   mat.uniforms.uT.value = t; mat.uniforms.uK.value = k; mat.uniforms.uC.value.copy(camera.position);
   mesh.visible = k > 0.01;
 }
+
+export function isRaining() { return !!raining && k > 0.2; }
+export function isStorm() { return !!raining && WET.value > 0.55; }
+export function setWeather(mode) { if (mode === 'drizzle' || mode === 'storm') { raining = true; k = 1; WET.value = mode === 'storm' ? 1 : 0.7; } else { raining = false; k = 0; if (mode === 'clear') WET.value = 0; } }

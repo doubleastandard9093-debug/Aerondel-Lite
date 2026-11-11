@@ -37,7 +37,11 @@ import hordewake from './hordewake.js';
 import deepmarks from './deepmarks.js';
 import ashspire from './ashspire.js';
 import kinbeasts from './kinbeasts.js';
-const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk, huntwright, guardbreak, ashkin, vocations, wordcries, townsteads, townties, greenstead, facets, leyweave, hordewake, deepmarks, ashspire, kinbeasts];
+import freeclimb from './freeclimb.js';
+import leychem from './leychem.js';
+import freeframe from './freeframe.js';
+import holdraids from './holdraids.js';
+const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk, huntwright, guardbreak, ashkin, vocations, wordcries, townsteads, townties, greenstead, facets, leyweave, hordewake, deepmarks, ashspire, kinbeasts, freeclimb, leychem, freeframe, holdraids];
 export function installAdapt(ctx) {
   const A = installCore(ctx);
   for (const f of FEATURES) { try { f(A); } catch (e) { console.error('Ventures feature failed to start', e); } }

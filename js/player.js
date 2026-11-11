@@ -427,7 +427,7 @@ export function updatePlayer(pm, keys, dt, running, camYaw) {
     moveWithCollision(pos, d.x, d.z, d.speed * ms / 1000);
     d.left -= ms; pm.facing = Math.atan2(d.x, d.z); pm.mesh.rotation.y = pm.facing;
     const t = 1 - d.left / 260; if (pm.parts && pm.parts.body) pm.parts.body.rotation.x = Math.sin(Math.min(1, t) * Math.PI) * 1.1;
-    pos.y = terrainHeight(pos.x, pos.z) + (pm.rideLift || 0);
+    pos.y = (typeof pm.climbY === 'number' ? pm.climbY : terrainHeight(pos.x, pos.z)) + (pm.rideLift || 0);
     if (d.left <= 0) pm.dodge = null;
     return 0;
   }
@@ -525,7 +525,7 @@ export function updatePlayer(pm, keys, dt, running, camYaw) {
     elbow(p.leftArm).rotation.x = -L(0.45, 1.35) - Math.max(0, Math.sin(ph)) * L(0.15, 0.3);
     elbow(p.rightArm).rotation.x = -L(0.45, 1.35) - Math.max(0, -Math.sin(ph)) * L(0.15, 0.3);
     // two bobs per stride (one per footfall); running has a flight phase so the bob is bigger
-    pm.mesh.position.y = terrainHeight(pos.x, pos.z) + (pm.rideLift || Math.abs(Math.cos(ph)) * L(0.04, 0.09) * M);
+    pm.mesh.position.y = (typeof pm.climbY === 'number' ? pm.climbY : terrainHeight(pos.x, pos.z)) + (typeof pm.climbY === 'number' ? (pm.rideLift || 0) : (pm.rideLift || Math.abs(Math.cos(ph)) * L(0.04, 0.09) * M));
     p.body.rotation.y = Math.sin(ph) * L(0.08, 0.14) * M;        // shoulders counter-rotate the hips
     p.body.rotation.x = (L(0.04, 0.16) + up * 0.25 - dn * 0.1) * M; // lean forward with speed and uphill
     p.body.rotation.z = Math.sin(ph) * 0.025 * M; hipPivot(p);
@@ -533,7 +533,7 @@ export function updatePlayer(pm, keys, dt, running, camYaw) {
     pm.idleT = 0; pm.mesh.rotation.z = 0; p.leftLeg.rotation.z = 0; p.rightLeg.rotation.z = 0;
   } else {
     const k = Math.min(1, dt * 10);
-    { const gy = terrainHeight(pos.x, pos.z); pm.mesh.position.y += (gy - pm.mesh.position.y) * k; if (Math.abs(gy - pm.mesh.position.y) > 0.5) pm.mesh.position.y = gy; }
+    { if (typeof pm.climbY === 'number') pm.mesh.position.y = pm.climbY + (pm.rideLift || 0); else { const gy = terrainHeight(pos.x, pos.z); pm.mesh.position.y += (gy - pm.mesh.position.y) * k; if (Math.abs(gy - pm.mesh.position.y) > 0.5) pm.mesh.position.y = gy; } }
     for (const l of [p.leftLeg, p.rightLeg]) { l.rotation.x += (0 - l.rotation.x) * k; knee(l).rotation.x += (0 - knee(l).rotation.x) * k; }
     p.body.rotation.y += (0 - p.body.rotation.y) * k; p.body.rotation.x += (0 - p.body.rotation.x) * k; p.body.rotation.z += (0 - p.body.rotation.z) * k;
     // idle: breathing, a slow weight shift onto one leg, and now and then a look around
@@ -580,7 +580,8 @@ export function updatePlayer(pm, keys, dt, running, camYaw) {
       for (let i = 0; i < JOINTS.length; i++) { const r = JOINTS[i].rotation; r.set(snap[i * 3] + (r.x - snap[i * 3]) * a, snap[i * 3 + 1] + (r.y - snap[i * 3 + 1]) * a, snap[i * 3 + 2] + (r.z - snap[i * 3 + 2]) * a); } } }
   // foot planting: standing (or skilling) on a slope, the body drops to the lower foot and the uphill leg bends to
   // reach the ground, so neither foot floats or sinks. While walking it fades out (the stride already handles it).
-  { const plant = 1 - Math.min(1, pm.moveK ?? 0), f = pm.mesh.rotation.y, rx = Math.cos(f) * 0.13, rz = -Math.sin(f) * 0.13, fx = Math.sin(f) * 0.04, fz = Math.cos(f) * 0.04;
+  if (typeof pm.climbY === 'number') { pm.mesh.position.y = pm.climbY + (pm.rideLift || 0); }
+  else { const plant = 1 - Math.min(1, pm.moveK ?? 0), f = pm.mesh.rotation.y, rx = Math.cos(f) * 0.13, rz = -Math.sin(f) * 0.13, fx = Math.sin(f) * 0.04, fz = Math.cos(f) * 0.04;
     const hL = terrainHeight(pos.x - rx + fx, pos.z - rz + fz), hR = terrainHeight(pos.x + rx + fx, pos.z + rz + fz), gc = terrainHeight(pos.x, pos.z);
     const low = Math.min(hL, hR), drop = Math.min(0.25, gc - low) * plant;
     pm.plantY = (pm.plantY ?? 0) + (drop - (pm.plantY ?? 0)) * Math.min(1, dt * 10);
