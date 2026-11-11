@@ -72,7 +72,7 @@ export default function leychem(A) {
   ctx.EXT.extFrame.push((dt) => {
     acc += Math.min(0.05, dt || 0.016);
     if (acc < 0.8) return; acc = 0;
-    if (isRaining()) { for (const f of [...fires.values()]) if (Math.random() < 0.7) A.leyExtinguish(f.x, f.z); }
+    if (isRaining()) { const rainP = 0.7 * (A.leyRainMul ? A.leyRainMul() : 1); for (const f of [...fires.values()]) if (Math.random() < rainP) A.leyExtinguish(f.x, f.z); }
     // Spread: at most one new cell per tick on Low.
     const list = [...fires.values()];
     let grew = 0, maxGrow = ctx.gfxQ && ctx.gfxQ() === 'low' ? 1 : 2;
@@ -80,7 +80,7 @@ export default function leychem(A) {
       if (grew >= maxGrow) break;
       f.heat -= 0.15; if (f.heat <= 0) { A.leyExtinguish(f.x, f.z); continue; }
       const d = [[CELL, 0], [-CELL, 0], [0, CELL], [0, -CELL]][Math.floor(Math.random() * 4)];
-      if (Math.random() < 0.45 && A.leyIgnite(f.x + d[0], f.z + d[1], f.kind, 'spread')) grew++;
+      if (Math.random() < 0.45 * (A.leySpreadMul ? A.leySpreadMul() : 1) && A.leyIgnite(f.x + d[0], f.z + d[1], f.kind, 'spread')) grew++;
     }
     // Lightning in a storm, on metal gear or a metal Freeframe piece.
     if (isStorm() && Math.random() < 0.08) {

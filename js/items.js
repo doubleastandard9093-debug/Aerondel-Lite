@@ -630,6 +630,14 @@ for (const [n, v, exam] of [
   ['Watch-sight kit', 55, 'A kit for a weapon: Stillwatch focus fills a little faster. It does not add damage.'],
   ['Ash-thread kit', 35, 'A Seasonboard schematic kit for armour: a little more player poise, less than a padded collar.']
 ]) def(n, { type: 'kit', value: v });
+// Wildmarks (v36): herbal tonics to draft, hush or clear a mark. Not a Quirk remedy.
+def('Wildmark tonic', { type: 'tonic', value: 40, special: 'A drafted tonic. Drink it from Ventures → Wildmarks to take one mark, if you have room.' });
+def('Mark-hush tonic', { type: 'tonic', value: 30, special: 'Quiets every Wildmark you carry for a short time. They stay on you.' });
+def('Mark-clear tonic', { type: 'tonic', value: 55, special: 'Lifts one Wildmark. Ysolde\'s quirk remedy will not do this.' });
+R({ name: 'Brew Wildmark tonic', cat: 'Herbalism', group: 'Tonics', skill: 'Herbalism', level: 20, inputs: { Harrowbloom: 1, 'Vial of water': 1, 'White berries': 1 }, output: 'Wildmark tonic', xp: 50 });
+R({ name: 'Brew Mark-hush tonic', cat: 'Herbalism', group: 'Tonics', skill: 'Herbalism', level: 18, inputs: { Marshmint: 1, 'Vial of water': 1 }, output: 'Mark-hush tonic', xp: 40 });
+R({ name: 'Brew Mark-clear tonic', cat: 'Herbalism', group: 'Tonics', skill: 'Herbalism', level: 28, inputs: { Ravenweed: 1, 'Vial of water': 1, 'Unicorn horn dust': 1 }, output: 'Mark-clear tonic', xp: 70 });
+
 R({ name: 'Craft Waterskin', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 5, inputs: { 'Soft leather': 1, 'Vial of water': 1 }, output: 'Waterskin', xp: 15 });
 R({ name: 'Craft Longhaft kit', cat: 'Smithing', group: 'Kits', skill: 'Smithing', level: 10, inputs: { Logs: 3, 'Iron bar': 1 }, output: 'Longhaft kit', xp: 40 });
 R({ name: 'Craft Hush-string kit', cat: 'Fletching', group: 'Kits', skill: 'Fletching', level: 10, inputs: { Bowstring: 1, Flax: 3 }, output: 'Hush-string kit', xp: 40 });

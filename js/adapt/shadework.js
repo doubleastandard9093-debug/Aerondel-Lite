@@ -25,7 +25,7 @@ export default function shadework(A) {
   // Mid-fight unseen is not saved; you load noticed-or-out-of-combat, never mid-Shade.
 
   const hush = () => !!(A.kitHush && A.kitHush()) || !!(A.veilHush && A.veilHush());
-  const noticeR = () => (hush() ? NOTICE_R_HUSH : NOTICE_R);
+  const noticeR = () => (hush() ? NOTICE_R_HUSH : NOTICE_R) * (A.markNoticeMul ? A.markNoticeMul() : 1);
   const windowMs = () => WINDOW_MS + Math.round(((A.lvl('Agility') || 1) + (A.lvl('Thieving') || 1)) * 12) + (hush() ? 400 : 0);
   const pos = () => (A.pos && A.pos()) || { x: 0, z: 0 };
   const monPos = m => (m.mesh && m.mesh.position) || { x: m.x || 0, z: m.z || 0 };

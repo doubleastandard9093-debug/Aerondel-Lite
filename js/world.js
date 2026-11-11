@@ -1625,6 +1625,7 @@ export function createWorld(scene) {
       { id: 'hardroad', name: 'Roadwise Marla', x: 19, z: -10, look: { body: 0x5a4a3a, legs: 0x3a2a1a, apron: 0xc8b898, hat: 0x6a5a3a, hatH: 0.14 }, flag: { ext: 'hardroad' } },
       { id: 'seasonboard', name: 'Boardclerk Edda', x: 17, z: -8, look: { body: 0x4a3a5a, legs: 0x2a1a33, apron: 0xd0c090, hat: 0x5a4a2a, hatH: 0.16 }, flag: { ext: 'seasonboard' } },
       { id: 'scorevendor', name: 'Waresmith Ryn', x: 15, z: -6, look: { body: 0x5a3a4a, legs: 0x2a1a22, apron: 0xc8a070, hat: 0x3a2a18, hatH: 0.16 }, flag: { ext: 'scorevendor' } },
+      { id: 'wildmarks', name: 'Markwise Calla', x: 13, z: -10, look: { body: 0x2a4a3a, legs: 0x1a2a1a, apron: 0x88b878, hat: 0x3a5a2a, hatH: 0.14 }, flag: { ext: 'wildmarks' } },
       { id: 'huntwright', name: 'Huntwright Sable', x: 16, z: -13, look: { body: 0x4a3a2a, legs: 0x2a2218, apron: 0x6a4a2a, hat: 0x3a2a1a, hatH: 0.12 }, flag: { ext: 'huntwright' } },
       { id: 'breachwarden', name: 'Breachwarden Kael', x: -14, z: -14, look: { body: 0x3a4a6a, legs: 0x22222a, hat: 0x5a5a7a, hatH: 0.16 }, flag: { ext: 'breachwarden' } },
       { id: 'harbourwynn', name: 'Harbourmaster Wynn', x: -18, z: 8, look: { body: 0x2a4a6a, legs: 0x2a2a2a, hat: 0x1a2a3a, hatH: 0.14, beard: 0xa0a0a0 }, flag: { ext: 'hold' } },
