@@ -3289,7 +3289,7 @@ function gameTick(now) {
     if (tick % 3 === 0 || !player.activePrayers.length) markDirty();
   }
   // Faithful perk / Rest for the Fallen: slow prayer point regen.
-  const ppr = ppRegenPerTick(player, skills), ppMax = maxPrayer(skills);
+  let ppr = ppRegenPerTick(player, skills); if (EXT.adapt && EXT.adapt.prayerRegenMul) ppr *= EXT.adapt.prayerRegenMul(); const ppMax = maxPrayer(skills);
   if (ppr > 0 && player.prayerPoints < ppMax) {
     const before = Math.floor(player.prayerPoints);
     player.prayerPoints = Math.min(ppMax, player.prayerPoints + ppr);

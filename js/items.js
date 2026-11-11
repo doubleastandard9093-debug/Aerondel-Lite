@@ -597,3 +597,13 @@ for (const [out, lvl] of [['Twin-cut Facet', 20], ['Storm-glass Facet', 25], ['I
   R({ name: `Cut ${out} (Crafting)`, cat: 'Crafting', group: 'Facet Stones', skill: 'Crafting', level: lvl, inputs: { 'Dull facet': 1 }, output: out, xp: 25 + lvl, tool: 'hammer' });
 }
 R({ name: 'Craft Facet frame', cat: 'Crafting', group: 'Facet Stones', skill: 'Crafting', level: 30, inputs: { 'Iron bar': 4, 'Dull facet': 1 }, output: 'Facet frame', xp: 80, tool: 'hammer' });
+
+
+// Kinbeasts (v29): vessels used to bind a weakened wild creature. The vessel is spent on the throw.
+def('Bind vessel', { type: 'vessel', vessel: 1, value: 20, special: 'Throw at a weakened common creature to bind a Kinbeast. Hunter governs the catch.' });
+def('Sturdy vessel', { type: 'vessel', vessel: 2, value: 80, special: 'A firmer vessel for harder hunts. Needs Hunter 30.' });
+def('Fine vessel', { type: 'vessel', vessel: 3, value: 220, special: 'A fine vessel for rare frontier beasts. Needs Hunter 75.' });
+R({ name: 'Craft Bind vessel', cat: 'Crafting', group: 'Kinbeasts', skill: 'Crafting', level: 1, inputs: { Logs: 2, 'Soft leather': 1 }, output: 'Bind vessel', xp: 12 });
+R({ name: 'Craft Bind vessel (Hunter)', cat: 'Crafting', group: 'Kinbeasts', skill: 'Hunter', level: 1, inputs: { Logs: 2, Bones: 2 }, output: 'Bind vessel', xp: 14 });
+R({ name: 'Craft Sturdy vessel', cat: 'Crafting', group: 'Kinbeasts', skill: 'Hunter', level: 30, inputs: { 'Oak logs': 2, 'Hard leather': 1, Bones: 4 }, output: 'Sturdy vessel', xp: 36 });
+R({ name: 'Craft Fine vessel', cat: 'Crafting', group: 'Kinbeasts', skill: 'Hunter', level: 75, inputs: { 'Yew logs': 2, 'Hard leather': 2, 'Relic shard': 1 }, output: 'Fine vessel', xp: 80 });

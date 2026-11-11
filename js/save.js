@@ -30,7 +30,7 @@ import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 import { normalizeAdapt } from './adapt/state.js';
 
-export const SAVE_VERSION = 28; // v28: Hordewake, Deepmarks, Ashspire (Phase 14); v27: Facet Stones, Leyweave
+export const SAVE_VERSION = 29; // v29: Kinbeasts (Phase 15); v28: Hordewake, Deepmarks, Ashspire
 export const POS_LIMIT = 616; // world half-size (WORLD_HALF 620, frontier ring) minus a margin
 const KEY = 'aerondel3d';
 const LEGACY_KEY = 'gielinor3d'; // pre-Aerondel saves: read as a fallback, never deleted
@@ -116,6 +116,7 @@ export function migrateSave(saved) {
   const fromVersion = Number(saved.version) || 1;
   // v23: Ventures (player.adapt): every system starts empty; the normalizer fills defaults and drops bad values.
   p.adapt = normalizeAdapt(p.adapt);
+  if (fromVersion < 29 && fromVersion > 1) notes.push('New: Kinbeasts — catchable, trainable pets that fight beside you. Hunter gates the catch and the training. One Kinbeast or one Ashkin, never both.');
   if (fromVersion < 28 && fromVersion > 1) notes.push('New: Hordewake (a short phone-friendly horde arena), Deepmarks (a climbing dungeon ladder with stacking modifiers), and Ashspire (a roguelike tower of boons and meta-unlocks).');
   if (fromVersion < 27 && fromVersion > 1) notes.push('New: Facet Stones (socket stones that change how a skill behaves — Ventures ✦ → Facets) and Leyweave (a shared passive web you path with Ley, not Anima).');
   if (fromVersion < 26 && fromVersion > 1) notes.push('New: Town Ties (friendship ranks with ordinary townsfolk — Bonds (B) → Town Ties), Greenstead (the farm at Hearthhold, where you make things), and the Farming skill (starts at level 1, goes to 1000, not in combat level).');
