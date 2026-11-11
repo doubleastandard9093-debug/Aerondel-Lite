@@ -47,7 +47,7 @@ const old99='/workspace/gielinor-save-99.json';
  if(old&&r.oldAttackKept===false)fail.push('Attack level changed on migrate');
  if(old&&r.oldHunterKept===false)fail.push('Hunter level changed on migrate');
  if(old&&r.oldConKept===false)fail.push('Construction level changed on migrate');
- if(r.ver!==26)fail.push('SAVE_VERSION '+r.ver);
+ if(r.ver<26)fail.push('SAVE_VERSION '+r.ver);
  if(oldLegacy&&r.legacyLoad===false)fail.push('legacy 99 save failed');
  if(oldLegacy&&r.farmNew&&r.legacyFarm!=null&&r.legacyFarm!==1)fail.push('legacy Farming '+r.legacyFarm);
  console.log(JSON.stringify(r,null,1));

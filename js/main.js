@@ -3101,9 +3101,9 @@ function playerAttack(mon, now) {
     if (pr.stun && mon.hp > 0) { mon.stunUntil = tick + 5; log(`The ${mon.name} is stunned!`, 'combat'); }
   }
   for (const f of extHit) f(mon, dmg, now, ranged);
-  if (special === 'bash') { mon.stunUntil = tick + 5; log(`The ${mon.name} is stunned!`, 'combat'); }
+  if (special === 'bash') { mon.stunUntil = tick + 5 + ((EXT.adapt && EXT.adapt.facetStun && EXT.adapt.facetStun()) || 0); log(`The ${mon.name} is stunned!`, 'combat'); }
   if (special === 'whirl') { // Reaping Whirl: every other foe within 4 m of you takes a cut too (5 m with a glaive)
-    const pp = pm.mesh.position, R = (ITEMS[player.equipment.weapon] || {}).wclass === 'glaive' ? 5 : 4; let n = 0;
+    const pp = pm.mesh.position, R = ((ITEMS[player.equipment.weapon] || {}).wclass === 'glaive' ? 5 : 4) + ((EXT.adapt && EXT.adapt.facetWhirlR && EXT.adapt.facetWhirlR()) || 0); let n = 0;
     for (const m of monsters) if (m !== mon && m.alive && m.hp > 0 && m.mesh.position.distanceTo(pp) < R) {
       const d = rollPlayerHit(player, skills, m, Math.random, { acc: base.acc, dmg: base.dmg - 0.1 }); m.hp -= d; dmg += d; n++;
       overlays.splat(m, d, now + 200); if (m.state !== 'fight') { m.state = 'fight'; m.nextAttackTick = tick + 1; }
