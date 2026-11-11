@@ -126,7 +126,7 @@ def("Angler's ring", { type: 'ring', gather: { Fishing: 0.04 }, xp: { Fishing: 0
 def('Red cape', { type: 'cape', def: 1, rdef: 1, value: 15 });
 def('Blue cape', { type: 'cape', def: 1, rdef: 1, value: 15 });
 def('Quest point cape', { type: 'cape', atk: 3, str: 3, ranged: 3, def: 6, rdef: 6, prayer: 4, regen: 0.1, questCape: true, value: 99 });
-export const SKILL_CAPE_SKILLS = ['Attack', 'Strength', 'Defence', 'Hitpoints', 'Ranged', 'Magic', 'Prayer', 'Agility', 'Thieving', 'Mining', 'Woodcutting', 'Fishing', 'Smithing', 'Crafting', 'Cooking', 'Fletching', 'Herbalism', 'Glyphcraft', 'Relicry', 'Delving', 'Swordsmanship'];
+export const SKILL_CAPE_SKILLS = ['Attack', 'Strength', 'Defence', 'Hitpoints', 'Ranged', 'Magic', 'Prayer', 'Agility', 'Thieving', 'Mining', 'Woodcutting', 'Fishing', 'Smithing', 'Crafting', 'Cooking', 'Fletching', 'Herbalism', 'Glyphcraft', 'Relicry', 'Delving', 'Swordsmanship', 'Hunter'];
 for (const sk of SKILL_CAPE_SKILLS) def(`${sk} cape`, { type: 'cape', def: 4, rdef: 4, prayer: 2, capeSkill: sk, req: { [sk]: 99 }, value: 9900 });
 
 // Full matched sets. pieces = how many you need; fx feeds the combat maths.
@@ -533,3 +533,35 @@ export function canCraft(skills, inventory, recipe) {
 // ---- Climate regions / Relicry materials (dropped by regional creatures, dug at dig sites) ----
 def('Relic shard', { type: 'resource', value: 25 });
 def('Ancient fragment', { type: 'resource', value: 400 });
+
+// ---- Huntwright (v24): carved parts and crafted hunt sets. These do not replace frontier uniques.
+// Set bonuses are behavioural (faster carves, longer part-break windows), not raw damage.
+// [boss, level, hunterReq, set, weapon, wclass, parts [[id, item, label]], setText]
+export const HUNTS = [
+  ['Cinder Warden', 140, 1, 'Brandhide', 'Brandhide cleaver', 'scimitar', [['horn', 'Cinder horn', 'cinder horn'], ['plate', 'Ash plate', 'ash plate'], ['tail', 'Ember tail', 'ember tail']], 'Carves 20% faster'],
+  ['Bramble Colossus', 220, 20, 'Briarhide', 'Briarhide hook', 'scimitar', [['horn', 'Bramble horn', 'bramble horn'], ['plate', 'Thorn plate', 'thorn plate'], ['tail', 'Vine lash', 'vine lash']], 'Carves 20% faster'],
+  ['Glacier Behemoth', 320, 40, 'Rimehide', 'Rimehide pike', 'glaive', [['horn', 'Rime horn', 'rime horn'], ['plate', 'Frost plate', 'frost plate'], ['tail', 'Ice lash', 'ice lash']], 'Part breaks last a little longer'],
+  ['Peak Warlord', 450, 60, 'Stormhide', 'Stormhide fan', 'warfan', [['horn', 'Peak horn', 'peak horn'], ['plate', 'Storm plate', 'storm plate'], ['wing', 'Warlord plume', 'warlord plume']], 'Tracks resolve a little faster'],
+  ['Bog Revenant', 600, 80, 'Mirehide', 'Mirehide disc', 'chakram', [['horn', 'Bog crest', 'bog crest'], ['plate', 'Mire plate', 'mire plate'], ['tail', 'Revenant coil', 'revenant coil']], 'Carves 20% faster'],
+  ['Dune Tyrant', 720, 120, 'Dunewrought', 'Dunewrought scimitar', 'scimitar', [['horn', 'Dune horn', 'dune horn'], ['plate', 'Sand plate', 'sand plate'], ['tail', 'Tyrant lash', 'tyrant lash']], 'Part breaks last a little longer'],
+  ['Molten Archon', 880, 200, 'Cinderwrought', 'Cinderwrought glaive', 'glaive', [['horn', 'Archon horn', 'archon horn'], ['plate', 'Magma plate', 'magma plate'], ['core', 'Ember core', 'ember core']], 'Carves 20% faster'],
+  ['Voidborn Knight', 950, 350, 'Nightwrought', 'Nightwrought katana', 'katana', [['horn', 'Void crest', 'void crest'], ['plate', 'Night plate', 'night plate'], ['core', 'Knight core', 'knight core']], 'Part breaks last a little longer'],
+  ['Sunderlord Vexmar', 1000, 500, 'Eclipshide', 'Eclipshide edge', 'katana', [['horn', 'Eclipse horn', 'eclipse horn'], ['plate', 'Sunder plate', 'sunder plate'], ['core', 'Last-light core', 'last-light core'], ['tail', 'Eclipse lash', 'eclipse lash']], 'Carves 25% faster and part breaks last longer'],
+  ['Stonehorn', 140, 15, 'Hillhide', 'Hillhide maul-blade', 'scimitar', [['horn', 'Stone horn', 'stone horn'], ['legs', 'Hill plate', 'hill plate']], 'Part breaks last a little longer'],
+  ['Frostmaw', 150, 25, 'Scarhide', 'Scarhide fang', 'scimitar', [['horn', 'Frost horn', 'frost horn'], ['legs', 'Scar plate', 'scar plate']], 'Carves 20% faster'],
+  ['Ashwyrm', 165, 30, 'Cinderback', 'Cinderback glaive', 'glaive', [['horn', 'Wyrm horn', 'wyrm horn'], ['legs', 'Ashwyrm scale', 'ashwyrm scale'], ['tail', 'Cinder tail', 'cinder tail']], 'Part breaks last a little longer']
+];
+export const HUNT_TINTS = { Brandhide: 0x8a3a1a, Briarhide: 0x4a6a2a, Rimehide: 0xb8d8f0, Stormhide: 0x6a7aa0, Mirehide: 0x3a4a3a, Dunewrought: 0xc8a060, Cinderwrought: 0xd0501a, Nightwrought: 0x3a2a5a, Eclipshide: 0x6a3aa0, Hillhide: 0x7a6a4a, Scarhide: 0x8ab0c8, Cinderback: 0x7a3a1a };
+export const huntByBoss = name => HUNTS.find(h => h[0] === name) || null;
+def('Hunt remnant', { type: 'resource', value: 25, special: 'A leftover scrap from a carved hunt.' });
+for (const [boss, L, hun, set, wName, cls, parts, txt] of HUNTS) {
+  const tint = HUNT_TINTS[set], rarity = L >= 900 ? 'legendary' : L >= 400 ? 'epic' : 'rare';
+  const atk = Math.round(L * 0.72 + 16), str = Math.round(L * 0.68 + 12), dfn = Math.round(L * 0.55);
+  for (const [, item] of parts) def(item, { type: 'resource', value: Math.max(8, Math.round(L * 0.4)), huntPart: true, huntBoss: boss, special: `Carved from ${boss}.` });
+  U(wName, { type: 'weapon', wclass: cls, atk, str, speed: WCLASSES[cls].speed, rarity, tint, highTier: true, huntSet: set, huntBoss: boss,
+    special: `Huntwright ${set}. ${txt}. Crafted from ${boss} parts.`, req: { Attack: Math.min(L, 1000), Hunter: hun, Swordsmanship: Math.round(hun / 2) }, value: L * 400 });
+  for (const [slot, word, k] of [['head', 'helm', 0.42], ['body', 'cuirass', 1], ['legs', 'greaves', 0.78]])
+    U(`${set} ${word}`, { type: slot, set, huntSet: set, huntBoss: boss, def: Math.round(dfn * k), rdef: Math.round(dfn * 0.9 * k), rarity, tint, highTier: true,
+      special: `${set} hunt set. ${txt}. Crafted from ${boss} parts.`, req: { Defence: Math.min(L, 1000), Hunter: hun }, value: L * 250 });
+  SETS[set] = { pieces: ['head', 'body', 'legs'], fx: { huntSet: set } };
+}
