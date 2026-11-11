@@ -30,7 +30,8 @@ import vocations from './vocations.js';
 import wordcries from './wordcries.js';
 import townsteads from './townsteads.js';
 import townties from './townties.js';
-const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk, huntwright, guardbreak, ashkin, vocations, wordcries, townsteads, townties];
+import greenstead from './greenstead.js';
+const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk, huntwright, guardbreak, ashkin, vocations, wordcries, townsteads, townties, greenstead];
 export function installAdapt(ctx) {
   const A = installCore(ctx);
   for (const f of FEATURES) { try { f(A); } catch (e) { console.error('Ventures feature failed to start', e); } }
