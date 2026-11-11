@@ -1577,7 +1577,8 @@ function quartermasterTalk() {
   }
   markDirty();
   if (!lines.length) lines.push(['npc', 'Every town keeps a ledger, and I keep the ledgers. Do quests and bounties and errands, and your standing will grow. Come back when it does.']);
-  return [['npc', 'Quartermaster Odile, keeper of the ledgers.'], ...lines, { choose: [['How do I stand?', FACTIONS.map(f => { const r = repOf(player, f.id), n = nextTier(r); return ['npc', `${f.icon} ${f.name}: ${TIERS[tierOf(r)][1]} (${r}${n ? ` / ${n}` : ''}).`]; })], ['Goodbye.', []]] }];
+  const mend = (EXT.adapt && EXT.adapt.bannerWary) ? FACTIONS.filter(f => EXT.adapt.bannerWary(f.id)).map(f => [`Mend the ${f.name} (250 coins).`, [{ run: () => { EXT.adapt.bannerMend(f.id); return [['npc', `I will mark the ${f.name} ledger mended.`]]; } }]]) : [];
+  return [['npc', 'Quartermaster Odile, keeper of the ledgers.'], ...lines, { choose: [['How do I stand?', FACTIONS.map(f => { const r = repOf(player, f.id), n = nextTier(r); return ['npc', `${f.icon} ${f.name}: ${TIERS[tierOf(r)][1]} (${r}${n ? ` / ${n}` : ''})${EXT.adapt && EXT.adapt.bannerWary && EXT.adapt.bannerWary(f.id) ? ' — Wary' : ''}.`]; })], ...mend, ['Goodbye.', []]] }];
 }
 // ---- Sworn Companions: recruiting, gifts, following and combat assists ----
 player.companions = normalizeCompanions(player.companions);
@@ -1811,9 +1812,15 @@ const writsX = {
   progress(kind, target, n = 1) {
     for (const w of writProgress(player.writs, kind, target, n)) {
       const weekly = w === player.writs.weekly, f = factionById(w.fac);
+      if (EXT.adapt && EXT.adapt.bannerBlocksWrit && EXT.adapt.bannerBlocksWrit(w.fac)) {
+        log(`The ${f.name} will not honor this writ while they are Wary. Mend the banner (250 coins) and new writs will pay again.`, 'warn');
+        markDirty();
+        continue;
+      }
       addRep(player, w.fac, weekly ? WRIT_REWARD.weeklyRep : WRIT_REWARD.rep); player.gold += weekly ? WRIT_REWARD.weeklyGold : WRIT_REWARD.gold;
       if (weekly) { player.arena.tokens += WRIT_REWARD.weeklyTokens; player.writs.weeklyDone++; } else player.writs.done++;
       log(`${weekly ? 'Great deed' : 'Writ'} done for the ${f.name}: ${writLabel(w)}. +${weekly ? WRIT_REWARD.weeklyRep : WRIT_REWARD.rep} standing, +${weekly ? WRIT_REWARD.weeklyGold : WRIT_REWARD.gold} coins${weekly ? `, +${WRIT_REWARD.weeklyTokens} arena tokens` : ''}.`, 'loot', '#ffd700');
+      if (EXT.adapt && EXT.adapt.bannerOnWrit) EXT.adapt.bannerOnWrit(w.fac);
       refreshStanding(true); markDirty();
     }
   }
@@ -2369,7 +2376,9 @@ extTick.push(() => { player.writs.playTicks++; if (tick % 100 === 5) { const r =
 extTalk.writs = { face: '📜', talk() {
   writsX.roll(false); const W = player.writs;
   const lines = WRIT_FACTIONS.map(fid => `${factionById(fid).icon} ${factionById(fid).name}: ${W.daily.filter(w => w.fac === fid).map(writLabel).join('; ')}`);
+  const waryLine = EXT.adapt && EXT.adapt.bannerWritLine && EXT.adapt.bannerWritLine();
   return [['npc', `Maelis, writkeeper. Today's writs, each worth ${WRIT_REWARD.rep} standing and ${WRIT_REWARD.gold} coins. New writs every day.`], ...lines.map(l => ['npc', l]),
+    ...(waryLine ? [['npc', waryLine]] : []),
     ['npc', `Great deed this week (${WRIT_REWARD.weeklyRep} standing, ${WRIT_REWARD.weeklyGold} coins, ${WRIT_REWARD.weeklyTokens} arena tokens): ${W.weekly ? writLabel(W.weekly) : 'none'}. You've finished ${W.done} writs and ${W.weeklyDone} great deeds.`]];
 } };
 extXp.push(skill => 1 + quirkXp(player.quirks, skill));
@@ -2782,7 +2791,7 @@ function finishErrands() {
 const bondsUI = createBondsUI({
   getData: () => ({
     companions: COMPANIONS.map(d => { const s = compState(d.id); return { ...d, ...s, active: inParty(d.id), lead: player.activeCompanion === d.id, away: awayUntil(d.id), crewText: Object.keys(s.crew || {}).map(k => `${k} ${crewOf(player, d.id, k)}`).join(', '), perks: BOND_PERKS, chance: errandChance(s.bond, houseErrandBonus(player.house)), task: s.started ? compTaskText(d, s) : `Talk to ${d.short}. ${d.examine}` }; }),
-    factions: FACTIONS.map(f => { const r = repOf(player, f.id), t = tierOf(r), n = nextTier(r), lo = TIERS[t][0]; return { ...f, rep: r, tier: t, tierName: TIERS[t][1], next: n, pct: n ? Math.round((r - lo) / (n - lo) * 100) : 100 }; }),
+    factions: FACTIONS.map(f => { const r = repOf(player, f.id), t = tierOf(r), n = nextTier(r), lo = TIERS[t][0]; return { ...f, rep: r, tier: t, tierName: TIERS[t][1], next: n, pct: n ? Math.round((r - lo) / (n - lo) * 100) : 100, wary: !!(EXT.adapt && EXT.adapt.bannerWary && EXT.adapt.bannerWary(f.id)) }; }),
     running: player.errands.map(r => ({ ...r, name: (errandById(r.id) || {}).name || r.id, comp: (companionById(r.comp) || {}).name || r.comp })),
     errands: ERRANDS,
     saga: (() => { const sg = player.saga, ch = currentChapter(sg); return { calling: sg.calling && CALLINGS[sg.calling], title: sg.title, total: CHAPTERS.length, done: sg.ch, ch: ch && { n: ch.n, title: ch.title, active: sg.active, gate: sagaGate(ch), obj: ch.obj.text, prog: ch.obj.kind === 'kill' ? sg.prog : (player.inventory[ch.obj.item] || 0), need: objNeed(ch, sg) }, choices: sg.choices.map(c => ({ ...c, title: (CHAPTERS[c.ch - 1] || {}).title })) }; })(),
@@ -2793,15 +2802,16 @@ const bondsUI = createBondsUI({
     else if (a === 'party') callWholeParty();
     else if (a === 'collect') finishErrands();
     else if (a === 'send') { const r = startErrand(player, o.errand, o.comp, Date.now()); if (r) { log(`${companionById(o.comp).short} sets off: ${errandById(o.errand).name}.`, 'game'); markDirty(); } }
+    else if (a === 'mend' && o.fac && EXT.adapt && EXT.adapt.bannerMend) EXT.adapt.bannerMend(o.fac);
   }
 });
 function talkTo(ent) {
-  if (ent.ext && extTalk[ent.ext]) { const t = extTalk[ent.ext]; ui.dialogue(ent.name, t.face || '📜', t.talk(ent), () => markDirty()); return; }
+  if (ent.ext && extTalk[ent.ext]) { const t = extTalk[ent.ext]; let s = t.talk(ent); if (EXT.adapt && EXT.adapt.bannerWrap) s = EXT.adapt.bannerWrap(ent, s); ui.dialogue(ent.name, t.face || '📜', s, () => markDirty()); return; }
   if (ent.arena) { ui.dialogue(ent.name, '⚔️', arenaTalk(), () => markDirty()); return; }
   if (ent.hearth) { ui.dialogue(ent.name, ent.hearth === 'agent' ? '📜' : '🏠', hearthTalk(ent), () => markDirty()); return; }
   if (ent.sea) { seaTalk(ent); return; }
   if (ent.saga) { ui.dialogue(ent.name, '📖', sagaTalk(), () => markDirty()); return; }
-  if (ent.standing) { ui.dialogue(ent.name, '📜', quartermasterTalk(), () => markDirty()); return; }
+  if (ent.standing) { let s = quartermasterTalk(); if (EXT.adapt && EXT.adapt.bannerWrap) s = EXT.adapt.bannerWrap(ent, s); ui.dialogue(ent.name, '📜', s, () => markDirty()); return; }
   if (ent.companion) { const d = companionById(ent.companion); compTalking = d.id; ui.dialogue(d.name, d.face, companionTalk(ent), () => { compTalking = null; markDirty(); }); return; }
   const name = ent.name;
   const face = NPC_FACE[ent.npc] || (ent.type === 'shop' ? NPC_FACE.merchant : '🙂');
@@ -2829,7 +2839,9 @@ function talkTo(ent) {
     { choose: [['Let\'s trade.', [{ run: () => invUI.open('shop') }]], ['No thanks.', [['npc', 'Suit yourself.']]]] }
   ];
   script = tongueWrap(ent, script);
+  if (EXT.adapt && EXT.adapt.skillWrap) script = EXT.adapt.skillWrap(ent, script);
   if (EXT.adapt && EXT.adapt.tieWrap) script = EXT.adapt.tieWrap(ent, script);
+  if (EXT.adapt && EXT.adapt.bannerWrap) script = EXT.adapt.bannerWrap(ent, script);
   ui.dialogue(name, face, script, () => { updateQuestMarks(); markDirty(); });
 }
 // ---- Wilds: foraging and repeatable bounties ----

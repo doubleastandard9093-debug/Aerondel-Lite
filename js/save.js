@@ -30,7 +30,7 @@ import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 import { normalizeAdapt } from './adapt/state.js';
 
-export const SAVE_VERSION = 30; // v30: Freeclimb, Leychemistry, Freeframe, Holdraids (Phase 16); v29: Kinbeasts
+export const SAVE_VERSION = 31; // v31: Trailhand, Skillwords, Crossed Banners (Phase 17); v30: Freeclimb, Leychemistry, Freeframe, Holdraids
 export const POS_LIMIT = 616; // world half-size (WORLD_HALF 620, frontier ring) minus a margin
 const KEY = 'aerondel3d';
 const LEGACY_KEY = 'gielinor3d'; // pre-Aerondel saves: read as a fallback, never deleted
@@ -116,6 +116,7 @@ export function migrateSave(saved) {
   const fromVersion = Number(saved.version) || 1;
   // v23: Ventures (player.adapt): every system starts empty; the normalizer fills defaults and drops bad values.
   p.adapt = normalizeAdapt(p.adapt);
+  if (fromVersion < 31 && fromVersion > 1) notes.push('New: Trailhand (a build-a-path card game in Emberfold), Skillwords (dialogue lines gated by many skills), and Crossed Banners (faction standing can cool another banner).');
   if (fromVersion < 30 && fromVersion > 1) notes.push('New: Freeclimb (climb cliffs and glide off), Leychemistry (fire, wind and metal), Freeframe (freeform building on a claimed wild plot) and Holdraids (PvE raids on that plot).');
   if (fromVersion < 29 && fromVersion > 1) notes.push('New: Kinbeasts — catchable, trainable pets that fight beside you. Hunter gates the catch and the training. One Kinbeast or one Ashkin, never both.');
   if (fromVersion < 28 && fromVersion > 1) notes.push('New: Hordewake (a short phone-friendly horde arena), Deepmarks (a climbing dungeon ladder with stacking modifiers), and Ashspire (a roguelike tower of boons and meta-unlocks).');

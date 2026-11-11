@@ -14,8 +14,8 @@ export function createBondsUI({ getData, onAct }) {
       <div class="b-s">${esc(c.role)} · likes ${esc(c.likes)} words and ${esc(c.giftWord)} · helps ${esc(c.skills.join(', '))}</div>
       ${c.recruited ? `<div class="b-s">${c.perks.map(p => `<span class="${c.bond >= p.at ? 'on' : ''}">${p.at}: ${esc(p.desc)}</span>`).join('<br>')}</div>
       <div class="b-row">${c.away ? `<span class="b-s">On an errand, back in ${left(c.away - now)}</span>` : `<button data-a="follow" data-c="${c.id}">${c.active ? (c.lead ? 'Send home (lead)' : 'Send home') : 'Join party'}</button>`}</div><div class="b-s">Crew: ${esc(c.crewText || 'no errands yet')}</div>` : `<div class="b-s">${esc(c.task)}</div>`}</div>`).join('');
-    else if (tab === 'rep') body = d.factions.map(f => `<div class="b-card"><div class="b-h"><span>${f.icon} ${esc(f.name)}</span><span>${esc(f.tierName)}</span></div>
-      <div class="b-bar"><i style="width:${f.pct}%"></i></div><div class="b-s">${f.rep}${f.next ? ` / ${f.next}` : ' (max)'} · +${f.tier}% XP in ${esc(f.skills.join(', '))}</div></div>`).join('') + '<div class="b-s">Quests in a town (+40), bounties (+25) and errands raise standing. Claim tier rewards from Quartermaster Odile in Whitecairn.</div>';
+    else if (tab === 'rep') body = d.factions.map(f => `<div class="b-card"><div class="b-h"><span>${f.icon} ${esc(f.name)}</span><span>${esc(f.tierName)}${f.wary ? ' · Wary' : ''}</span></div>
+      <div class="b-bar"><i style="width:${f.pct}%"></i></div><div class="b-s">${f.rep}${f.next ? ` / ${f.next}` : ' (max)'} · +${f.tier}% XP in ${esc(f.skills.join(', '))}</div>${f.wary ? `<div class="b-s">Wary: writs will not pay and some specialty stock is held back. Larkhaven, the bank and the Saga stay open.</div><div class="b-row"><button data-a="mend" data-f="${f.id}">Mend (250 coins)</button></div>` : ''}</div>`).join('') + '<div class="b-s">Quests in a town (+40), bounties (+25) and errands raise standing. Claim tier rewards from Quartermaster Odile in Whitecairn. A late writ can cool another banner; mend a Wary one here or at Odile.</div>';
     else if (tab === 'saga') {
       const g = d.saga, c = g.ch;
       body = `<div class="b-card"><div class="b-h"><span>📖 The Wanderer's Saga</span><span>${g.done}/${g.total}</span></div><div class="b-bar"><i style="width:${Math.round(g.done / g.total * 100)}%"></i></div>
@@ -40,7 +40,7 @@ export function createBondsUI({ getData, onAct }) {
     const a = b.dataset.a;
     if (a === 'close') { close(); return; }
     const sel = el.querySelector('#b-comp');
-    onAct(a, { comp: b.dataset.c || (sel && sel.value), errand: b.dataset.e, npc: b.dataset.n, item: b.dataset.k });
+    onAct(a, { comp: b.dataset.c || (sel && sel.value), errand: b.dataset.e, npc: b.dataset.n, item: b.dataset.k, fac: b.dataset.f });
     render();
   });
   function open(t) { if (t) tab = t; el.style.display = 'flex'; render(); clearInterval(timer); timer = setInterval(render, 5000); }
