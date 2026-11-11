@@ -1238,6 +1238,7 @@ function optionsFor(ent) {
       const qd = questForNpc(ent.npc, player, questHelpers);
       if (qd) o.push({ action: 'Quest', target: `${qd.name} (${questStatus(player, qd.id)})`, color: '#3ad0ff', fn: () => { invUI.showTab('quests'); } });
       if (ent.thieve) o.push({ action: 'Pickpocket', target: ent.name, color: '#ffff00', fn: () => startAction({ kind: 'thieve', node: ent, target: ent.thieve }) });
+      if (EXT.adapt && EXT.adapt.tieOptions) o.push(...(EXT.adapt.tieOptions(ent) || []));
       return [...o, { ...ex, color: '#ffff00' }];
     }
     case 'station': {
@@ -2777,7 +2778,8 @@ const bondsUI = createBondsUI({
     factions: FACTIONS.map(f => { const r = repOf(player, f.id), t = tierOf(r), n = nextTier(r), lo = TIERS[t][0]; return { ...f, rep: r, tier: t, tierName: TIERS[t][1], next: n, pct: n ? Math.round((r - lo) / (n - lo) * 100) : 100 }; }),
     running: player.errands.map(r => ({ ...r, name: (errandById(r.id) || {}).name || r.id, comp: (companionById(r.comp) || {}).name || r.comp })),
     errands: ERRANDS,
-    saga: (() => { const sg = player.saga, ch = currentChapter(sg); return { calling: sg.calling && CALLINGS[sg.calling], title: sg.title, total: CHAPTERS.length, done: sg.ch, ch: ch && { n: ch.n, title: ch.title, active: sg.active, gate: sagaGate(ch), obj: ch.obj.text, prog: ch.obj.kind === 'kill' ? sg.prog : (player.inventory[ch.obj.item] || 0), need: objNeed(ch, sg) }, choices: sg.choices.map(c => ({ ...c, title: (CHAPTERS[c.ch - 1] || {}).title })) }; })()
+    saga: (() => { const sg = player.saga, ch = currentChapter(sg); return { calling: sg.calling && CALLINGS[sg.calling], title: sg.title, total: CHAPTERS.length, done: sg.ch, ch: ch && { n: ch.n, title: ch.title, active: sg.active, gate: sagaGate(ch), obj: ch.obj.text, prog: ch.obj.kind === 'kill' ? sg.prog : (player.inventory[ch.obj.item] || 0), need: objNeed(ch, sg) }, choices: sg.choices.map(c => ({ ...c, title: (CHAPTERS[c.ch - 1] || {}).title })) }; })(),
+    ties: (EXT.adapt && EXT.adapt.tiesData) ? EXT.adapt.tiesData() : null
   }),
   onAct: (a, o) => {
     if (a === 'follow') { if (awayUntil(o.comp)) return; togglePartyMember(o.comp); }
@@ -2820,6 +2822,7 @@ function talkTo(ent) {
     { choose: [['Let\'s trade.', [{ run: () => invUI.open('shop') }]], ['No thanks.', [['npc', 'Suit yourself.']]]] }
   ];
   script = tongueWrap(ent, script);
+  if (EXT.adapt && EXT.adapt.tieWrap) script = EXT.adapt.tieWrap(ent, script);
   ui.dialogue(name, face, script, () => { updateQuestMarks(); markDirty(); });
 }
 // ---- Wilds: foraging and repeatable bounties ----

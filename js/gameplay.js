@@ -539,7 +539,8 @@ export function sellPrice(item, player = null) {
   return player ? Math.max(1, Math.floor(base * (1 + questFx(player, 'sellBonus')))) : base;
 }
 export function buyPrice(price, player = null) {
-  return player ? Math.max(1, Math.ceil(price * (1 - questFx(player, 'shopDiscount') - (player.saga && player.saga.flags && player.saga.flags.ashfordFriend ? 0.05 : 0)))) : price;
+  const tie = player && player._tieShop && player.adapt && player.adapt.ties && player.adapt.ties[player._tieShop] && player.adapt.ties[player._tieShop].rank >= 2 ? 0.05 : 0;
+  return player ? Math.max(1, Math.ceil(price * (1 - questFx(player, 'shopDiscount') - (player.saga && player.saga.flags && player.saga.flags.ashfordFriend ? 0.05 : 0) - tie))) : price;
 }
 // Shop entries can need a quest (`unlock`), all quests ('all') or a 99 skill (`skill99`).
 export function stockVisible(entry, player, skills) {

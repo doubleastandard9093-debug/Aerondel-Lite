@@ -1,4 +1,4 @@
-// Bonds panel (B): companions, faction standing and the errand ledger. Plain DOM, no textures.
+// Bonds panel (B): companions, faction standing, the errand ledger, and Town Ties. Plain DOM, no textures.
 export function createBondsUI({ getData, onAct }) {
   const el = document.createElement('div');
   el.id = 'bonds'; el.style.display = 'none';
@@ -23,13 +23,16 @@ export function createBondsUI({ getData, onAct }) {
       if (c) body += `<div class="b-card"><div class="b-h"><span>Chapter ${c.n}: ${esc(c.title)}</span></div><div class="b-s">${c.active ? `${esc(c.obj)}: ${Math.min(c.prog, c.need)}/${c.need}` : c.gate ? esc(c.gate) : 'Ready. Talk to Corwin.'}</div></div>`;
       body += g.choices.map(x => `<div class="b-s">Ch ${x.ch} ${esc(x.title || '')}: you were <b>${esc(x.tone)}</b></div>`).join('');
     }
-    else {
+    else if (tab === 'ties') {
+      const t = d.ties || { intro: '', folk: [] };
+      body = (t.intro || '') + (t.folk && t.folk.length ? t.folk.map(f => `<div class="b-card"><div class="b-h"><span>${esc(f.face || '')} ${esc(f.name)}</span><span>${esc(f.label || '')} (${f.rank}/5)</span></div><div class="b-bar"><i style="width:${(f.rank || 0) * 20}%"></i></div><div class="b-s">${f.discount ? 'Friendly shop discount. ' : ''}${f.heart ? 'You are close. ' : ''}${f.bday ? 'Birthday today — a gift would mean a lot.' : 'Chat once a day, or give a gift when you talk to them.'}</div></div>`).join('') : '<div class="b-s">Talk to townsfolk in town to start a Town Tie. This is separate from Sworn Companion Bond.</div>');
+    } else {
       const idle = d.companions.filter(c => c.recruited && !c.active && !c.away);
       body = d.running.map(r => `<div class="b-card"><div class="b-h"><span>${esc(r.name)}</span><span>${r.end <= now ? '<button data-a="collect">Collect</button>' : left(r.end - now)}</span></div><div class="b-s">${esc(r.comp)}</div></div>`).join('');
       body += idle.length ? `<div class="b-s">Send: <select id="b-comp">${idle.map(c => `<option value="${c.id}">${esc(c.name)} (${Math.round(c.chance * 100)}%)</option>`).join('')}</select></div>` + d.errands.map(e => `<div class="b-card"><div class="b-h"><span>${esc(e.name)}</span><span>${left(e.mins * 60000)}</span></div><div class="b-s">${esc(e.items.map(i => i[1] + ' ' + i[0]).join(', '))} to bank · ${e.xp} ${esc(e.skill)} XP · +${e.rep} standing</div><div class="b-row"><button data-a="send" data-e="${e.id}">Send</button></div></div>`).join('')
         : '<div class="b-s">' + (d.companions.some(c => c.recruited) ? 'Every companion is busy. One that follows you cannot run errands.' : 'Recruit a Sworn Companion to run errands.') + '</div>';
     }
-    el.innerHTML = `<div class="b-top"><b>Bonds</b><button data-a="close">✕</button></div><div class="b-tabs">${[['comp', 'Companions'], ['rep', 'Standing'], ['err', 'Errands'], ['saga', 'Saga']].map(([k, n]) => `<button data-t="${k}" class="${tab === k ? 'on' : ''}">${n}</button>`).join('')}</div><div class="b-body">${body}</div>`;
+    el.innerHTML = `<div class="b-top"><b>Bonds</b><button data-a="close">✕</button></div><div class="b-tabs">${[['comp', 'Companions'], ['rep', 'Standing'], ['err', 'Errands'], ['saga', 'Saga'], ...(d.ties ? [['ties', 'Town Ties']] : [])].map(([k, n]) => `<button data-t="${k}" class="${tab === k ? 'on' : ''}">${n}</button>`).join('')}</div><div class="b-body">${body}</div>`;
   }
   el.addEventListener('click', ev => {
     const b = ev.target.closest('button'); if (!b) return;
@@ -37,7 +40,7 @@ export function createBondsUI({ getData, onAct }) {
     const a = b.dataset.a;
     if (a === 'close') { close(); return; }
     const sel = el.querySelector('#b-comp');
-    onAct(a, { comp: b.dataset.c || (sel && sel.value), errand: b.dataset.e });
+    onAct(a, { comp: b.dataset.c || (sel && sel.value), errand: b.dataset.e, npc: b.dataset.n, item: b.dataset.k });
     render();
   });
   function open(t) { if (t) tab = t; el.style.display = 'flex'; render(); clearInterval(timer); timer = setInterval(render, 5000); }
