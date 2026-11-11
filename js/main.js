@@ -1411,9 +1411,12 @@ function nearestStation(kind) {
   for (const n of stationsOf(kind)) { const d = distTo(n); if (d < bd) { bd = d; best = n; } }
   return best;
 }
+function craftBag() {
+  return (EXT.adapt && EXT.adapt.freightInv && EXT.adapt.freightCanPull && EXT.adapt.freightCanPull()) ? EXT.adapt.freightInv(player.inventory) : player.inventory;
+}
 function recipeState(r) {
   const level = skills[r.skill].level >= r.level;
-  const inputs = hasInputs(player.inventory, r);
+  const inputs = hasInputs(craftBag(), r);
   const tool = !r.tool || !!bestTool(player, skills, r.tool);
   return { level, inputs, tool, ok: level && inputs && tool };
 }
@@ -1447,7 +1450,13 @@ function craftOne() {
   const extra = !burnt && Math.random() < doubleMakeChance(r, skills);
   if (extra) outQty += recipeOutputQty(r);
   const saved = !burnt && Math.random() < saveChance(r, skills, player);
-  if (!saved) for (const [item, qty] of Object.entries(r.inputs)) removeItem(player, item, qty);
+  if (!saved) for (const [item, qty] of Object.entries(r.inputs)) {
+    const have = player.inventory[item] || 0;
+    const fromInv = Math.min(have, qty);
+    if (fromInv) removeItem(player, item, fromInv);
+    const rest = qty - fromInv;
+    if (rest && EXT.adapt && EXT.adapt.freightConsume) EXT.adapt.freightConsume(item, rest);
+  }
   if (!canAdd(player, output)) {
     if (!saved) for (const [item, qty] of Object.entries(r.inputs)) addItem(player, item, qty);
     log("You don't have enough inventory space.", 'warn'); stopAction(); return;
@@ -1463,7 +1472,7 @@ function craftOne() {
   a.left--;
   a.wait = makeTicks(r, skills) - 1;
   if (a.left <= 0) stopAction();
-  else if (!hasInputs(player.inventory, r)) { if (a.left !== Infinity || a.made > 1) log(`You have run out of materials.`, 'game'); stopAction(); }
+  else if (!hasInputs(craftBag(), r)) { if (a.left !== Infinity || a.made > 1) log(`You have run out of materials.`, 'game'); stopAction(); }
   markDirty();
 }
 
