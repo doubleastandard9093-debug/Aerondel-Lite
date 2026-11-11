@@ -55,7 +55,8 @@ import oathframe from './oathframe.js';
 import hardroad from './hardroad.js';
 import seasonboard from './seasonboard.js';
 import wildmarks from './wildmarks.js';
-const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk, huntwright, guardbreak, ashkin, vocations, wordcries, townsteads, townties, greenstead, facets, leyweave, hordewake, deepmarks, ashspire, kinbeasts, freeclimb, leychem, freeframe, holdraids, trailhand, skillwords, banners, kitwright, wayfreight, waycamp, skywyrms, veilcraft, shadework, wardfine, oathframe, hardroad, seasonboard, wildmarks];
+import ashfall from './ashfall.js';
+const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk, huntwright, guardbreak, ashkin, vocations, wordcries, townsteads, townties, greenstead, facets, leyweave, hordewake, deepmarks, ashspire, kinbeasts, freeclimb, leychem, freeframe, holdraids, trailhand, skillwords, banners, kitwright, wayfreight, waycamp, skywyrms, veilcraft, shadework, wardfine, oathframe, hardroad, seasonboard, wildmarks, ashfall];
 export function installAdapt(ctx) {
   const A = installCore(ctx);
   for (const f of FEATURES) { try { f(A); } catch (e) { console.error('Ventures feature failed to start', e); } }

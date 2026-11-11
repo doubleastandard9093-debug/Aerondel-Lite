@@ -647,4 +647,9 @@ R({ name: 'Craft Watch-sight kit', cat: 'Crafting', group: 'Kits', skill: 'Craft
 // Waycamp (v32): one portable camp pack. Construction XP is small; Freeframe stays the grind.
 def('Waycamp kit', { type: 'kit', value: 80, special: 'A packed camp. Place it in the wild and pack it up again. One at a time. Not in a town, not on Greenstead, not on Claimridge.' });
 R({ name: 'Craft Waycamp kit', cat: 'Crafting', group: 'Camps', skill: 'Construction', level: 8, inputs: { Logs: 8, 'Iron bar': 2 }, output: 'Waycamp kit', xp: 40 });
+// Ashfall (v36): a carved totem that calls a skippable wild-region flare. Not a weapon.
+def('Ash-totem', { type: 'kit', value: 35, special: 'A carved totem. Use it in the wilds to gather or begin an Ashfall. It will not fire on a town, Greenstead or Claimridge.' });
+def('Ash crystal', { type: 'resource', value: 60, special: 'A rare crystal that can appear during an Ashfall. Not a Sealed Geode.' });
+R({ name: 'Carve Ash-totem', cat: 'Crafting', group: 'Camps', skill: 'Construction', level: 10, inputs: { Logs: 3, 'Clear essence': 1 }, output: 'Ash-totem', xp: 30 });
+
 
