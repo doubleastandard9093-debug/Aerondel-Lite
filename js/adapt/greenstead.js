@@ -86,7 +86,9 @@ export default function greenstead(A) {
     // A small field along the north wall, clear of forge / garden / kennel and the south landing.
     A.zoneProp('hold', -4, -11, new THREE.BoxGeometry(10, 0.2, 3.2), 0x5a3a1a, { ext: 'greenstead', name: 'Greenstead field', examine: 'Your farm plots. This is where you make things — not a town house.', radius: 5.5 });
     A.zoneProp('hold', 8, 4, new THREE.BoxGeometry(3, 1.2, 3), 0x8a7a5a, { ext: 'greenstead', name: 'Greenstead barn', examine: 'Animals and preserves.', radius: 2.4 });
-    A.zoneProp('hold', 0, 10, new THREE.CylinderGeometry(1, 1.2, 0.6, 8), 0x6ad0ff, { ext: 'holdboat', name: 'Boat home', examine: 'Back to the mainland.' });
+    // Reuse the Hold boat if Hearthhold already placed one; don't add a second cylinder on the same landing.
+    if (!(ctx.nodes || []).some(e => e && e.ext === 'holdboat' && e.alive !== false))
+      A.zoneProp('hold', 0, 10, new THREE.CylinderGeometry(1, 1.2, 0.6, 8), 0x6ad0ff, { ext: 'holdboat', name: 'Boat home', examine: 'Back to the mainland.' });
   };
   ctx.EXT.extTalk.greenstead = { face: '🌾', talk: () => { A.open('green'); return []; } };
 
@@ -141,8 +143,9 @@ export default function greenstead(A) {
   A.greenCover = i => {
     if (!greenhouse()) return A.log('A winter cover wants Farming 50 (Homestead).', 'warn');
     ensurePlots();
+    const cap = 1 + (A.leyKey && A.leyKey('seasonkeep') ? 1 : 0);
     const used = G().plots.filter(p => p.cover).length;
-    if (used >= 1 && !G().plots[i].cover) return A.log('You can only cover one plot at a time.', 'warn');
+    if (used >= cap && !G().plots[i].cover) return A.log(`You can only cover ${cap} plot${cap>1?'s':''} at a time.`, 'warn');
     G().plots[i].cover = !G().plots[i].cover;
     A.log(G().plots[i].cover ? 'You set a winter cover on this plot. One crop can grow out of season here.' : 'You take the cover off.', 'game'); A.dirty();
     return true;

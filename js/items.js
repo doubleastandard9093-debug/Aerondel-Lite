@@ -580,3 +580,20 @@ for (const [boss, L, hun, set, wName, cls, parts, txt] of HUNTS) {
 def('Ember ash', { type: 'ash', ashId: 'shades', value: 80, special: 'Summon a brief pack of shades. Costs Prayer; one Ashkin or Kinbeast at a time.' });
 def('Bulwark ash', { type: 'ash', ashId: 'ward', value: 240, special: 'Summon a shield-bearer spirit. Costs Prayer; one Ashkin or Kinbeast at a time.' });
 def('Longshot ash', { type: 'ash', ashId: 'ranger', value: 260, special: 'Summon a ranger spirit. Costs Prayer; one Ashkin or Kinbeast at a time.' });
+
+// Facet Stones (v27): socketed stones that change how a skill behaves. Cut a Dull facet with Glyphcraft or Crafting.
+export const FACET_STONES = {
+  'Twin-cut Facet': { id: 'echo', icon: '💎', desc: 'A socketed skill lands a second, lighter hit.' },
+  'Storm-glass Facet': { id: 'frost', icon: '💠', desc: 'A socketed skill briefly binds the foe in frost.' },
+  'Ironroot Facet': { id: 'stun', icon: '🪨', desc: 'Stunning skills hold a foe a little longer.' },
+  'Wide-reap Facet': { id: 'whirl', icon: '🌀', desc: 'Reaping Whirl reaches farther.' },
+  'Trail-disc Facet': { id: 'trail', icon: '💿', desc: 'Ricochet or a chakram leaves a short cutting trail.' }
+};
+def('Dull facet', { type: 'resource', value: 40, special: 'An uncut Facet Stone. Cut it with Glyphcraft or Crafting.' });
+def('Facet frame', { type: 'resource', value: 120, special: 'A small frame that holds two more Facet Stones beside your weapon.' });
+for (const [n, s] of Object.entries(FACET_STONES)) def(n, { type: 'facet', facet: s.id, value: 90, special: s.desc });
+for (const [out, lvl] of [['Twin-cut Facet', 20], ['Storm-glass Facet', 25], ['Ironroot Facet', 30], ['Wide-reap Facet', 40], ['Trail-disc Facet', 45]]) {
+  R({ name: `Cut ${out} (Glyphcraft)`, cat: 'Glyphcraft', group: 'Facet Stones', skill: 'Glyphcraft', level: lvl, inputs: { 'Dull facet': 1 }, output: out, xp: 25 + lvl });
+  R({ name: `Cut ${out} (Crafting)`, cat: 'Crafting', group: 'Facet Stones', skill: 'Crafting', level: lvl, inputs: { 'Dull facet': 1 }, output: out, xp: 25 + lvl, tool: 'hammer' });
+}
+R({ name: 'Craft Facet frame', cat: 'Crafting', group: 'Facet Stones', skill: 'Crafting', level: 30, inputs: { 'Iron bar': 4, 'Dull facet': 1 }, output: 'Facet frame', xp: 80, tool: 'hammer' });

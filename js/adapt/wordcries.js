@@ -68,7 +68,7 @@ export default function wordcries(A) {
     const d = CRIES[id]; if (!d) return A.log('Choose a Wordcry first (Ventures ✦ → Wordcries).', 'warn');
     const n = S().words[id] || 0;
     if (n < 1) return A.log(`You have not yet learned a word of ${d.name}. Study its cry-stone.`, 'warn');
-    const wait = (S().last || 0) + d.cd * 1000 - Date.now();
+    const wait = (S().last || 0) + d.cd * 1000 * (1 - Math.min(0.25, (A.leyFx && A.leyFx().cryCd) || 0)) - Date.now();
     if (wait > 0) return A.log(`${d.name} is still cooling (${Math.ceil(wait / 1000)}s).`, 'warn');
     const cost = d.prayer[n - 1];
     if ((player.prayerPoints || 0) < cost) return A.log(`You need ${cost} Prayer points for ${d.name}.`, 'warn');
@@ -98,6 +98,13 @@ export default function wordcries(A) {
       player._cryValorUntil = A.tick() + 8 + k * 4;
       if (player.hp > 0) player.hp = Math.min(player.maxHp, player.hp + Math.max(1, Math.round(player.maxHp * (0.04 * k))));
       A.log('Heartencry steels you and your companion.', 'game');
+    }
+    if (A.leyKey && A.leyKey('wordecho')) {
+      for (const m of ctx.monsters) if (m.alive && m.mesh && A.dist(m.mesh.position.x, m.mesh.position.z) < 6) {
+        m.stunUntil = Math.max(m.stunUntil || 0, A.tick() + 2);
+        m.nextAttackTick = Math.max(m.nextAttackTick || 0, A.tick() + 2);
+      }
+      A.log('Word-echo slows those nearby.', 'combat');
     }
     A.dirty(); A.refreshQuick();
     return true;
