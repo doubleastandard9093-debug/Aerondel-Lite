@@ -607,3 +607,5 @@ R({ name: 'Craft Bind vessel', cat: 'Crafting', group: 'Kinbeasts', skill: 'Craf
 R({ name: 'Craft Bind vessel (Hunter)', cat: 'Crafting', group: 'Kinbeasts', skill: 'Hunter', level: 1, inputs: { Logs: 2, Bones: 2 }, output: 'Bind vessel', xp: 14 });
 R({ name: 'Craft Sturdy vessel', cat: 'Crafting', group: 'Kinbeasts', skill: 'Hunter', level: 30, inputs: { 'Oak logs': 2, 'Hard leather': 1, Bones: 4 }, output: 'Sturdy vessel', xp: 36 });
 R({ name: 'Craft Fine vessel', cat: 'Crafting', group: 'Kinbeasts', skill: 'Hunter', level: 75, inputs: { 'Yew logs': 2, 'Hard leather': 2, 'Relic shard': 1 }, output: 'Fine vessel', xp: 80 });
+
+def('Stone slab', { type: 'resource', value: 8, special: 'Cut stone for Freeframe walls and reinforced plates. Crafted from limestone or found while mining.' });
