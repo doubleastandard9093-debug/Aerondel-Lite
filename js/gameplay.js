@@ -664,8 +664,11 @@ export function eat(player, item, onLog, skills = null) {
     player.effects.push({ id: item, icon: bf.icon, left: bf.ticks, boost, fx: {} });
     onLog(`You feel stronger: ${Object.entries(boost).map(([k, n]) => `${k} +${n}`).join(', ')}.`, 'game');
   }
+  for (const f of eatHooks) f(player, item);
   return true;
 }
+const eatHooks = [];
+export function setEatHook(fn) { if (typeof fn === 'function') eatHooks.push(fn); }
 
 export function equip(player, skills, item, onLog) {
   const info = ITEMS[item];

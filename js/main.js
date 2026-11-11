@@ -411,6 +411,7 @@ function fillVials() {
   if (!n) { log('You need an empty vial to fill. The apothecary sells them.', 'game'); return; }
   removeItem(player, 'Vial', n); addItem(player, 'Vial of water', n);
   log(`You fill ${n > 1 ? n + ' vials' : 'the vial'} with water.`, 'game');
+  if (EXT.adapt && EXT.adapt.roadDrink) EXT.adapt.roadDrink('well', 30);
   markDirty();
 }
 
@@ -2190,6 +2191,7 @@ const skyX = {
   setAlt(a) { skyS.alt = Math.max(SKYWING.min, Math.min(SKYWING.max, a)); pm.rideLift = skyS.alt; },
   toggle(on = !skyS.on) {
     if (on) {
+      if (EXT.adapt && EXT.adapt.oathOn && EXT.adapt.oathOn()) { log('You cannot Skywing while inside an Oathframe. Step out first.', 'warn'); return false; }
       if (!player.skywing.unlocked && !skyX.unlock()) { log(`Skywing needs Agility ${SKYWING.agility} and Exalted standing with a faction.`, 'warn'); return false; }
       if (inInstance(pm.mesh.position.x) || codexX.flight || delvesX.run || duel) return false;
       if (riding()) dismount(); if (action) stopAction();
@@ -2820,6 +2822,10 @@ const bondsUI = createBondsUI({
   }
 });
 function talkTo(ent) {
+  if (EXT.adapt && EXT.adapt.oathOn && EXT.adapt.oathOn() && (ent.shop || ent.hearth)) {
+    log('Shop interiors and houses ask you to step out of the Oathframe first. You may walk the town road slowly.', 'warn');
+    return;
+  }
   if (ent.ext && extTalk[ent.ext]) { const t = extTalk[ent.ext]; let s = t.talk(ent); if (EXT.adapt && EXT.adapt.bannerWrap) s = EXT.adapt.bannerWrap(ent, s); ui.dialogue(ent.name, t.face || '📜', s, () => markDirty()); return; }
   if (ent.arena) { ui.dialogue(ent.name, '⚔️', arenaTalk(), () => markDirty()); return; }
   if (ent.hearth) { ui.dialogue(ent.name, ent.hearth === 'agent' ? '📜' : '🏠', hearthTalk(ent), () => markDirty()); return; }
@@ -3313,6 +3319,7 @@ function gameTick(now) {
   if (player.hp < player.maxHp && player.hp > 0) {
     let rate = 1 + perk(skills, 'Hitpoints', 'regen') + prayerFx(player, 'regen') + regenBonus(player);
     if (player.hp < player.maxHp * 0.3) rate *= 1 + perk(skills, 'Hitpoints', 'lowRegen'); // Second Wind
+    if (EXT.adapt && EXT.adapt.hpRegenMul) rate *= EXT.adapt.hpRegenMul();
     player.regenAcc = (player.regenAcc || 0) + rate / 6;
     while (player.regenAcc >= 1) { player.regenAcc--; player.hp = Math.min(player.maxHp, player.hp + 1); markDirty(); }
   }
@@ -3341,7 +3348,7 @@ function gameTick(now) {
   if (tick % 2 === 0) renderEffects();
   if (queuedAbility && tick - queuedAt > 12) queuedAbility = null;
   for (let i = fires.length - 1; i >= 0; i--) if (now > fires[i].expires) { removeFire(fires[i]); }
-  if (!(player.settings.run && pm.moving)) player.runEnergy = Math.min(100, player.runEnergy + 0.45 * (1 + questFx(player, 'runRegen') + skills.Agility.level / 100));
+  if (!(player.settings.run && pm.moving)) { let rr = 0.45 * (1 + questFx(player, 'runRegen') + skills.Agility.level / 100); if (EXT.adapt && EXT.adapt.runRegenMul) rr *= EXT.adapt.runRegenMul(); player.runEnergy = Math.min(100, player.runEnergy + rr); }
 
   // Respawns
   for (const n of nodes) if (!n.alive && n.respawnAt && now >= n.respawnAt) respawnNode(n);
