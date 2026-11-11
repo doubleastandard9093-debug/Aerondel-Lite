@@ -102,7 +102,7 @@ export default function facets(A) {
   });
 
   ctx.EXT.extKill.push(m => {
-    if (A.isBossy(m) && Math.random() < 0.22) { A.give('Dull facet'); A.log('A Dull facet falls from the fight. Cut it with Glyphcraft or Crafting.', 'loot'); }
+    if (A.isBossy(m) && Math.random() < 0.22 + (A.leyKey && A.leyKey('leyblood') ? 0.12 : 0)) { A.give('Dull facet'); A.log('A Dull facet falls from the fight. Cut it with Glyphcraft or Crafting.', 'loot'); }
   });
 
   A.npc('facetier', '💎', 'Facetier Vesa', 'I cut Facet Stones and socket them into a weapon or a small frame. They change how a skill behaves — they are not grafts, and they will not make the blade simply hit harder.', 'facets');

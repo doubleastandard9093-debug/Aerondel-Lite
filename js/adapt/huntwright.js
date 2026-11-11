@@ -106,7 +106,7 @@ export default function huntwright(A) {
     if (!m.respawnAt) m.respawnAt = (now || nowMs()) + (m.respawn || 15000);
   };
   A.canCarve = m => !!(m && !m.alive && m._carveUntil && nowMs() < m._carveUntil && !m._carved && (A.isBossy(m) || m._hunt));
-  A.carveMs = () => Math.max(1100, Math.round(3000 / (1 + (A.huntFx().carveHaste || 0) + perk(skills, 'Hunter', 'carveYield') * 0.5)));
+  A.carveMs = () => Math.max(1100, Math.round((3000 + ((A.leyFx && A.leyFx().carveWin) || 0)) / (1 + (A.huntFx().carveHaste || 0) + perk(skills, 'Hunter', 'carveYield') * 0.5)));
   const startCarve = m => {
     if (!A.canCarve(m)) return A.log('There is nothing left to carve.', 'warn');
     if (A.dist(m.mesh.position.x, m.mesh.position.z) > 4) return A.log('Stand closer to carve.', 'warn');
@@ -119,13 +119,14 @@ export default function huntwright(A) {
     m._carved = true; m._carveUntil = 0;
     initParts(m);
     const def = huntByBoss(m.name);
-    const n = Math.max(1, Math.round((1 + (m._hunt && m._hunt.broke.length ? m._hunt.broke.length * 0.35 : 0)) * yieldMul()));
+    const rareCarve = !!(A.leyKey && A.leyKey('rarecarve'));
+    const n = Math.max(1, Math.round((1 + (m._hunt && m._hunt.broke.length ? m._hunt.broke.length * 0.35 : 0)) * yieldMul() * (rareCarve ? 0.5 : 1)));
     const got = [];
     if (def) {
       const parts = def[6];
       for (let i = 0; i < n; i++) {
-        const rare = Math.random() < 0.15 + rareBonus();
-        const part = rare ? parts[parts.length - 1] : parts[Math.floor(Math.random() * parts.length)];
+        const rare = Math.random() < (rareCarve ? 0.06 + rareBonus() * 0.5 : 0.15 + rareBonus());
+        const part = rareCarve || rare ? parts[parts.length - 1] : parts[Math.floor(Math.random() * parts.length)];
         A.give(part[1]); got.push(part[1]);
       }
       if (Math.random() < 0.35) { A.give('Hunt remnant'); got.push('Hunt remnant'); }
@@ -139,7 +140,7 @@ export default function huntwright(A) {
   ctx.EXT.extKill.push((mon, now) => {
     if (!A.isBossy(mon) && !huntByBoss(mon.name)) return;
     initParts(mon);
-    mon._carveUntil = (typeof now === 'number' ? now : nowMs()) + 16000;
+    mon._carveUntil = (typeof now === 'number' ? now : nowMs()) + 16000 + ((A.leyFx && A.leyFx().carveWin) || 0);
     mon._carveClosed = false;
     mon._carved = false;
   });

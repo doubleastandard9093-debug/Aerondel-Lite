@@ -36,8 +36,8 @@ export default function guardbreak(A) {
     // Do not extend a Crestbreak stun; only apply a short stagger if the boss is not already broken.
     if (!(boss && A.isBroken && A.isBroken(m))) m.stunUntil = Math.max(m.stunUntil || 0, A.tick() + stun);
     if (boss && A.stagger) A.stagger(m, 14);
-    if (!boss) m._riposteUntil = A.tick() + 5;
-    else m._riposteUntil = A.tick() + 2;
+    if (!boss) m._riposteUntil = A.tick() + 5 + (A.leyKey && A.leyKey('stillblade') ? 3 : 0);
+    else m._riposteUntil = A.tick() + 2 + (A.leyKey && A.leyKey('stillblade') ? 1 : 0);
     m._riposteUsed = false;
     A.log(boss ? `Guardbreak! The ${m.name} staggers (Crestbreak is fed).` : `Guardbreak! The ${m.name} is open to a riposte.`, 'combat');
     A.dirty(); A.refreshQuick();

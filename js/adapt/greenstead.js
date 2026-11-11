@@ -143,8 +143,9 @@ export default function greenstead(A) {
   A.greenCover = i => {
     if (!greenhouse()) return A.log('A winter cover wants Farming 50 (Homestead).', 'warn');
     ensurePlots();
+    const cap = 1 + (A.leyKey && A.leyKey('seasonkeep') ? 1 : 0);
     const used = G().plots.filter(p => p.cover).length;
-    if (used >= 1 && !G().plots[i].cover) return A.log('You can only cover one plot at a time.', 'warn');
+    if (used >= cap && !G().plots[i].cover) return A.log(`You can only cover ${cap} plot${cap>1?'s':''} at a time.`, 'warn');
     G().plots[i].cover = !G().plots[i].cover;
     A.log(G().plots[i].cover ? 'You set a winter cover on this plot. One crop can grow out of season here.' : 'You take the cover off.', 'game'); A.dirty();
     return true;
