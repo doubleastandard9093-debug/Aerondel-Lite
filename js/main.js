@@ -1023,6 +1023,7 @@ function doThieve(a) {
     player.stunUntil = tick + res.stun;
     pm.target = null;
     hurtPlayer(res.dmg);
+    if (EXT.adapt && EXT.adapt.fineOnFail) EXT.adapt.fineOnFail(a.node, a.target);
   } else {
     const got = [];
     for (const d of res.drops) {
