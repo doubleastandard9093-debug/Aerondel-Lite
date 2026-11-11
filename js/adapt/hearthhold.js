@@ -19,7 +19,8 @@ export default function hearthhold(A) {
   A.holdHome = () => !A.run && H().owned && Math.abs(A.pos().x + 1000) < 20 && Math.abs(A.pos().z - A.zoneC('hold').z) < 16;
   const build = () => { if (built) return; built = true; A.zoneBuild('hold', 0x4a6a3a, 0x8a7a5a);
     [['forge', -7, -6, 0x5a4a4a], ['garden', 0, -8, 0x3a8a3a], ['kennel', 7, -6, 0x7a5a3a]].forEach(([k, dx, dz, c]) => A.zoneProp('hold', dx, dz, new THREE.BoxGeometry(3, 2.4, 3), c, { ext: 'holdbuild', name: `Hearthhold ${B[k].name}`, examine: 'Your building.', hold: k, radius: 2.6 }));
-    A.zoneProp('hold', 0, 10, new THREE.CylinderGeometry(1, 1.2, 0.6, 8), 0x6ad0ff, { ext: 'holdboat', name: 'Boat home', examine: 'Back to the mainland.' }); };
+    if (!(ctx.nodes || []).some(e => e && e.ext === 'holdboat' && e.alive !== false))
+      A.zoneProp('hold', 0, 10, new THREE.CylinderGeometry(1, 1.2, 0.6, 8), 0x6ad0ff, { ext: 'holdboat', name: 'Boat home', examine: 'Back to the mainland.' }); };
   ctx.EXT.extTalk.holdbuild = { face: '🏰', talk: () => { A.open('hold'); return []; } };
   ctx.EXT.extTalk.holdboat = { face: '⛵', talk: () => { A.holdLeave(); return []; } };
   A.holdGo = () => { if (!H().owned) return A.log('Buy the island deed first (Ventures ✦ → Hold, 10,000 coins).', 'warn'); if (A.run || ctx.EXT.dungeonRun) return A.log('Finish what you are doing first.', 'warn');
