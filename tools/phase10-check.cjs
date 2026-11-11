@@ -17,7 +17,7 @@ const old99='/workspace/gielinor-save-99.json';
  const r=await p.evaluate(async(old,oldLegacy,tier)=>{const g=window.gielinor,A=g.EXT.adapt,P=g.player,o={},SV=await import('/js/save.js'),SK=await import('/js/skills.js'),I=await import('/js/items.js');
   const T=ms=>new Promise(r=>setTimeout(r,ms));
   o.core=!!A&&!!document.getElementById('advWin');
-  o.hasTab=!!(A&&A.tabs&&A.tabs.some(t=>t.id==='hunt'));
+  o.hasTab=!!(A&&A.tabs&&A.tabs.some(t=>t.id==='hunt'));o.hasAsh=!!(A&&A.tabs&&A.tabs.some(t=>t.id==='ashkin'));o.hasGuard=!!(A&&A.tabs&&A.tabs.some(t=>t.id==='guard'));
   o.hunterNew={level:g.skills.Hunter&&g.skills.Hunter.level,max:g.skills.Hunter&&g.skills.Hunter.max};
   o.combatSkill=!(SK.COMBAT_SKILLS||[]).includes('Hunter');
   o.cape=!!I.ITEMS['Hunter cape'];
@@ -25,6 +25,7 @@ const old99='/workspace/gielinor-save-99.json';
   o.vexmarUnique=!!I.ITEMS['Vexmar, the Last Eclipse']; // frontier unique still exists
   if(A&&A.vtests&&A.vtests.huntwright){try{o.huntwright=await A.vtests.huntwright(g,A);}catch(e){o.huntwright='ERR '+e.message;}}
   if(A&&A.vtests&&A.vtests.guardbreak){try{o.guardbreak=await A.vtests.guardbreak(g,A);}catch(e){o.guardbreak='ERR '+e.message;}}
+  if(A&&A.vtests&&A.vtests.ashkin){try{o.ashkin=await A.vtests.ashkin(g,A);}catch(e){o.ashkin='ERR '+e.message;}}
   // snapshot combat level on a fresh game, then migrate the max save
   const cl0=SK.combatLevel(g.skills);
   if(old){const s=JSON.parse(old);const atk=s.skills&&s.skills.Attack&&s.skills.Attack.level;const hadHunter=!!(s.skills&&s.skills.Hunter);
@@ -39,11 +40,14 @@ const old99='/workspace/gielinor-save-99.json';
  const fail=[];
  if(!r.core)fail.push('no ventures core');
  if(!r.hasTab)fail.push('no Huntwright tab');
+ if(!r.hasAsh)fail.push('no Ashkin tab');
+ if(!r.hasGuard)fail.push('no Guardbreak tab');
  if(!(r.hunterNew&&r.hunterNew.level===1&&r.hunterNew.max===1000))fail.push('fresh Hunter not 1/1000 '+JSON.stringify(r.hunterNew));
  if(!r.combatSkill)fail.push('Hunter was added to COMBAT_SKILLS');
  if(!r.cape||!r.brand||!r.vexmarUnique)fail.push('items missing');
  if(r.huntwright!==true&&r.huntwright!==undefined)fail.push('huntwright vtest '+r.huntwright);
  if(r.guardbreak!==true&&r.guardbreak!==undefined)fail.push('guardbreak vtest '+r.guardbreak);
+ if(r.ashkin!==true&&r.ashkin!==undefined)fail.push('ashkin vtest '+r.ashkin);
  if(old&&r.oldLoad===false)fail.push('max save failed to load');
  if(old&&!(r.oldHunter&&r.oldHunter.level===1&&r.oldHunter.max===1000&&r.oldHunter.had===false))fail.push('max-save Hunter migration '+JSON.stringify(r.oldHunter));
  if(old&&r.oldAttackKept===false)fail.push('Attack level changed on migrate');

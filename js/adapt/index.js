@@ -25,7 +25,8 @@ import chronicle from './chronicle.js';
 import glidewalk from './glidewalk.js';
 import huntwright from './huntwright.js';
 import guardbreak from './guardbreak.js';
-const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk, huntwright, guardbreak];
+import ashkin from './ashkin.js';
+const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk, huntwright, guardbreak, ashkin];
 export function installAdapt(ctx) {
   const A = installCore(ctx);
   for (const f of FEATURES) { try { f(A); } catch (e) { console.error('Ventures feature failed to start', e); } }

@@ -565,3 +565,9 @@ for (const [boss, L, hun, set, wName, cls, parts, txt] of HUNTS) {
       special: `${set} hunt set. ${txt}. Crafted from ${boss} parts.`, req: { Defence: Math.min(L, 1000), Hunter: hun }, value: L * 250 });
   SETS[set] = { pieces: ['head', 'body', 'legs'], fx: { huntSet: set } };
 }
+
+
+// Ashkin (v24): spirit ashes used to summon a temporary follower. Kept as items; summoning spends Prayer, not the ash.
+def('Ember ash', { type: 'ash', ashId: 'shades', value: 80, special: 'Summon a brief pack of shades. Costs Prayer; one Ashkin or Kinbeast at a time.' });
+def('Bulwark ash', { type: 'ash', ashId: 'ward', value: 240, special: 'Summon a shield-bearer spirit. Costs Prayer; one Ashkin or Kinbeast at a time.' });
+def('Longshot ash', { type: 'ash', ashId: 'ranger', value: 260, special: 'Summon a ranger spirit. Costs Prayer; one Ashkin or Kinbeast at a time.' });
