@@ -7,7 +7,7 @@ export const MOUNTS = [
   { id: 'skywing', name: 'Skywing', kind: 'flyer', how: 'Agility 70 and Exalted with a faction' },
   { id: 'skyrook', name: 'Skyrook', kind: 'flyer', how: 'Visit Roostmaster Hale at Larkhaven' }
 ];
-export const LOOK_SLOTS = ['head', 'body', 'legs', 'shield', 'cape'];
+export const LOOK_SLOTS = ['head', 'body', 'legs', 'shield', 'cape', 'weapon'];
 export function normalizeCodex(c) {
   c = c && typeof c === 'object' ? c : {};
   const looks = {}; for (const s of LOOK_SLOTS) if (typeof (c.looks || {})[s] === 'string') looks[s] = c.looks[s];
