@@ -1230,6 +1230,7 @@ function optionsFor(ent) {
     case 'herb': return [{ action: 'Pick', target: ent.name, color: cy, fn: () => startAction({ kind: 'gather', node: ent }) }, ex];
     case 'well': return [{ action: 'Fill vials', target: 'Well', color: cy, fn: () => startAction({ kind: 'well', node: ent }) }, ex];
     case 'bank': return [{ action: 'Bank', target: ent.name || 'Bank booth', color: cy, fn: () => startAction({ kind: 'bank', node: ent }) }, { action: 'Vocations', target: 'Job kit', color: '#c8a050', fn: () => EXT.adapt && EXT.adapt.open && EXT.adapt.open('vocations') }, ex];
+    case 'crystone': return [{ action: 'Study', target: ent.name, color: '#c8e0ff', fn: () => startAction({ kind: 'talk', node: ent }) }, ex];
     case 'npc': {
       const o = [{ action: 'Talk-to', target: ent.name, color: '#ffff00', fn: () => startAction({ kind: 'talk', node: ent }) }];
       if (ent.npc === 'bob') o.push({ action: 'Trade', target: ent.name, color: '#ffff00', fn: () => startAction({ kind: 'shop', node: ent, shop: 'tools' }) });
