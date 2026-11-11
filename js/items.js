@@ -29,6 +29,15 @@ def('Big bones', { type: 'bones', prayerXp: 30, value: 15 });
 def('Dragon bones', { type: 'bones', prayerXp: 72, value: 200 });
 def('Burnt food', { type: 'junk', value: 0 });
 
+// Greenstead / Farming (v26): seeds, produce, animal goods and a simple preserve.
+export const FARM_PRODUCE = ['Potato', 'Cabbage', 'Wheat', 'Tomato', 'Pumpkin', 'Winterroot', 'Egg', 'Milk', 'Wool', 'Farm preserves'];
+export const FARM_SEEDS = ['Potato seed', 'Cabbage seed', 'Wheat seed', 'Tomato seed', 'Pumpkin seed', 'Winterroot seed'];
+for (const [n, v] of [['Potato seed', 5], ['Cabbage seed', 6], ['Wheat seed', 5], ['Tomato seed', 8], ['Pumpkin seed', 10], ['Winterroot seed', 8]]) def(n, { type: 'seed', value: v });
+for (const [n, v, heal] of [['Potato', 4, 3], ['Cabbage', 5, 3], ['Tomato', 6, 4], ['Pumpkin', 10, 6], ['Winterroot', 7, 4], ['Egg', 4, 2], ['Milk', 5, 3], ['Farm preserves', 14, 8]]) def(n, { type: 'food', heal, value: v, farm: true });
+def('Wheat', { type: 'resource', value: 3, farm: true });
+def('Wool', { type: 'processed', value: 8, farm: true });
+
+
 // ---- Food: [raw, cooked, cook level, stop-burn level, heal, xp, value] ----
 export const FOODS = [
   ['Raw shrimp', 'Cooked shrimp', 1, 34, 3, 30, 4], ['Raw beef', 'Cooked meat', 1, 34, 4, 30, 4],
@@ -126,7 +135,7 @@ def("Angler's ring", { type: 'ring', gather: { Fishing: 0.04 }, xp: { Fishing: 0
 def('Red cape', { type: 'cape', def: 1, rdef: 1, value: 15 });
 def('Blue cape', { type: 'cape', def: 1, rdef: 1, value: 15 });
 def('Quest point cape', { type: 'cape', atk: 3, str: 3, ranged: 3, def: 6, rdef: 6, prayer: 4, regen: 0.1, questCape: true, value: 99 });
-export const SKILL_CAPE_SKILLS = ['Attack', 'Strength', 'Defence', 'Hitpoints', 'Ranged', 'Magic', 'Prayer', 'Agility', 'Thieving', 'Mining', 'Woodcutting', 'Fishing', 'Smithing', 'Crafting', 'Cooking', 'Fletching', 'Herbalism', 'Glyphcraft', 'Relicry', 'Delving', 'Swordsmanship', 'Hunter', 'Construction'];
+export const SKILL_CAPE_SKILLS = ['Attack', 'Strength', 'Defence', 'Hitpoints', 'Ranged', 'Magic', 'Prayer', 'Agility', 'Thieving', 'Mining', 'Woodcutting', 'Fishing', 'Smithing', 'Crafting', 'Cooking', 'Fletching', 'Herbalism', 'Glyphcraft', 'Relicry', 'Delving', 'Swordsmanship', 'Hunter', 'Construction', 'Farming'];
 for (const sk of SKILL_CAPE_SKILLS) def(`${sk} cape`, { type: 'cape', def: 4, rdef: 4, prayer: 2, capeSkill: sk, req: { [sk]: 99 }, value: 9900 });
 
 // Full matched sets. pieces = how many you need; fx feeds the combat maths.
