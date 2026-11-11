@@ -8,4 +8,6 @@ export const SPOT = {
   arms: { name: 'Arms', icon: '💪', weakTicks: 10, desc: 'weakens its blows' }
 };
 export function normalizeStill(s) { s = s && typeof s === 'object' ? s : {}; return { meter: Math.max(0, Math.min(STILL.max, Number(s.meter) || 0)), uses: Math.max(0, Math.floor(Number(s.uses) || 0)), spot: STILL.spots.includes(s.spot) ? s.spot : 'head' }; }
-export function addFocus(S, n) { S.meter = Math.min(STILL.max, S.meter + n); return S.meter >= STILL.max; }
+let focusHook = null;
+export function setFocusHook(fn) { focusHook = typeof fn === 'function' ? fn : null; }
+export function addFocus(S, n) { if (focusHook) n = focusHook(S, n); S.meter = Math.min(STILL.max, S.meter + n); return S.meter >= STILL.max; }
