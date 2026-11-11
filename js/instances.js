@@ -4,19 +4,21 @@ export const INSTANCE_X = -700;
 export const HEARTH = { x: -1000, z: 0, hw: 12, hd: 9, door: { x: -1000, z: 8 }, stone: { x: -1000, z: 0 } };
 export const ARENA = { x: -1000, z: -200, r: 13, gate: { x: -1000, z: -188 } };
 export function inInstance(x) { return x < INSTANCE_X; }
+// Ventures zones (js/adapt/zone.js). Checked before the z>300 dungeon band so Hordewake (340), Deepmarks (410) and Ashspire (480) are not treated as relic dungeons (origin z 560, growing +z).
+export const VENTURE_ZONES = [{ id: 'vigil', z: 135 }, { id: 'breach', z: 205 }, { id: 'hold', z: 270 }, { id: 'horde', z: 340 }, { id: 'marks', z: 410 }, { id: 'spire', z: 480 }];
+export const VENTURE_HALF = 14;
 export function instanceAt(x, z) {
   if (!inInstance(x)) return null;
+  if (VENTURE_ZONES.some(v => Math.abs(z - v.z) <= VENTURE_HALF + 2)) return 'venture';
   if (z > 300) return 'dungeon';   // relic dungeons and Delving floors (dungeon.js)
   if (z < -560) return 'siege';
   if (z < -340) return 'delve';
-  if (z > 100) return 'venture';   // Ventures zones (js/adapt/zone.js): Vigil z 135, Breach z 205, Hold z 270
+  if (z > 100) return 'venture';
   return Math.abs(z - HEARTH.z) < 60 ? 'hearth' : 'arena';
 }
 // Keep a walker inside the instance it's in.
 // dungeon.js sets the active dungeon's outer box here (walls are colliders).
 export const DUNGEON_BOX = { box: null };
-export const VENTURE_ZONES = [{ id: 'vigil', z: 135 }, { id: 'breach', z: 205 }, { id: 'hold', z: 270 }];
-export const VENTURE_HALF = 14;
 export const ventureZone = z => VENTURE_ZONES.reduce((b, v) => (Math.abs(v.z - z) < Math.abs(b.z - z) ? v : b));
 export function clampInstance(pos) {
   if (instanceAt(pos.x, pos.z) === 'dungeon') {
