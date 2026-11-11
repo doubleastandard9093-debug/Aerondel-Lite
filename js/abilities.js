@@ -45,9 +45,13 @@ export function adrenCost(a) { return ADREN[a.tier || 'basic'].cost; }
 export function adrenGain(a) { return ADREN[a.tier || 'basic'].gain; }
 export function abilityById(id) { return ABILITIES.find(a => a.id === id); }
 // Path skills need the matching Combat Path (set by main.js through setPathSource).
-let pathOf = () => null;
+let pathOf = () => null, vocOf = () => null;
 export function setPathSource(f) { pathOf = f; }
-export function unlocked(skills, a) { return a.path ? pathOf() === a.path : skills[a.skill].level >= a.level; }
+export function setVocSource(f) { vocOf = f; }
+export function unlocked(skills, a) {
+  if (a.vocation) return vocOf() === a.vocation;
+  return a.path ? pathOf() === a.path : skills[a.skill].level >= a.level;
+}
 export function cooldownTicks(skills, a) {
   return Math.max(0, Math.round(a.cd * (1 - perk(skills, 'Attack', 'abilityCd'))));
 }

@@ -328,6 +328,7 @@ const invUI = createInventoryUI({
   },
   setting(act) { setting(act); },
   tick: () => tick,
+  vocBar: () => EXT.adapt && EXT.adapt.vocBar && EXT.adapt.vocBar(),
   cooldowns: () => cooldowns,
   setAutocast: id => setAutocast(id),
   cooldownOf: a => cooldownTicks(skills, a),
@@ -568,7 +569,7 @@ const inputCtl = setupInput(renderer.domElement, {
   onInteract: kind => { const ent = padNearest(kind); if (!ent) { log(kind === 'attack' ? 'No enemy nearby.' : 'Nothing nearby to use.', 'game'); return; } if (ui.inDialogue) ui.closeDialogue(); const o = optionsFor(ent); if (o && o[0]) o[0].fn(); },
   onOptions: () => { const ent = padNearest('any'); if (!ent) return; const p = padScreen(ent); onContext(p.x, p.y); },
   onAction: act => {
-    if (/^ab\d$/.test(act)) { const list = ABILITIES.filter(a => abilityUnlocked(skills, a)); const a = list[+act.slice(2) - 1]; if (a) useAbility(a.id); }
+    if (/^ab\d$/.test(act)) { const list = (EXT.adapt && EXT.adapt.vocBar && EXT.adapt.vocBar()) || ABILITIES.filter(a => abilityUnlocked(skills, a)); const a = list[+act.slice(2) - 1]; if (a) useAbility(a.id); }
     else if (act === 'run') toggleRun();
     else if (act === 'dodge') doDodge();
     else if (act === 'ride') toggleRide();
@@ -782,8 +783,11 @@ function applyHex(spell, mon, res) {
 function magicKit(special, spell, mon, res, now) {
   const ab = abilityById(special); if (!ab) return 0;
   cooldowns[special] = tick + cooldownTicks(skills, ab);
-  for (const [r, q] of Object.entries(ab.runes || {})) if ((player.inventory[r] || 0) < q) { log(`Not enough runes for ${ab.name}.`, 'warn'); return 0; }
-  for (const [r, q] of Object.entries(ab.runes || {})) removeItem(player, r, q);
+  if (player._vfocus) { player._vfocus = false; log('Ley Focus: the runes are spared.', 'combat'); }
+  else {
+    for (const [r, q] of Object.entries(ab.runes || {})) if ((player.inventory[r] || 0) < q) { log(`Not enough runes for ${ab.name}.`, 'warn'); return 0; }
+    for (const [r, q] of Object.entries(ab.runes || {})) removeItem(player, r, q);
+  }
   log(`${ab.name}!`, 'combat');
   const mh = magicMaxHit(spell, player, skills);
   let extra = 0;
@@ -1225,7 +1229,7 @@ function optionsFor(ent) {
       { ...ex, color: '#ffff00' }];
     case 'herb': return [{ action: 'Pick', target: ent.name, color: cy, fn: () => startAction({ kind: 'gather', node: ent }) }, ex];
     case 'well': return [{ action: 'Fill vials', target: 'Well', color: cy, fn: () => startAction({ kind: 'well', node: ent }) }, ex];
-    case 'bank': return [{ action: 'Bank', target: ent.name || 'Bank booth', color: cy, fn: () => startAction({ kind: 'bank', node: ent }) }, ex];
+    case 'bank': return [{ action: 'Bank', target: ent.name || 'Bank booth', color: cy, fn: () => startAction({ kind: 'bank', node: ent }) }, { action: 'Vocations', target: 'Job kit', color: '#c8a050', fn: () => EXT.adapt && EXT.adapt.open && EXT.adapt.open('vocations') }, ex];
     case 'npc': {
       const o = [{ action: 'Talk-to', target: ent.name, color: '#ffff00', fn: () => startAction({ kind: 'talk', node: ent }) }];
       if (ent.npc === 'bob') o.push({ action: 'Trade', target: ent.name, color: '#ffff00', fn: () => startAction({ kind: 'shop', node: ent, shop: 'tools' }) });
@@ -1962,7 +1966,7 @@ installEvents(aeroCtx);
 installGuild(aeroCtx);
 installVillages(aeroCtx, isDone);
 // ---- Adaptations (Ventures): PSO2 / Lost Ark / The First Descent / Destiny 2 inspired systems in js/adapt/ ----
-const adaptX = installAdapt({ ...aeroCtx, strike, target: () => (action && action.mon) || null, applyLook: () => applyEquipmentLook(pm, lookEquip()), refreshQuick: () => refreshQuick(),
+const adaptX = installAdapt({ ...aeroCtx, strike, target: () => (action && action.mon) || null, applyLook: () => applyEquipmentLook(pm, lookEquip()), refreshQuick: () => refreshQuick(), invRenderBar: () => invUI.renderBar && invUI.renderBar(),
   useAbility: id => useAbility(id), cooldowns, buffs, rig, overlays, burst, ui, isRangedWeapon, steedState, playerDied: () => playerDied(), doDodge: () => doDodge(), gfxQ: () => gfx.quality, combatXp: d => { for (const [s, v] of Object.entries(combatXp(player, d))) giveXP(s, v); } });
 EXT.adapt = adaptX;
 // ---- Stable Codex: mount collection, Skyrook flights between towns, wardrobe looks ----
@@ -2986,13 +2990,14 @@ function useAbility(id) {
   const cost = adrenCost(a);
   const adr = hud ? hud.adrenaline : 0;
   if (cost && adr + 1e-6 < cost) { log(`${a.name} needs ${cost}% adrenaline (you have ${Math.floor(adr)}%). Use basic skills and land hits to build it.`, 'warn'); return; }
-  const queuedNeedsTarget = !['fortify', 'rage', 'rejuv', 'wall', 'ward', 'mend'].includes(id);
+  const queuedNeedsTarget = !a.self && !['fortify', 'rage', 'rejuv', 'wall', 'ward', 'mend'].includes(id);
   const aimed = aimOn() && queuedNeedsTarget && a.style !== 'magic';
   if (queuedNeedsTarget && !aimed && (!action || action.kind !== 'attack' || !action.mon.alive)) { log('Attack something first, then use that.', 'warn'); return; }
   if (hud) { if (cost) hud.spend(cost); else hud.gain(adrenGain(a) * (a.style === 'magic' ? 1 + perk(skills, 'Combat', 'magicAdren') : 1)); }
   const cd = cooldownTicks(skills, a);
   if (aimed) { cooldowns[id] = tick + cd; aimX.strike(id); }
   else if (pathSelfSkill(id, cd)) { /* Combat Path self skill */ }
+  else if (EXT.vocUse && EXT.vocUse(id, cd, a)) { /* Vocation self skill */ }
   else if (id === 'fortify') { buffs.fortifyUntil = tick + 10; cooldowns[id] = tick + cd; log('You brace yourself. (Fortify: 50% less damage)', 'combat'); }
   else if (id === 'rage') { buffs.rageUntil = tick + 15; cooldowns[id] = tick + cd; log('You fly into a rage! (Berserk)', 'combat'); }
   else if (id === 'rejuv') {
