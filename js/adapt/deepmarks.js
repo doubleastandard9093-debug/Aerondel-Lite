@@ -81,6 +81,7 @@ export default function deepmarks(A) {
     }
   });
   ctx.EXT.extIncoming.push(d => (A.run && A.run.kind === 'marks' && A.run.mods.includes('frenzy') ? Math.round(d * 1.12) : d));
+  A.prayerRegenMul = () => (A.run && A.run.kind === 'marks' && A.run.mods.includes('hush') ? 0.35 : 1);
 
   function finish(win, r) {
     const m = M();
@@ -140,6 +141,10 @@ export default function deepmarks(A) {
       if (!r || r.kind !== 'marks') return 'not in run';
       if (!(A.pos().x < -900)) return 'not in dungeon';
       if (r.mods.length !== 2) return 'mods ' + r.mods.length;
+      if (!r.mods.includes('hush')) r.mods = r.mods.slice(0, 1).concat(['hush']);
+      if (!(A.prayerRegenMul && A.prayerRegenMul() < 1)) return 'hush not slowing prayer';
+      const mulClear = (() => { const keep = r.mods; r.mods = r.mods.filter(m => m !== 'hush'); const v = A.prayerRegenMul(); r.mods = keep; return v; })();
+      if (mulClear !== 1) return 'hush stuck on';
       const n = A.zoneAlive('marks').length;
       if (!(n > 0 && n <= A.cap(15))) return 'cap ' + n;
       // Spider-shaped marks (Murk Leech, Glass Scorpion) must roll an eye colour so hi-LOD paint does not crash.
