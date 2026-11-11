@@ -92,14 +92,18 @@ export default function townsteads(A) {
     return null;
   };
 
+  const leyBuild = () => (A.leyFx && A.leyFx().buildSpeed) || 0;
+  A.townBuildMs = () => Math.max(350, Math.round(1600 / (1 + (perk(skills, 'Construction', 'buildSpeed') || 0) + leyBuild())));
   A.steadPlace = (id, kind) => {
     const h = houseById(id); if (!h || !S().owned.includes(id)) return A.log('You do not own this house.', 'warn');
     const f = furnOf(id);
     if (kind !== 'hook' && f[kind]) return A.log(`This house already has a ${kind}.`, 'warn');
     if (kind === 'hook' && f.hooks.length >= hookSlots()) return A.log(`Your Construction only supports ${hookSlots()} hooks here.`, 'warn');
+    if (A._buildBusy && Date.now() < A._buildBusy) return A.log('You are still setting the last piece.', 'warn');
     const err = spendMats(FURN_COST[kind]); if (err) return A.log(err, 'warn');
     if (kind === 'hook') f.hooks.push(null); else f[kind] = true;
-    const xp = Math.round(FURN_XP[kind] * (1 + perk(skills, 'Construction', 'xpBonus') + perk(skills, 'Construction', 'buildSpeed') * 0.25));
+    A._buildBusy = Date.now() + A.townBuildMs();
+    const xp = Math.round(FURN_XP[kind] * (1 + perk(skills, 'Construction', 'xpBonus') + perk(skills, 'Construction', 'buildSpeed') * 0.25 + leyBuild() * 0.25));
     ctx.giveXP('Construction', xp);
     if (perk(skills, 'Construction', 'xpBonus') && kind !== 'hook') ctx.giveXP('Crafting', Math.round(xp * 0.15));
     A.log(`You place a ${kind} in the ${h.name}. (+${xp} Construction)`, 'skill'); A.dirty(); A.refreshQuick();
@@ -197,8 +201,17 @@ export default function townsteads(A) {
       if (s.owned.includes(id)) { /* ok */ } else if (!A.steadBuy(id)) return 'buy';
       if (!s.owned.includes(id)) return 'not owned';
       const xp0 = sk.xp;
+      const b0 = A.townBuildMs();
+      const origLey = A.leyFx;
+      A.leyFx = () => ({ ...(origLey ? origLey() : {}), buildSpeed: 1 });
+      const b1 = A.townBuildMs();
+      A.leyFx = origLey;
+      if (!(b1 < b0)) return 'ley build unused';
+      A._buildBusy = 0;
       if (!furnOf(id).chest && !A.steadPlace(id, 'chest')) return 'chest';
+      A._buildBusy = 0;
       if (!furnOf(id).bed && !A.steadPlace(id, 'bed')) return 'bed';
+      A._buildBusy = 0;
       if (sk.xp <= xp0) return 'no construction xp';
       const stored = A.steadStore(id, 'Bronze sword', 1);
       if (!stored || (chestOf(id)['Bronze sword'] || 0) < 1) return 'store';

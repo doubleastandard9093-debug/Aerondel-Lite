@@ -64,7 +64,8 @@ export default function greenstead(A) {
     return Math.max(1, Math.min(hard, n));
   };
   const decorCap = () => (ctx.gfxQ && ctx.gfxQ() === 'low' ? 40 : 80);
-  const growMs = crop => Math.max(4000, Math.round(crop.grow / (1 + perk(skills, 'Farming', 'growSpeed'))));
+  const leyGrow = () => (A.leyFx && A.leyFx().growSpeed) || 0;
+  const growMs = crop => Math.max(4000, Math.round(crop.grow / (1 + perk(skills, 'Farming', 'growSpeed') + leyGrow())));
   const farmXp = (base, inSeason) => Math.round(base * (inSeason ? 1.25 : 1) * (1 + perk(skills, 'Farming', 'xpBonus')));
   const greenhouse = () => A.lvl('Farming') >= 50;
   const canSeason = (crop, covered) => season() === crop.season || (covered && greenhouse());
@@ -286,6 +287,12 @@ export default function greenstead(A) {
       g.player.inventory['Potato'] = (g.player.inventory['Potato'] || 0) + 2;
       const xp0 = sk.xp;
       if (!A.greenPlant(0, 'potato')) return 'plant';
+      const g0 = growMs(CROPS.potato);
+      const origLey = A.leyFx;
+      A.leyFx = () => ({ ...(origLey ? origLey() : {}), growSpeed: 1 });
+      const g1 = growMs(CROPS.potato);
+      A.leyFx = origLey;
+      if (!(g1 < g0)) return 'ley grow unused';
       // Wrong season should fail without a cover (cabbage is also spring; use pumpkin).
       const p1xp = sk.xp;
       const bad = A.greenPlant(1, 'pumpkin');
