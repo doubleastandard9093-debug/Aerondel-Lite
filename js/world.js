@@ -1607,6 +1607,7 @@ export function createWorld(scene) {
       { id: 'leyweaver', name: 'Leyweaver Ione', x: 9, z: -20, look: { body: 0x4a2a6a, legs: 0x2a1a3a, apron: 0xc8a0e0, hat: 0x5a3a7a, hatH: 0.18 }, flag: { ext: 'leyweaver' } },
       { id: 'hordewake', name: 'Wakekeeper Brin', x: 13, z: -16, look: { body: 0x3a1a22, legs: 0x1a0a12, apron: 0xc86a4a, hat: 0x5a2a2a, hatH: 0.16 }, flag: { ext: 'hordewake' } },
       { id: 'deepmarks', name: 'Markwarden Sera', x: 15, z: -18, look: { body: 0x1a2a3a, legs: 0x0a121a, apron: 0x7a9ab8, hat: 0x2a3a4a, hatH: 0.16 }, flag: { ext: 'deepmarks' } },
+      { id: 'ashspire', name: 'Spirekeeper Nahl', x: 17, z: -20, look: { body: 0x4a1a12, legs: 0x2a0a08, apron: 0xe08a4a, hat: 0x6a2a1a, hatH: 0.18 }, flag: { ext: 'ashspire' } },
       { id: 'huntwright', name: 'Huntwright Sable', x: 16, z: -13, look: { body: 0x4a3a2a, legs: 0x2a2218, apron: 0x6a4a2a, hat: 0x3a2a1a, hatH: 0.12 }, flag: { ext: 'huntwright' } },
       { id: 'breachwarden', name: 'Breachwarden Kael', x: -14, z: -14, look: { body: 0x3a4a6a, legs: 0x22222a, hat: 0x5a5a7a, hatH: 0.16 }, flag: { ext: 'breachwarden' } },
       { id: 'harbourwynn', name: 'Harbourmaster Wynn', x: -18, z: 8, look: { body: 0x2a4a6a, legs: 0x2a2a2a, hat: 0x1a2a3a, hatH: 0.14, beard: 0xa0a0a0 }, flag: { ext: 'hold' } },
