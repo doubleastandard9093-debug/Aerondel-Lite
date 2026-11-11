@@ -7,12 +7,12 @@ const [,,path='',tier='low',sz='390x844',savef]=process.argv;const [w,h]=sz.spli
 (async()=>{const b=await puppeteer.launch({executablePath:'/usr/bin/google-chrome',headless:'new',args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--enable-unsafe-webgpu']});
  const p=await b.newPage(); await p.setViewport({width:w,height:h,isMobile:w<500,hasTouch:w<500});
  const req=[],errs=[]; p.on('request',r=>req.push(r.url())); p.on('pageerror',e=>errs.push(e.message)); p.on('console',m=>{if(m.type()==='error'&&!/favicon|404/.test(m.text()))errs.push(m.text())});
- if(savef){await p.goto('http://localhost:8811/',{waitUntil:'load'}).catch(()=>{});await p.evaluate(s=>localStorage.setItem('gielinor3d',s),fs.readFileSync(savef,'utf8'));}
+ if(savef){await p.goto('http://localhost:8811/',{waitUntil:'load'}).catch(()=>{});const raw=fs.readFileSync(savef,'utf8');await p.evaluate(s=>{localStorage.setItem('aerondel3d',s);localStorage.setItem('gielinor3d',s);},raw);}
  const q=path.includes('webgpu')?'&backend=webgl':'';
  await p.goto(`http://localhost:8811/${path}?gfx=${tier}${q}`,{waitUntil:'load',timeout:90000}); await new Promise(r=>setTimeout(r,15000));
  const r=await p.evaluate(async(tier)=>{const g=window.gielinor,P=g.player,o={};
   const [Sk,Ec,Tk,Fl,Er]=await Promise.all(['skills','economy','tasks','flow','errands'].map(n=>import(`/js/${n}.js`)));
-  o.ver=JSON.parse(localStorage.getItem('gielinor3d')||'{}').version;
+  o.ver=JSON.parse(localStorage.getItem('aerondel3d')||localStorage.getItem('gielinor3d')||'{}').version;
   // synergy
   const fake={};for(const k of Object.keys(g.skills))fake[k]={level:90};o.synergy=Sk.synergy(fake,'Combat','dodgeMs')>0&&Sk.synergyLines(fake,'Smithing').length>0;
   // XP curve
@@ -42,4 +42,4 @@ const [,,path='',tier='low',sz='390x844',savef]=process.argv;const [w,h]=sz.spli
  const hi=req.filter(u=>/textures\/|\.webp|detail_/.test(u));
  const ok=r.ver>=13&&r.synergy&&r.xp99===3910329&&r.xpConvert&&r.econ&&r.tasks&&r.corvane&&r.bossTele&&r.flow&&r.crew&&!r.overlap&&(tier!=='low'||(hi.length===0&&r.bossFillVisible===0))&&!errs.length;
  console.log(JSON.stringify({ok,tier,path,sz,r,highAssetRequests:hi.length,errs:errs.slice(0,4)}));
- await b.close();})();
+ await b.close();process.exit(ok?0:1);})();

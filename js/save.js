@@ -30,7 +30,7 @@ import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 import { normalizeAdapt } from './adapt/state.js';
 
-export const SAVE_VERSION = 24; // v24: Hunter skill + Huntwright (Phase 10); v23: Ventures systems (player.adapt)
+export const SAVE_VERSION = 25; // v25: Lookplates, Vocations, Wordcries, Construction, Townsteads (Phase 11); v24: Hunter + Huntwright
 export const POS_LIMIT = 616; // world half-size (WORLD_HALF 620, frontier ring) minus a margin
 const KEY = 'aerondel3d';
 const LEGACY_KEY = 'gielinor3d'; // pre-Aerondel saves: read as a fallback, never deleted
@@ -116,6 +116,7 @@ export function migrateSave(saved) {
   const fromVersion = Number(saved.version) || 1;
   // v23: Ventures (player.adapt): every system starts empty; the normalizer fills defaults and drops bad values.
   p.adapt = normalizeAdapt(p.adapt);
+  if (fromVersion < 25 && fromVersion > 1) notes.push('New: Lookplates (weapon looks and 8 saved plates in the Wardrobe), Vocations (job kits — swap at a bank or lectern, not in a fight), Wordcries (shouts learned from cry-stones), the Construction skill (starts at level 1, goes to 1000, not in combat level), and Townsteads (buy a town house for a chest, a bed and display hooks).');
   if (fromVersion < 24 && fromVersion > 1) notes.push('New: the Hunter skill (starts at level 1, goes to 1000), Huntwright carving and crafted hunt sets. Ventures ✦ → Huntwright.');
   if (fromVersion < 23 && fromVersion > 1) notes.push('New: Ventures. Overflare, the Wayfarer\'s Ledger, hidden reliquaries and more. Tap ✦ (or press J) to see them all.');
   if (fromVersion < 22 && fromVersion > 1) notes.push('New: Swordsmanship (trained by fighting with blades), high-level techniques, katanas, scimitars, glaives, war fans, chakrams and frontier uniques.');
