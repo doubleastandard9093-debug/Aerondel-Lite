@@ -376,6 +376,11 @@ function useItem(item) {
     }
   } else if (slotFor(item)) {
     if (equip(player, skills, item, log)) afterEquip();
+  } else if (item === 'Waterskin' && EXT.adapt && EXT.adapt.roadDrink) {
+    if (!removeItem(player, item, 1)) return;
+    EXT.adapt.roadDrink('Waterskin', 40);
+    log('You drink. That helps your thirst.', 'game');
+    markDirty();
   } else if (item === 'Waycamp kit' && EXT.adapt && EXT.adapt.campPlace) {
     EXT.adapt.campPlace();
   } else {
@@ -456,6 +461,7 @@ function itemMenu(item, x, y, mode) {
       if (have > 1) opts.push({ action: 'Bury all', target: `${item} (${have})`, color: c, fn: () => startBury(item, Infinity) });
     } else if (item === 'Treasure chart') { opts.push({ action: 'Read', target: item, color: c, fn: () => readChart() }); opts.push({ action: 'Dig here', target: item, color: c, fn: () => digHere() });
     } else if (info.type === 'tool') opts.push({ action: 'Add to toolbelt', target: item, color: c, fn: () => beltFromInventory(item) });
+    else if (item === 'Waterskin' && EXT.adapt && EXT.adapt.roadDrink) opts.push({ action: 'Drink', target: item, color: c, fn: () => useItem(item) });
     else if (item === 'Waycamp kit' && EXT.adapt && EXT.adapt.campPlace) opts.push({ action: 'Place', target: item, color: c, fn: () => EXT.adapt.campPlace() });
     else if (slotFor(item)) opts.push({ action: info.type === 'weapon' ? 'Wield' : 'Wear', target: item, color: c, fn: () => useItem(item) });
     if (WOODS.includes(item)) opts.push({ action: 'Light', target: item, color: c, fn: () => startAction({ kind: 'light', item, wait: 2 }) });
@@ -643,6 +649,7 @@ function setting(act) {
   else if (act === 'run') toggleRun();
   else if (act === 'autoloot') s.autoLoot = !s.autoLoot;
   else if (act === 'shadepip') { s.shadePip = s.shadePip === false; if (EXT.adapt && EXT.adapt.shadeHidePip) EXT.adapt.shadeHidePip(s.shadePip === false); }
+  else if (act === 'hardroad') { if (EXT.adapt && EXT.adapt.roadToggle) EXT.adapt.roadToggle(); }
   else if (act === 'camera') { rig.targetYaw = 0; rig.targetPitch = 0.9; applyCamFraming(true); }
   else if (act === 'zoomlimit') { const opts = [18, 30, 45]; player.settings.zoomLimit = opts[(opts.indexOf(player.settings.zoomLimit || 30) + 1) % opts.length]; applyCamFraming(false); }
   markDirty();

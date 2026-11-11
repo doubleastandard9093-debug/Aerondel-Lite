@@ -194,6 +194,7 @@ export const SECONDARIES = ['Eye of newt', 'Unicorn horn dust', 'Bitterroot', 'C
 SECONDARIES.forEach((n, i) => def(n, { type: 'secondary', value: [3, 15, 10, 10, 20, 15, 18, 25, 40, 60][i] }));
 def('Vial', { type: 'vial', value: 1 });
 def('Vial of water', { type: 'vial', value: 2 });
+def('Waterskin', { type: 'drink', value: 12, special: 'A skin of water. Drink it to help thirst when Hardroad is on.' });
 // [potion, herb, secondary, level, xp, value, tint]
 export const POTION_RECIPES = [
   ['Attack potion', 'Greenwort', 'Eye of newt', 3, 25, 20, '#4a8ad0'],
@@ -626,6 +627,7 @@ for (const [n, v, exam] of [
   ['Padded collar kit', 45, 'A kit for armour: a little more player poise.'],
   ['Watch-sight kit', 55, 'A kit for a weapon: Stillwatch focus fills a little faster. It does not add damage.']
 ]) def(n, { type: 'kit', value: v });
+R({ name: 'Craft Waterskin', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 5, inputs: { 'Soft leather': 1, 'Vial of water': 1 }, output: 'Waterskin', xp: 15 });
 R({ name: 'Craft Longhaft kit', cat: 'Smithing', group: 'Kits', skill: 'Smithing', level: 10, inputs: { Logs: 3, 'Iron bar': 1 }, output: 'Longhaft kit', xp: 40 });
 R({ name: 'Craft Hush-string kit', cat: 'Fletching', group: 'Kits', skill: 'Fletching', level: 10, inputs: { Bowstring: 1, Flax: 3 }, output: 'Hush-string kit', xp: 40 });
 R({ name: 'Craft Lamp-rim kit', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 10, inputs: { 'Iron bar': 1, Coal: 2 }, output: 'Lamp-rim kit', xp: 40 });
