@@ -195,6 +195,8 @@ SECONDARIES.forEach((n, i) => def(n, { type: 'secondary', value: [3, 15, 10, 10,
 def('Vial', { type: 'vial', value: 1 });
 def('Vial of water', { type: 'vial', value: 2 });
 def('Waterskin', { type: 'drink', value: 12, special: 'A skin of water. Drink it to help thirst when Hardroad is on.' });
+def('Season flask', { type: 'drink', value: 40, special: 'A flask from Waresmith Ryn. Drink it to help thirst when Hardroad is on.' });
+def('Ridgewalk soles', { type: 'gear', value: 200, special: 'A wandering-vendor pair. While you carry them, climbing drains a little less run energy. Not a damage bonus.' });
 // [potion, herb, secondary, level, xp, value, tint]
 export const POTION_RECIPES = [
   ['Attack potion', 'Greenwort', 'Eye of newt', 3, 25, 20, '#4a8ad0'],
@@ -625,8 +627,17 @@ for (const [n, v, exam] of [
   ['Hush-string kit', 35, 'A kit for a ranged weapon: a quieter setup and a little less reach.'],
   ['Lamp-rim kit', 40, 'A kit for armour: a short cone of light. On Low it is a pip, not a new mesh.'],
   ['Padded collar kit', 45, 'A kit for armour: a little more player poise.'],
-  ['Watch-sight kit', 55, 'A kit for a weapon: Stillwatch focus fills a little faster. It does not add damage.']
+  ['Watch-sight kit', 55, 'A kit for a weapon: Stillwatch focus fills a little faster. It does not add damage.'],
+  ['Ash-thread kit', 35, 'A Seasonboard schematic kit for armour: a little more player poise, less than a padded collar.']
 ]) def(n, { type: 'kit', value: v });
+// Wildmarks (v36): herbal tonics to draft, hush or clear a mark. Not a Quirk remedy.
+def('Wildmark tonic', { type: 'tonic', value: 40, special: 'A drafted tonic. Drink it from Ventures → Wildmarks to take one mark, if you have room.' });
+def('Mark-hush tonic', { type: 'tonic', value: 30, special: 'Quiets every Wildmark you carry for a short time. They stay on you.' });
+def('Mark-clear tonic', { type: 'tonic', value: 55, special: 'Lifts one Wildmark. Ysolde\'s quirk remedy will not do this.' });
+R({ name: 'Brew Wildmark tonic', cat: 'Herbalism', group: 'Tonics', skill: 'Herbalism', level: 20, inputs: { Harrowbloom: 1, 'Vial of water': 1, 'White berries': 1 }, output: 'Wildmark tonic', xp: 50 });
+R({ name: 'Brew Mark-hush tonic', cat: 'Herbalism', group: 'Tonics', skill: 'Herbalism', level: 18, inputs: { Marshmint: 1, 'Vial of water': 1 }, output: 'Mark-hush tonic', xp: 40 });
+R({ name: 'Brew Mark-clear tonic', cat: 'Herbalism', group: 'Tonics', skill: 'Herbalism', level: 28, inputs: { Ravenweed: 1, 'Vial of water': 1, 'Unicorn horn dust': 1 }, output: 'Mark-clear tonic', xp: 70 });
+
 R({ name: 'Craft Waterskin', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 5, inputs: { 'Soft leather': 1, 'Vial of water': 1 }, output: 'Waterskin', xp: 15 });
 R({ name: 'Craft Longhaft kit', cat: 'Smithing', group: 'Kits', skill: 'Smithing', level: 10, inputs: { Logs: 3, 'Iron bar': 1 }, output: 'Longhaft kit', xp: 40 });
 R({ name: 'Craft Hush-string kit', cat: 'Fletching', group: 'Kits', skill: 'Fletching', level: 10, inputs: { Bowstring: 1, Flax: 3 }, output: 'Hush-string kit', xp: 40 });
@@ -636,4 +647,9 @@ R({ name: 'Craft Watch-sight kit', cat: 'Crafting', group: 'Kits', skill: 'Craft
 // Waycamp (v32): one portable camp pack. Construction XP is small; Freeframe stays the grind.
 def('Waycamp kit', { type: 'kit', value: 80, special: 'A packed camp. Place it in the wild and pack it up again. One at a time. Not in a town, not on Greenstead, not on Claimridge.' });
 R({ name: 'Craft Waycamp kit', cat: 'Crafting', group: 'Camps', skill: 'Construction', level: 8, inputs: { Logs: 8, 'Iron bar': 2 }, output: 'Waycamp kit', xp: 40 });
+// Ashfall (v36): a carved totem that calls a skippable wild-region flare. Not a weapon.
+def('Ash-totem', { type: 'kit', value: 35, special: 'A carved totem. Use it in the wilds to gather or begin an Ashfall. It will not fire on a town, Greenstead or Claimridge.' });
+def('Ash crystal', { type: 'resource', value: 60, special: 'A rare crystal that can appear during an Ashfall. Not a Sealed Geode.' });
+R({ name: 'Carve Ash-totem', cat: 'Crafting', group: 'Camps', skill: 'Construction', level: 10, inputs: { Logs: 3, 'Clear essence': 1 }, output: 'Ash-totem', xp: 30 });
+
 

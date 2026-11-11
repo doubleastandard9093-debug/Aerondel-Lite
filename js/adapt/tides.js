@@ -10,8 +10,9 @@ export default function tides(A) {
   const inTide = () => { if (!T.region) return false; const p = A.pos(); return Math.hypot(p.x - T.region.x, p.z - T.region.z) < T.region.r + 10; };
   A.tideStart = (reg) => { const R = reg || REGION_DATA[Math.floor(Math.random() * REGION_DATA.length)]; Object.assign(T, { region: R, until: Date.now() + 10 * 60000, stacks: 0, wave: [] }); A.S('tides').seen++;
     A.log(`🌊 Burst Tide! ${R.name} is surging for 10 minutes: foes return fast and every kill there stacks bonus XP.`, 'skill'); };
-  const end = () => { if (!T.region) return; const R = T.region; T.region = null; T.next = Date.now() + (20 + Math.random() * 10) * 60000;
-    if (A.tideState.stacks > A.S('tides').best) A.S('tides').best = A.tideState.stacks; A.log(`The tide over ${R.name} recedes.`, 'game'); };
+  const end = () => { if (!T.region) return; const R = T.region; const stacks = T.stacks; T.region = null; T.next = Date.now() + (20 + Math.random() * 10) * 60000;
+    if (A.tideState.stacks > A.S('tides').best) A.S('tides').best = A.tideState.stacks; A.log(`The tide over ${R.name} recedes.`, 'game'); if (stacks >= 1 && A.scoreOn) A.scoreOn('tide'); };
+  A.tideEnd = end;
   A.tideWave = () => { const R = T.region; if (!R) return; const lvl = Math.max(30, A.vLevel()), n = ctx.gfxQ() === 'low' ? 2 : 3, type = BOSSES[Math.min(BOSSES.length - 1, Math.floor(lvl / 110))];
     const c = R.camp ? { x: R.x + R.camp.dx + 14, z: R.z + R.camp.dz + 14 } : { x: R.x, z: R.z };
     for (let i = 0; i < n; i++) { const m = ctx.spawnMonster(type, c.x + i * 3, c.z, 4); Object.assign(m, { respawn: 1e12, tideBoss: true, level: Math.max(m.level, lvl) }); T.wave.push(m); }

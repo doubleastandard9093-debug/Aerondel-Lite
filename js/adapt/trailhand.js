@@ -47,7 +47,7 @@ export default function trailhand(A) {
   function settle(mult, msg) {
     const st = T();
     const won = Math.round(G.bet * mult);
-    if (won > 0) { player.gold += G.bet + won; st.wins++; st.tokens++; st.best = Math.max(st.best, won); }
+    if (won > 0) { player.gold += G.bet + won; st.wins++; st.tokens++; st.best = Math.max(st.best, won); if (A.scoreOn) A.scoreOn('trail'); }
     else if (mult === 0) player.gold += G.bet;
     G.done = msg + (mult > 0 ? ` You win ${won} coins.` : mult === 0 ? ' Your stake comes back.' : ` You lose ${G.bet} coins.`);
     log(`Trailhand: ${G.done}`, mult > 0 ? 'loot' : 'game');

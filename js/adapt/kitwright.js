@@ -11,7 +11,8 @@ export const KITS = {
   hush: { id: 'hush', name: 'Hush-string kit', icon: '🧵', slot: 'weapon', ranged: true, desc: 'A quieter setup and a little less ranged reach. Shadework can use the hush later.', inputs: { Bowstring: 1, Flax: 3 }, refund: { Bowstring: 1, Flax: 2 }, skill: 'Fletching', level: 10, xp: 40 },
   lamp: { id: 'lamp', name: 'Lamp-rim kit', icon: '🪔', slot: 'armour', desc: 'A short cone of light. On Low this is a pip, not a new mesh or lamp draw.', inputs: { 'Iron bar': 1, Coal: 2 }, refund: { 'Iron bar': 1, Coal: 1 }, skill: 'Crafting', level: 10, xp: 40 },
   collar: { id: 'collar', name: 'Padded collar kit', icon: '🛡️', slot: 'armour', desc: 'A little more player poise. Ordinary scratches still will not stagger you.', inputs: { 'Soft leather': 2, Wool: 1 }, refund: { 'Soft leather': 1, Wool: 1 }, skill: 'Crafting', level: 12, xp: 50 },
-  sight: { id: 'sight', name: 'Watch-sight kit', icon: '🔭', slot: 'weapon', desc: 'Stillwatch focus fills a little faster. It does not add damage.', inputs: { 'Iron bar': 1, 'Clear essence': 5 }, refund: { 'Iron bar': 1, 'Clear essence': 3 }, skill: 'Crafting', level: 15, xp: 55 }
+  sight: { id: 'sight', name: 'Watch-sight kit', icon: '🔭', slot: 'weapon', desc: 'Stillwatch focus fills a little faster. It does not add damage.', inputs: { 'Iron bar': 1, 'Clear essence': 5 }, refund: { 'Iron bar': 1, 'Clear essence': 3 }, skill: 'Crafting', level: 15, xp: 55 },
+  ashthread: { id: 'ashthread', name: 'Ash-thread kit', icon: '🧵', slot: 'armour', desc: 'A little more player poise, less than a padded collar. A Seasonboard schematic. Not a damage bonus.', inputs: { 'Soft leather': 1, Wool: 1, 'Clear essence': 1 }, refund: { 'Soft leather': 1, Wool: 1 }, skill: 'Crafting', level: 8, xp: 30, season: true }
 };
 const IDS = new Set(Object.keys(KITS));
 const UNIQUE = new Set((FRONTIER_UNIQUES || []).map(r => r[3]));
@@ -56,6 +57,7 @@ export default function kitwright(A) {
 
   A.kitCraft = id => {
     const k = KITS[id]; if (!k) return;
+    if (k.season && !(A.scoreHas && A.scoreHas('kit-ashthread'))) return A.log('The Ash-thread kit is a Seasonboard schematic. Claim that tier first.', 'warn'), false;
     if (A.lvl(k.skill) < k.level) return A.log(`You need ${k.skill} ${k.level} to craft a ${k.name}.`, 'warn'), false;
     for (const [it, n] of Object.entries(k.inputs)) if (A.count(it) < n) return A.log(`You need ${n} ${it} to craft a ${k.name}.`, 'warn'), false;
     for (const [it, n] of Object.entries(k.inputs)) A.take(it, n);
@@ -98,12 +100,12 @@ export default function kitwright(A) {
   });
   if (A.playerPoiseMax) {
     const prev = A.playerPoiseMax;
-    A.playerPoiseMax = () => prev() + (A.kitHas('collar') ? 8 : 0);
+    A.playerPoiseMax = () => prev() + (A.kitHas('collar') ? 8 : 0) + (A.kitHas('ashthread') ? 4 : 0);
   } else {
     A.onReady.push(() => {
       if (!A.playerPoiseMax) return;
       const prev = A.playerPoiseMax;
-      A.playerPoiseMax = () => prev() + (A.kitHas('collar') ? 8 : 0);
+      A.playerPoiseMax = () => prev() + (A.kitHas('collar') ? 8 : 0) + (A.kitHas('ashthread') ? 4 : 0);
     });
   }
 
@@ -112,7 +114,7 @@ export default function kitwright(A) {
   A.guide.push(['Kitwright', 'Ventures ✦ → Kitwright, or talk to Kitwright Osha in Larkhaven. Craft kits from ordinary materials (Smithing, Fletching or Crafting) and attach up to two to a worn weapon or armour piece. A longhaft adds reach and slows the swing; a hush-string shortens ranged reach; a lamp-rim is a light pip; a padded collar adds poise; a watch-sight fills Stillwatch a little faster. Removing a kit returns most of the parts. Frontier uniques cannot take a kit. Grafts and Facets stay as they are.']);
   A.tab({ id: 'kits', icon: '🧰', name: 'Kitwright', render: () => {
     const held = Object.keys(KITS).filter(id => A.count(KITS[id].name) > 0);
-    const craft = Object.values(KITS).map(k => {
+    const craft = Object.values(KITS).filter(k => !k.season || (A.scoreHas && A.scoreHas('kit-ashthread'))).map(k => {
       const have = Object.entries(k.inputs).map(([it, n]) => `${n} ${it}`).join(', ');
       return `<div class="row"><div><b>${k.icon} ${A.esc(k.name)}</b><br><small>${A.esc(k.desc)} ${k.skill} ${k.level}. ${A.esc(have)}</small></div><button data-a="craft" data-k="${k.id}">Craft</button></div>`;
     }).join('');

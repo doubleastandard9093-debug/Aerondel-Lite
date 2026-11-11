@@ -10,7 +10,7 @@ export default function freeclimb(A) {
   const pm = () => ctx.pm;
   const ag = () => A.lvl('Agility');
   const flying = () => !!(player.skywing && (player.skywing.on || player.skywing.flying)) || !!(ctx.skyS && ctx.skyS.on);
-  const drain = dt => Math.max(3.5, 16 - ag() / 80 - (perk(skills(), 'Agility', 'climbDrain') || 0) * 10) * dt;
+  const drain = dt => Math.max(3.5, 16 - ag() / 80 - (perk(skills(), 'Agility', 'climbDrain') || 0) * 10) * dt * (A.climbDrainMul ? A.climbDrainMul() : 1);
   const skills = () => A.skills;
   const maxSlope = () => 1.15 + ag() / 180; // higher Agility can take steeper faces
   const minSlope = 0.95;
