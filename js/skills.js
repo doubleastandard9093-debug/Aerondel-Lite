@@ -1,9 +1,9 @@
-export const SKILLS = ["Attack","Strength","Defence","Hitpoints","Ranged","Magic","Prayer","Agility","Thieving","Mining","Woodcutting","Fishing","Smithing","Crafting","Cooking","Fletching","Herbalism","Glyphcraft","Relicry","Delving","Swordsmanship","Hunter"];
+export const SKILLS = ["Attack","Strength","Defence","Hitpoints","Ranged","Magic","Prayer","Agility","Thieving","Mining","Woodcutting","Fishing","Smithing","Crafting","Cooking","Fletching","Herbalism","Glyphcraft","Relicry","Delving","Swordsmanship","Hunter","Construction"];
 
 export const SKILL_ICONS = {
   Attack: "⚔️", Strength: "💪", Defence: "🛡️", Hitpoints: "❤️", Ranged: "🏹", Magic: "🔮", Prayer: "🙏",
   Agility: "🏃", Thieving: "🦹", Mining: "⛏️", Woodcutting: "🪓", Fishing: "🎣", Smithing: "🔨",
-  Crafting: "🧶", Cooking: "🍳", Fletching: "🪶", Herbalism: "🌿", Glyphcraft: "💠", Relicry: "🏺", Delving: "🕳️", Swordsmanship: "🗡️"
+  Crafting: "🧶", Cooking: "🍳", Fletching: "🪶", Herbalism: "🌿", Glyphcraft: "💠", Relicry: "🏺", Delving: "🕳️", Swordsmanship: "🗡️", Hunter: "🐾", Construction: "🪚"
 };
 
 // v13: classic-shaped exponential curve (l + 300*2^(l/7)) / 4, scaled to 30%. Level 99 is about 3.9M XP.
@@ -29,12 +29,12 @@ export function convertXpV1(xp) {
   return Math.floor(xpForLevel(L) + f * (xpForLevel(L + 1) - xpForLevel(L)));
 }
 
-// v21: combat skills go to level 1000. v24: Hunter (a non-combat skill) uses the same extended curve,
-// but it is not a combat skill and does not count toward combat level. Other artisan skills stay at 99.
+// v21: combat skills go to level 1000. v24–v25: Hunter and Construction (non-combat) use the same extended curve,
+// but they are not combat skills and do not count toward combat level. Other artisan skills stay at 99.
 // Up to 99 the curve is unchanged (old saves keep their levels). Past 99 each level costs the 98->99 step
 // times (1 + (L - 99) / 40), so 1000 is about 4.1 billion XP.
 export const COMBAT_SKILLS = ["Attack", "Strength", "Defence", "Hitpoints", "Ranged", "Magic", "Prayer", "Swordsmanship"];
-export const HIGH_CAP_SKILLS = [...COMBAT_SKILLS, "Hunter"];
+export const HIGH_CAP_SKILLS = [...COMBAT_SKILLS, "Hunter", "Construction"];
 export const COMBAT_MAX = 1000, SKILL_MAX = 99;
 export const maxLevelOf = s => HIGH_CAP_SKILLS.includes(s) ? COMBAT_MAX : SKILL_MAX;
 const XP_TABLE = [0, 0];
@@ -140,7 +140,8 @@ export const FX_LABEL = {
   rareFind: v => `${P(v)} chance of an Ancient fragment while excavating`, gateEase: v => `dungeon gates need ${Math.round(v * 20)} fewer levels`,
   bladeAcc: v => `+${P(v)} accuracy with blades`, bladeDmg: v => `+${P(v)} damage with blades`,
   tokenBonus: v => `+${P(v)} Delving tokens`, floorHeal: v => `heal ${P(v)} of your life whenever a floor door opens`,
-  carveYield: v => `+${P(v)} parts when you carve a hunt`, trackSpeed: v => `tracks resolve ${P(v)} faster`, catchChance: v => `+${P(v)} chance to bind a Kinbeast`, kinXp: v => `+${P(v)} Kinbeast training`, rarePart: v => `+${P(v)} chance of a rare hunt part`
+  carveYield: v => `+${P(v)} parts when you carve a hunt`, trackSpeed: v => `tracks resolve ${P(v)} faster`, catchChance: v => `+${P(v)} chance to bind a Kinbeast`, kinXp: v => `+${P(v)} Kinbeast training`, rarePart: v => `+${P(v)} chance of a rare hunt part`,
+  buildSpeed: v => `furnish ${P(v)} faster`, pieceHp: v => `placed pieces have +${P(v)} HP`, supportRange: v => `+${P(v)} support range`, repairSpeed: v => `repairs resolve ${P(v)} faster`, pieceCap: v => `+${Math.round(v)} piece cap`
 };
 export const PERK_MULT = 5;
 const FLAGS = new Set(["fastMake", "lowRegen"]);
@@ -209,7 +210,9 @@ export const PERKS = {
   Delving: build(["Pathfinder", { xpBonus: 0.01 }, "Token Hoarder", { tokenBonus: 0.01 }], {
     25: ["Scavenger", { double: 0.06 }], 50: ["Gatebreaker", { gateEase: 0.1 }], 75: ["Delver's Resolve", { floorHeal: 0.03 }], 99: ["Delving Mastery", { xpBonus: 0.05, tokenBonus: 0.05 }] }),
   Hunter: build(["Keen Spur", { trackSpeed: 0.01 }, "Clean Carve", { carveYield: 0.01 }], {
-    25: ["Tracker", { trackSpeed: 0.08 }], 50: ["Carver", { carveYield: 0.08 }], 75: ["Beastwise", { catchChance: 0.06 }], 99: ["Hunter Mastery", { carveYield: 0.05, rarePart: 0.05 }] })
+    25: ["Tracker", { trackSpeed: 0.08 }], 50: ["Carver", { carveYield: 0.08 }], 75: ["Beastwise", { catchChance: 0.06 }], 99: ["Hunter Mastery", { carveYield: 0.05, rarePart: 0.05 }] }),
+  Construction: build(["Square Stroke", { buildSpeed: 0.01 }, "Steady Joint", { pieceHp: 0.01 }], {
+    25: ["Square Frame", { pieceCap: 1 }], 50: ["Joiner", { buildSpeed: 0.08, pieceHp: 0.05 }], 75: ["Mason", { supportRange: 0.06, repairSpeed: 0.08 }], 99: ["Construction Mastery", { pieceCap: 2, repairSpeed: 0.05 }] })
 };
 
 // Past 99: [name of the 100s milestones, fx per milestone (grows with the tier), small fx every 25 levels]
@@ -222,7 +225,8 @@ const HIGH = {
   Magic: [["Archmage", "Spellweaver", "Leyline", "Astral Mind", "Runeheart", "Starweaver", "Voidcaller", "Aether Crown", "Eclipse Sigil", "Magic Ascendant"], { magicDmg: 0.02, magicAcc: 0.01, runeSave: 0.005 }, { magicDmg: 0.004 }],
   Swordsmanship: [["Kensei", "Mirror Edge", "Wind Splitter", "Ghost Step", "Hundred Steels", "Moonblade", "Sky Cleaver", "Unsheathed", "Eclipse Edge", "Swordsmanship Ascendant"], { bladeAcc: 0.01, bladeDmg: 0.02 }, { bladeDmg: 0.004 }],
   Prayer: [["Anointed", "Sanctified", "Lightbearer", "Hallowed", "Saintly", "Exalted", "Seraphic", "Divine Echo", "Eclipse Litany", "Prayer Ascendant"], { ppRegen: 0.01, drainLess: 0.02, buryRestore: 2 }, { drainLess: 0.005 }],
-  Hunter: [["Pathfinder", "Spoor Reader", "Bonewright", "Hidewalker", "Beastwise", "Packleader", "Hornbreaker", "Trailmaster", "Wild Crown", "Hunter Ascendant"], { carveYield: 0.02, rarePart: 0.01, catchChance: 0.01 }, { carveYield: 0.004 }]
+  Hunter: [["Pathfinder", "Spoor Reader", "Bonewright", "Hidewalker", "Beastwise", "Packleader", "Hornbreaker", "Trailmaster", "Wild Crown", "Hunter Ascendant"], { carveYield: 0.02, rarePart: 0.01, catchChance: 0.01 }, { carveYield: 0.004 }],
+  Construction: [["Ridgebeam", "Joiner's Mark", "Stonewright", "High Frame", "Keepbuilder", "Keystone", "Citadel Hand", "Skybrace", "Worldbeam", "Construction Ascendant"], { pieceCap: 2, supportRange: 0.02, repairSpeed: 0.01 }, { pieceHp: 0.004 }]
 };
 for (const [skill, [names, big, small]] of Object.entries(HIGH)) {
   const list = PERKS[skill]; let n = 0;
@@ -249,7 +253,8 @@ export const SYNERGY = [
   ['Strength', 'Woodcutting', 'speed', 0.003], ['Crafting', 'Glyphcraft', 'runeDouble', 0.003], ['Magic', 'Glyphcraft', 'rcXp', 0.004],
   ['Attack', 'Thieving', 'thieveXp', 0.004], ['Agility', 'Combat', 'dodgeMs', 12], ['Thieving', 'Combat', 'rareDrop', 0.02],
   ['Prayer', 'Combat', 'magicAdren', 0.04], ['Defence', 'Agility', 'failLess', 0.004], ['Hitpoints', 'Prayer', 'drainLess', 0.004],
-  ['Agility', 'Hunter', 'trackSpeed', 0.004], ['Ranged', 'Hunter', 'catchChance', 0.003], ['Hunter', 'Cooking', 'burnLess', 0.005]
+  ['Agility', 'Hunter', 'trackSpeed', 0.004], ['Ranged', 'Hunter', 'catchChance', 0.003], ['Hunter', 'Cooking', 'burnLess', 0.005],
+  ['Woodcutting', 'Construction', 'saveMat', 0.004], ['Mining', 'Construction', 'pieceHp', 0.003], ['Smithing', 'Construction', 'pieceHp', 0.003], ['Crafting', 'Construction', 'xpBonus', 0.003], ['Construction', 'Crafting', 'xpBonus', 0.003]
 ];
 // v22: combat skills now reach 1000. Steps: one per 10 levels up to 99, then one per 25 levels past 99,
 // plus a Resonance bonus (+5 steps) at 500 and again at 1000, so links keep growing without exploding.

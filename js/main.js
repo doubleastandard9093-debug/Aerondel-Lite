@@ -1249,7 +1249,7 @@ function optionsFor(ent) {
     case 'sign': return [{ action: 'Read', target: 'Signpost', color: cy, fn: () => log(ent.text, 'examine') }, ex];
     case 'agility': return [{ action: ent.verb, target: ent.name, color: cy, fn: () => startAction({ kind: 'agility', node: ent, obstacle: ent.obstacle }) }, ex];
     case 'runealtar': return [{ action: 'Craft-rune', target: ent.name, color: cy, fn: () => startAction({ kind: 'runecraft', node: ent, altar: ent.altar }) }, ex];
-    case 'building': return [ex];
+    case 'building': return [...((EXT.adapt && EXT.adapt.steadOptions && EXT.adapt.steadOptions(ent)) || []), ex];
     case 'hearth': return [{ action: 'Use', target: ent.name, color: cy, fn: () => startAction({ kind: 'talk', node: ent }) }, ex];
     case 'cave': return [{ action: ent.verb || (ent.dest === CAVE.inside ? 'Enter' : 'Climb-up'), target: ent.name, color: cy, fn: () => startAction({ kind: 'cave', node: ent }) }, ex];
     case 'chest': return [{ action: 'Search', target: ent.name, color: cy, fn: () => startAction({ kind: 'chest', node: ent }) }, ex];
