@@ -42,7 +42,7 @@ import { RECIPES, ITEMS, canCraft, hasInputs, recipeOutputQty, examineItem, isRa
 import {
   TICK_MS, gatherTick, gatherInfo, TREES, ROCKS, FISH_SPOTS, rollPlayerHit, rollMonsterHit, combatXp, rollLoot, RARE_DROPS,
   attackSpeedTicks, attackRange, equip, unequip, eat, sellPrice, bestTool, addTool, ownsToolType, toolName,
-  burnChance, saveChance, makeXp, buryXp, reduceIncoming, nextGatherWait, xpMultiplier, makeTicks, doubleMakeChance, buyPrice, capeBoosts, regenBonus, SHOPS, gearEffects, weaponProcs, isRareDrop,
+  burnChance, saveChance, makeXp, buryXp, reduceIncoming, nextGatherWait, mineSideDrop, xpMultiplier, makeTicks, doubleMakeChance, buyPrice, capeBoosts, regenBonus, SHOPS, gearEffects, weaponProcs, isRareDrop,
   SPELLS, spellById, canCast, castSpell, bestSpell, magicMaxHit, weakTo, WEAK_MULT, SPELL_TICKS, playerMaxHit, AGILITY_OBSTACLES, AGILITY_COURSES, runObstacle, THIEVE_TARGETS, thieve, RUNE_ALTARS, craftRunes
   , MONSTER_TYPES
 } from './gameplay.js';
@@ -1386,6 +1386,13 @@ function doGatherTick(a) {
   giveXP(r.skill, r.xp);
   log((GOT(r.item) || (node.type === 'rock' ? `You manage to mine some ${r.item.replace(' ore', '').toLowerCase()}.` : `You catch some ${r.item.replace('Raw ', '').toLowerCase()}.`)) +
     (r.qty > 1 ? ' Your perk doubles it!' : '') + (r.bank ? ' It is sent straight to your bank.' : ''), 'skill');
+  if (gi && gi.skill === 'Mining') {
+    const extra = mineSideDrop(r.item);
+    if (extra && canAdd(player, extra)) {
+      addItem(player, extra, 1);
+      log(extra === 'Stone slab' ? 'You also unearth a stone slab.' : 'You also find some limestone.', 'loot');
+    }
+  }
   // Resources never run out: keep going until the pack is full.
   if (!r.bank && !canAdd(player, r.item)) {
     log('Your inventory is too full to hold any more.', 'warn');

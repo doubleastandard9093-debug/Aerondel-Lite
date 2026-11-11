@@ -107,10 +107,10 @@ export default function freeclimb(A) {
   A.key('climb', () => A.climbBegin());
   A.quick(() => [['climb', A.climbing() ? '🧗Climbing' : '🧗Climb', A.climbing() ? 'You are on the face — walk up, or jump off (C) to glide' : 'Climb the face ahead (spend run energy; Agility helps)']]);
   A.onQuick('climb', () => { if (A.climbing()) endClimb('You let go.', true); else A.climbBegin(); });
-  A.guide.push(['Freeclimb', 'Walk into a steep cliff, wall or big tree, or tap Climb, and you will climb it. It spends run energy; Agility lowers the drain and lets you take steeper faces. Smooth or icy faces can be unclimbable. Jump off with Dash (C) to glide (Glidewalk). Tetherline and Skywing stay as they are — this is for mid-height travel, not a replacement for flight.']);
+  A.guide.push(['Freeclimb', 'Press , (Climb) at a steep cliff, wall or big tree to climb it. It spends run energy; Agility lowers the drain and lets you take steeper faces. Smooth or icy faces can be unclimbable. Jump off with Dash (C) to glide (Glidewalk). Tetherline and Skywing stay as they are — this is for mid-height travel, not a replacement for flight.']);
   A.tab({ id: 'climb', icon: '🧗', name: 'Freeclimb', render: () => {
     return `<h4>Freeclimb · Agility ${ag()}</h4>
-      <p>Walk into a steep face, or tap Climb, and spend run energy to go up. Agility lowers the drain and opens steeper faces. Jump off with Dash (C) to glide. Tetherline and Skywing are unchanged.</p>
+      <p>Press , (Climb) at a steep face and spend run energy to go up. Agility lowers the drain and opens steeper faces. Jump off with Dash (C) to glide. Tetherline and Skywing are unchanged.</p>
       <p><small>${A.climbing() ? 'You are on a face now.' : 'Find a cliff or wall and walk into it.'} Energy ${Math.round(player.runEnergy || 0)}.</small></p>
       <div class="row"><button data-a="go" style="min-height:44px">${A.climbing() ? 'Let go' : 'Climb ahead'}</button></div>`;
   }, act: (a) => { if (a === 'go') { if (A.climbing()) endClimb('You let go.', true); else A.climbBegin(); } } });
