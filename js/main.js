@@ -2829,6 +2829,7 @@ function talkTo(ent) {
     { choose: [['Let\'s trade.', [{ run: () => invUI.open('shop') }]], ['No thanks.', [['npc', 'Suit yourself.']]]] }
   ];
   script = tongueWrap(ent, script);
+  if (EXT.adapt && EXT.adapt.skillWrap) script = EXT.adapt.skillWrap(ent, script);
   if (EXT.adapt && EXT.adapt.tieWrap) script = EXT.adapt.tieWrap(ent, script);
   ui.dialogue(name, face, script, () => { updateQuestMarks(); markDirty(); });
 }
