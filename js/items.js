@@ -434,14 +434,14 @@ export function examineItem(item) {
   if (info.tool && info.toolTier !== undefined) bits.push(`tier ${info.toolTier + 1} tool`);
   if (info.req) bits.push('needs ' + Object.entries(info.req).map(([k, v]) => `${k} ${v}`).join(', '));
   if (bits.length) text += ` (${bits.join(', ')})`;
-  if (examineHook) {
-    const extra = examineHook(item, text);
+  for (const hook of examineHooks) {
+    const extra = hook(item, text);
     if (typeof extra === 'string' && extra) text = extra;
   }
   return text;
 }
-let examineHook = null;
-export function setExamineHook(fn) { examineHook = typeof fn === 'function' ? fn : null; }
+const examineHooks = [];
+export function setExamineHook(fn) { if (typeof fn === 'function') examineHooks.push(fn); }
 
 // Short potion descriptions for examine (effects live in potions.js).
 export const POTION_INFO = {
