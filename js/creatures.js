@@ -288,7 +288,7 @@ export function rollVariant(typeName, t, seed) {
   const v = { seed: seed * 10, r, k, tint, color, tint2: C(t.color).offsetHSL(r() * 0.1, 0, ls).getHex() };
   if (typeName === 'Wolf') Object.assign(v, { color: [0x7a7a80, 0x6a6058, 0x8a8a90, 0x4a4440, 0x9a8a70][Math.floor(r() * 5)], saddle: r() * 0.8, earK: 0.85 + r() * 0.35, tailUp: 0.5 + r() * 0.8, eye: [0xe8c040, 0xd09a30, 0x9ac0e0][Math.floor(r() * 3)], scar: r() < 0.25 });
   if (typeName === 'Cow') Object.assign(v, [{ hideA: 0xf2efe8, hideB: 0x2a2622 }, { hideA: 0xf2efe8, hideB: 0x7a4a2a }, { hideA: 0x8a5a3a, hideB: 0x5a3a20 }, { hideA: 0xe8e0d0, hideB: 0x4a4440 }][Math.floor(r() * 4)], { spotF: 2 + r() * 3, spotT: -0.1 + r() * 0.5, horns: r() < 0.6 ? 0.7 + r() * 0.6 : 0 });
-  if (typeName === 'Giant Spider') Object.assign(v, { mark: [0xc02020, 0xd0a020, 0xe0e0d0, 0x8a2a8a][Math.floor(r() * 4)], pattern: ['hourglass', 'bands', 'spots'][Math.floor(r() * 3)], eye: [0xff2020, 0x101010, 0x20ff60][Math.floor(r() * 3)], legK: 0.9 + r() * 0.25, legBands: r() < 0.5 });
+  if (typeName === 'Giant Spider' || t.shape === 'spider') Object.assign(v, { mark: [0xc02020, 0xd0a020, 0xe0e0d0, 0x8a2a8a][Math.floor(r() * 4)], pattern: ['hourglass', 'bands', 'spots'][Math.floor(r() * 3)], eye: [0xff2020, 0x101010, 0x20ff60][Math.floor(r() * 3)], legK: 0.9 + r() * 0.25, legBands: r() < 0.5 });
   if (t.shape === 'dragon') Object.assign(v, { belly: C(v.color).offsetHSL(0.08, -0.1, 0.25).getHex(), membrane: C(v.color).offsetHSL(-0.02, 0.05, -0.12).getHex(), horn: [0xd8c890, 0x3a3028, 0xc8b8a0][Math.floor(r() * 3)], eye: [0xffc020, 0xff6020, 0xc0ff40][Math.floor(r() * 3)], hornN: 1 + Math.floor(r() * 2), wingK: 0.9 + r() * 0.25 });
   return v;
 }

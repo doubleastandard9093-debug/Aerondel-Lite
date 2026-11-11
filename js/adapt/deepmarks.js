@@ -1,7 +1,7 @@
 // Deepmarks (adapted from PoE maps / Destiny nightfalls): a climbing instanced dungeon ladder with stacking modifiers. Tiers past 1000 scale with Lumen.
 import { NORM, obj, arr, num } from './state.js';
 
-const FOES = ['Ashen raider', 'Sand Reaver', 'Canopy Stalker', 'Magma Brute', 'Ember Imp', 'Rime Wraith', 'Thornback Prowler', 'Hoarfrost Stalker', 'Voidborn Knight'];
+const FOES = ['Ashen raider', 'Sand Reaver', 'Canopy Stalker', 'Magma Brute', 'Ember Imp', 'Rime Wraith', 'Thornback Prowler', 'Hoarfrost Stalker', 'Murk Leech', 'Glass Scorpion', 'Voidborn Knight'];
 const MODS = {
   burning: ['Burning ground', 'You lose a little health every few ticks.'],
   shielded: ['Elites shielded', 'Foes take a little more killing (more health, not more damage).'],
@@ -142,6 +142,14 @@ export default function deepmarks(A) {
       if (r.mods.length !== 2) return 'mods ' + r.mods.length;
       const n = A.zoneAlive('marks').length;
       if (!(n > 0 && n <= A.cap(15))) return 'cap ' + n;
+      // Spider-shaped marks (Murk Leech, Glass Scorpion) must roll an eye colour so hi-LOD paint does not crash.
+      const Cr = await import('/js/creatures.js'), Gp = await import('/js/gameplay.js');
+      for (const name of ['Murk Leech', 'Glass Scorpion']) {
+        const typ = Gp.MONSTER_TYPES[name]; if (!typ || typ.shape !== 'spider') return 'missing '+name;
+        const v = Cr.rollVariant(name, typ, 0.42);
+        if (v.eye == null) return 'no eye '+name;
+        try { const rig = Cr.buildCreatureRig(name, typ, v); if (rig && rig.traverse) rig.traverse(o => { if (o.geometry) o.geometry.dispose(); }); } catch (e) { return 'rig '+name+' '+e.message; }
+      }
       // Stream three rooms: clear each and let the tick advance.
       for (let room = 1; room <= 3; room++) {
         if (!A.run || A.run.kind !== 'marks') return 'lost run at room ' + room;

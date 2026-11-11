@@ -17,7 +17,7 @@ export function paint(geo, fn) {
   const col = new Float32Array(p.count * 3);
   for (let i = 0; i < p.count; i++) {
     const r = fn(p.getX(i), p.getY(i), p.getZ(i), n ? n.getX(i) : 0, n ? n.getY(i) : 1, n ? n.getZ(i) : 0);
-    if (typeof r === 'number') _c.setHex(r); else _c.copy(r);
+    if (typeof r === 'number') _c.setHex(r); else if (r && typeof r.r === 'number') _c.copy(r); else _c.setHex(0x101010);
     col[i * 3] = _c.r; col[i * 3 + 1] = _c.g; col[i * 3 + 2] = _c.b;
   }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
