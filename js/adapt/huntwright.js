@@ -134,7 +134,7 @@ export default function huntwright(A) {
     } else { A.give('Hunt remnant', n); got.push(`${n} Hunt remnant`); }
     const xp = Math.round((40 + (m.level || 50) * 2) * yieldMul());
     ctx.giveXP('Hunter', xp);
-    A.log(`You carve the ${m.name}: ${got.join(', ')}. (+${xp} Hunter)`, 'loot'); A.dirty(); A.refreshQuick();
+    A.log(`You carve the ${m.name}: ${got.join(', ')}. (+${xp} Hunter)`, 'loot'); if (A.scoreOn) A.scoreOn('hunt'); A.dirty(); A.refreshQuick();
     closeCarveBody(m, nowMs());
   };
   ctx.EXT.extKill.push((mon, now) => {

@@ -195,6 +195,8 @@ SECONDARIES.forEach((n, i) => def(n, { type: 'secondary', value: [3, 15, 10, 10,
 def('Vial', { type: 'vial', value: 1 });
 def('Vial of water', { type: 'vial', value: 2 });
 def('Waterskin', { type: 'drink', value: 12, special: 'A skin of water. Drink it to help thirst when Hardroad is on.' });
+def('Season flask', { type: 'drink', value: 40, special: 'A flask from Waresmith Ryn. Drink it to help thirst when Hardroad is on.' });
+def('Ridgewalk soles', { type: 'gear', value: 200, special: 'A wandering-vendor pair. While you carry them, climbing drains a little less run energy. Not a damage bonus.' });
 // [potion, herb, secondary, level, xp, value, tint]
 export const POTION_RECIPES = [
   ['Attack potion', 'Greenwort', 'Eye of newt', 3, 25, 20, '#4a8ad0'],
@@ -625,7 +627,8 @@ for (const [n, v, exam] of [
   ['Hush-string kit', 35, 'A kit for a ranged weapon: a quieter setup and a little less reach.'],
   ['Lamp-rim kit', 40, 'A kit for armour: a short cone of light. On Low it is a pip, not a new mesh.'],
   ['Padded collar kit', 45, 'A kit for armour: a little more player poise.'],
-  ['Watch-sight kit', 55, 'A kit for a weapon: Stillwatch focus fills a little faster. It does not add damage.']
+  ['Watch-sight kit', 55, 'A kit for a weapon: Stillwatch focus fills a little faster. It does not add damage.'],
+  ['Ash-thread kit', 35, 'A Seasonboard schematic kit for armour: a little more player poise, less than a padded collar.']
 ]) def(n, { type: 'kit', value: v });
 R({ name: 'Craft Waterskin', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 5, inputs: { 'Soft leather': 1, 'Vial of water': 1 }, output: 'Waterskin', xp: 15 });
 R({ name: 'Craft Longhaft kit', cat: 'Smithing', group: 'Kits', skill: 'Smithing', level: 10, inputs: { Logs: 3, 'Iron bar': 1 }, output: 'Longhaft kit', xp: 40 });

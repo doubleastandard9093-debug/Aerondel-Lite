@@ -30,7 +30,7 @@ import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 import { normalizeAdapt } from './adapt/state.js';
 
-export const SAVE_VERSION = 35; // v35: Oathframe, Hardroad (Phase 21); v34: Shadework, Wardfine
+export const SAVE_VERSION = 36; // v36: Seasonboard, Wildmarks, Ashfall (Phase 22); v35: Oathframe, Hardroad
 export const POS_LIMIT = 616; // world half-size (WORLD_HALF 620, frontier ring) minus a margin
 const KEY = 'aerondel3d';
 const LEGACY_KEY = 'gielinor3d'; // pre-Aerondel saves: read as a fallback, never deleted
@@ -117,6 +117,7 @@ export function migrateSave(saved) {
   // v23: Ventures (player.adapt): every system starts empty; the normalizer fills defaults and drops bad values.
   p.adapt = normalizeAdapt(p.adapt);
   if (fromVersion < 35 && fromVersion > 1) notes.push('New: Oathframe (a heavy suit powered by a hearth-core) and Hardroad (optional hunger, thirst and rest, off by default).');
+  if (fromVersion < 36 && fromVersion > 1) notes.push('New: Seasonboard (season score for dailies and weeklies, not Standing), Wildmarks (suppressible marks with a downside and a boon), and Ashfall (a skippable Ley flare in a wild region).');
   if (fromVersion < 34 && fromVersion > 1) notes.push('New: Shadework (an unseen first strike) and Wardfine (a town fine when a pickpocket fails).');
   if (fromVersion < 33 && fromVersion > 1) notes.push('New: Skywyrms (optional overworld flyers that drop a soul) and Veilcraft (learn a named effect and bind it with a soul).');
   if (fromVersion < 32 && fromVersion > 1) notes.push('New: Kitwright (kits on worn gear), Wayfreight (supply lines between homes), and Waycamp (a portable camp pack you place in the wild).');
