@@ -49,7 +49,9 @@ import wayfreight from './wayfreight.js';
 import waycamp from './waycamp.js';
 import skywyrms from './skywyrms.js';
 import veilcraft from './veilcraft.js';
-const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk, huntwright, guardbreak, ashkin, vocations, wordcries, townsteads, townties, greenstead, facets, leyweave, hordewake, deepmarks, ashspire, kinbeasts, freeclimb, leychem, freeframe, holdraids, trailhand, skillwords, banners, kitwright, wayfreight, waycamp, skywyrms, veilcraft];
+import shadework from './shadework.js';
+import wardfine from './wardfine.js';
+const FEATURES = [overflare, wardrobe, ledger, reliquary, loot, crestbreak, sigils, grafts, twinstance, zone, tides, breach, tether, geodes, ascent, lumen, lattice, vigil, attune, hearthhold, chronicle, glidewalk, huntwright, guardbreak, ashkin, vocations, wordcries, townsteads, townties, greenstead, facets, leyweave, hordewake, deepmarks, ashspire, kinbeasts, freeclimb, leychem, freeframe, holdraids, trailhand, skillwords, banners, kitwright, wayfreight, waycamp, skywyrms, veilcraft, shadework, wardfine];
 export function installAdapt(ctx) {
   const A = installCore(ctx);
   for (const f of FEATURES) { try { f(A); } catch (e) { console.error('Ventures feature failed to start', e); } }

@@ -30,7 +30,7 @@ import { normalizeCharter } from './charter.js';
 import { normalizeSiege } from './siege.js';
 import { normalizeAdapt } from './adapt/state.js';
 
-export const SAVE_VERSION = 33; // v33: Skywyrms, Veilcraft (Phase 19); v32: Kitwright, Wayfreight, Waycamp
+export const SAVE_VERSION = 34; // v34: Shadework, Wardfine (Phase 20); v33: Skywyrms, Veilcraft
 export const POS_LIMIT = 616; // world half-size (WORLD_HALF 620, frontier ring) minus a margin
 const KEY = 'aerondel3d';
 const LEGACY_KEY = 'gielinor3d'; // pre-Aerondel saves: read as a fallback, never deleted
@@ -116,6 +116,7 @@ export function migrateSave(saved) {
   const fromVersion = Number(saved.version) || 1;
   // v23: Ventures (player.adapt): every system starts empty; the normalizer fills defaults and drops bad values.
   p.adapt = normalizeAdapt(p.adapt);
+  if (fromVersion < 34 && fromVersion > 1) notes.push('New: Shadework (an unseen first strike) and Wardfine (a town fine when a pickpocket fails).');
   if (fromVersion < 33 && fromVersion > 1) notes.push('New: Skywyrms (optional overworld flyers that drop a soul) and Veilcraft (learn a named effect and bind it with a soul).');
   if (fromVersion < 32 && fromVersion > 1) notes.push('New: Kitwright (kits on worn gear), Wayfreight (supply lines between homes), and Waycamp (a portable camp pack you place in the wild).');
   if (fromVersion < 31 && fromVersion > 1) notes.push('New: Trailhand (a build-a-path card game in Emberfold), Skillwords (dialogue lines gated by many skills), and Crossed Banners (faction standing can cool another banner).');

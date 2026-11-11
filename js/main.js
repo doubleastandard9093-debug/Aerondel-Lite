@@ -641,6 +641,7 @@ function setting(act) {
   else if (act === 'retaliate') s.autoRetaliate = !s.autoRetaliate;
   else if (act === 'run') toggleRun();
   else if (act === 'autoloot') s.autoLoot = !s.autoLoot;
+  else if (act === 'shadepip') { s.shadePip = s.shadePip === false; if (EXT.adapt && EXT.adapt.shadeHidePip) EXT.adapt.shadeHidePip(s.shadePip === false); }
   else if (act === 'camera') { rig.targetYaw = 0; rig.targetPitch = 0.9; applyCamFraming(true); }
   else if (act === 'zoomlimit') { const opts = [18, 30, 45]; player.settings.zoomLimit = opts[(opts.indexOf(player.settings.zoomLimit || 30) + 1) % opts.length]; applyCamFraming(false); }
   markDirty();
@@ -1022,6 +1023,7 @@ function doThieve(a) {
     player.stunUntil = tick + res.stun;
     pm.target = null;
     hurtPlayer(res.dmg);
+    if (EXT.adapt && EXT.adapt.fineOnFail) EXT.adapt.fineOnFail(a.node, a.target);
   } else {
     const got = [];
     for (const d of res.drops) {

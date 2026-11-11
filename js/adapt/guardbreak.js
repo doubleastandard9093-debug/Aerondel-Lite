@@ -59,6 +59,16 @@ export default function guardbreak(A) {
     m._poise = Math.min(max, m._poise + n);
     if (m._poise >= max) breakFoe(m);
   };
+  A.poiseFill = fill;
+  A.poiseAdd = (m, n) => {
+    if (!armed(m) || !(n > 0)) return;
+    if (m._poiseCd && A.tick() < m._poiseCd) return;
+    if (A.riposteOpen(m)) return;
+    const max = A.poiseMax(m);
+    if (m._poise == null) m._poise = 0;
+    m._poise = Math.min(max, m._poise + n);
+    if (m._poise >= max) breakFoe(m);
+  };
   ctx.EXT.extHit.push((mon, d, now, kind) => {
     if (kind === 'strike' && d <= 0) return;
     const wasOpen = mon && A.riposteOpen(mon) && !mon._riposteUsed;
