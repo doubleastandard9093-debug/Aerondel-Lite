@@ -175,7 +175,7 @@ export default function skywyrms(A) {
   A.tab({ id: 'wyrms', icon: '🐉', name: 'Skywyrms', render: () => {
     const s = S();
     let body = `<h4>Skywyrms</h4><p>Occasional flyers over the wilds. Fighting is optional. A kill yields a soul for Veilcraft, a little Hunter or Prayer, and nothing like a Colossus chest. Ashwyrm stays a Colossus on the Contested Wilds. At most one sighting at a time.</p>
-      <p>Soul pouch: <b>${s.souls}/${SOUL_CAP}</b> · Sightings: ${s.seen}</p>`;
+      <p>Soul pouch: <b>${A.wyrmSouls()}/${SOUL_CAP}</b> · Sightings: ${s.seen}</p>`;
     if (state.active) body += `<p>A Skywyrm is down over ${A.esc(state.active.region.name)}. Walk away if you want — it will leave in time.</p><div class="row"><button data-a="leave">Let it leave</button></div>`;
     else if (state.offered) body += `<p>A Skywyrm is sighted over <b>${A.esc(state.offered.region.name)}</b>. You can go to it, or let it pass. Nothing is owed if you leave it.</p>
       <div class="row"><button data-a="go" style="min-height:40px">Go</button><button data-a="pass" style="min-height:40px">Not now</button></div>`;
@@ -196,23 +196,25 @@ export default function skywyrms(A) {
       if (state.active) A.wyrmLeave();
       if (state.offered) A.wyrmPass();
       s.souls = 0;
+      if (A.S('veil')) A.S('veil').souls = 0;
+      const pouch = () => (A.wyrmSouls ? A.wyrmSouls() : s.souls);
       const R = wildRegions().find(r => r.id === 'skyreach') || wildRegions()[0] || REGION_DATA[1];
       if (!A.wyrmOffer(R)) return 'offer';
       if (!state.offered) return 'no offer';
       if (A.wyrmOffer(R)) return 'second offer';
       if (!A.wyrmPass()) return 'pass';
       if (state.offered || state.active) return 'still offered after pass';
-      if (s.souls !== 0) return 'soul on ignore';
+      if (pouch() !== 0) return 'soul on ignore';
       if (!A.wyrmOffer(R)) return 'reoffer';
       if (!A.wyrmFight(R.x + 10, R.z + 8, { region: R, noAttendants: true })) return 'fight';
       if (A.wyrmFight(R.x + 12, R.z + 8, { region: R, noAttendants: true })) return 'two at once';
       const wyrm = state.active && state.active.wyrm;
       if (!wyrm || !wyrm.wyrmFoe) return 'no foe';
       if (wyrm.colossus) return 'flagged as colossus';
-      const souls0 = s.souls;
+      const souls0 = pouch();
       wyrm.alive = false; wyrm.hp = 0; wyrm.state = 'dead';
       for (const f of (g.EXT.extKill || [])) { try { f(wyrm); } catch (e) { /* other hooks */ } }
-      if (s.souls !== souls0 + 1) return 'no soul on kill ' + s.souls;
+      if (pouch() !== souls0 + 1) return 'no soul on kill ' + pouch();
       if (state.active) return 'active after kill';
       const list = (g.EXT.colossi && g.EXT.colossi.list && g.EXT.colossi.list()) || [];
       if (!list.some(c => c.id === 'ashwyrm' || (c.name && /Ashwyrm/.test(c.name)))) return 'ashwyrm missing';
