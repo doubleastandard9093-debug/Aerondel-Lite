@@ -1201,6 +1201,9 @@ function optionsFor(ent) {
     return opts;
   }
   if (ent.hp !== undefined) {
+    if (!ent.alive && EXT.adapt && EXT.adapt.canCarve && EXT.adapt.canCarve(ent)) {
+      return [{ action: 'Carve', target: ent.name, color: '#ff9040', fn: () => EXT.adapt.huntCarve(ent) }, { action: 'Examine', target: ent.name, color: '#ffff00', fn: () => log(`The ${ent.name} can still be carved.`, 'examine') }];
+    }
     const auto = autocastSpell();
     const opts = [{ action: auto ? `Attack (${auto.name})` : 'Attack', target: `${ent.variant ? ent.variant + ' the ' + ent.name : ent.name} (level-${ent.level})`, color: levelColor(ent.level), fn: () => startAction({ kind: 'attack', mon: ent, spell: auto ? auto.id : null }) }];
     const sp = auto || bestSpell(skills, player);
@@ -3420,7 +3423,11 @@ function updateMonsters(dt, now) {
       const sink = Math.max(0, (D - 1.6) / 0.6);
       pos.y = terrainHeight(pos.x, pos.z) + (quad ? 0.05 : 0.15) * Math.sin(fall * Math.PI * 0.5) - sink * 0.9;
       const t = Math.min(1, D / 2.2);
-      if (t >= 1) { m.mesh.rotation.x = 0; m.deathSide = null; m.thumped = false; if (m.body) m.body.position.z = 0; m.dying = false; m.mesh.visible = false; m.respawnAt = now + (m.respawn || 15000); }
+      if (t >= 1) {
+        const carveOpen = m._carveUntil && !m._carved && now < m._carveUntil;
+        if (carveOpen) { m.dying = false; m.mesh.visible = true; m._carveHold = true; continue; }
+        m.mesh.rotation.x = 0; m.deathSide = null; m.thumped = false; if (m.body) m.body.position.z = 0; m.dying = false; m.mesh.visible = false; m.respawnAt = now + (m.respawn || 15000);
+      }
       continue;
     }
     if (!m.alive) continue;

@@ -16,7 +16,7 @@ export default function crestbreak(A) {
     m._stag = (m._stag || 0) + n * (1 + A.stagMul.reduce((t, f) => t + (f() || 0), 0));
     if (m._stag >= 100) { m._stag = 0; m._parts = (m._parts || 0) + 1; m._brokeUntil = A.tick() + 8; m.stunUntil = Math.max(m.stunUntil || 0, A.tick() + 3);
       A.S('crest').breaks++; const part = A.partName(m, Math.min(1, m._parts - 1));
-      A.log(`Crestbreak! The ${m.name}'s ${part} shatters. It is stunned and takes bonus damage.`, 'combat');
+      A.log(m._hunt ? `Crestbreak! The ${m.name} is stunned and takes bonus damage.` : `Crestbreak! The ${m.name}'s ${part} shatters. It is stunned and takes bonus damage.`, 'combat');
       if (A.flareAdd) A.flareAdd(15);
       if (ctx.gfxQ() !== 'low') ctx.burst('hit', m.mesh.position.x, m.mesh.position.y + 1.5, m.mesh.position.z, 18); A.dirty(); }
   };
