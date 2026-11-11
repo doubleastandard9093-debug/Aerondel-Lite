@@ -24,6 +24,7 @@ const old99='/workspace/gielinor-save-99.json';
   o.brand=!!I.ITEMS['Brandhide helm']&&!!I.ITEMS['Cinder horn']&&!!I.ITEMS['Eclipshide edge'];
   o.vexmarUnique=!!I.ITEMS['Vexmar, the Last Eclipse']; // frontier unique still exists
   if(A&&A.vtests&&A.vtests.huntwright){try{o.huntwright=await A.vtests.huntwright(g,A);}catch(e){o.huntwright='ERR '+e.message;}}
+  if(A&&A.vtests&&A.vtests.guardbreak){try{o.guardbreak=await A.vtests.guardbreak(g,A);}catch(e){o.guardbreak='ERR '+e.message;}}
   // snapshot combat level on a fresh game, then migrate the max save
   const cl0=SK.combatLevel(g.skills);
   if(old){const s=JSON.parse(old);const atk=s.skills&&s.skills.Attack&&s.skills.Attack.level;const hadHunter=!!(s.skills&&s.skills.Hunter);
@@ -42,6 +43,7 @@ const old99='/workspace/gielinor-save-99.json';
  if(!r.combatSkill)fail.push('Hunter was added to COMBAT_SKILLS');
  if(!r.cape||!r.brand||!r.vexmarUnique)fail.push('items missing');
  if(r.huntwright!==true&&r.huntwright!==undefined)fail.push('huntwright vtest '+r.huntwright);
+ if(r.guardbreak!==true&&r.guardbreak!==undefined)fail.push('guardbreak vtest '+r.guardbreak);
  if(old&&r.oldLoad===false)fail.push('max save failed to load');
  if(old&&!(r.oldHunter&&r.oldHunter.level===1&&r.oldHunter.max===1000&&r.oldHunter.had===false))fail.push('max-save Hunter migration '+JSON.stringify(r.oldHunter));
  if(old&&r.oldAttackKept===false)fail.push('Attack level changed on migrate');
