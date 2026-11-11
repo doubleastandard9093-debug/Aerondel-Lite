@@ -51,7 +51,7 @@ const v26='/workspace/aerondel-save-max-v26.json';
  if(old26&&r.v26Hunter===false)fail.push('v26 Hunter changed');
  if(old26&&r.v26Farm===false)fail.push('v26 Farming changed');
  if(old26&&r.v26Con===false)fail.push('v26 Construction changed');
- if(r.ver!==28&&r.ver<28)fail.push('SAVE_VERSION '+r.ver);
+ if(r.ver<28)fail.push('SAVE_VERSION '+r.ver);
  if(oldLegacy&&r.legacyLoad===false)fail.push('legacy 99 save failed');
  console.log(JSON.stringify(r,null,1));
  console.log('errors:',errs.length?errs:'none');
