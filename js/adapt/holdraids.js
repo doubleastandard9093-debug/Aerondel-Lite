@@ -80,11 +80,12 @@ export default function holdraids(A) {
     if (!state.active && now >= R().next) A.raidStart();
     if (!state.active) return;
     const live = state.active.mobs.filter(m => m && m.alive);
-    // Foes chip a nearby piece; they never march into town or the farm.
-    if (A.framePieces && A.framePieces().length && live.length) {
+    // Foes chip a nearby piece at most once every 8s, so the first piece is not shredded every tick. They never march into town or the farm.
+    const CHIP_MS = 8000;
+    if (A.framePieces && A.framePieces().length && live.length && Date.now() - (state.active.lastChip || 0) >= CHIP_MS) {
       const p = A.framePieces()[0];
       const x = PLOT.x + p.gx * 1.5, z = PLOT.z + p.gz * 1.5;
-      if (A.frameDamage) { A.frameDamage(x, z, 1); state.active.hits++; }
+      if (A.frameDamage) { A.frameDamage(x, z, 1); state.active.hits++; state.active.lastChip = Date.now(); }
     }
     if (Date.now() - state.active.start > 3 * 60 * 1000 || (state.active.mobs.length && !live.length)) A.raidEnd(true);
   });
@@ -128,10 +129,11 @@ export default function holdraids(A) {
       if (!A.raidSkip()) return 'skip';
       if (A.raidStart({ sure: true }) !== true) return 'no start';
       if (!A.raidActive()) return 'not active';
-      // Tick should chip a piece, not a town house.
-      if (ctx.EXT.extTick) for (const f of ctx.EXT.extTick) { try { f(); } catch (e) {} }
+      // A burst of ticks should chip at most once (not every tick), and never a town house.
+      if (ctx.EXT.extTick) for (let i = 0; i < 20; i++) for (const f of ctx.EXT.extTick) { try { f(); } catch (e) {} }
       const piece = A.framePieces().find(p => p.id === fid);
       if (piece && piece.hp > hp0) return 'hp went up';
+      if (piece && hp0 - piece.hp > 1) return 'chipped too fast';
       // Town was not targeted — no pieces exist there.
       if (A.frameOn && A.frameOn(13, -6)) return 'town raided';
       A.raidEnd(true);
