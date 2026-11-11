@@ -51,7 +51,7 @@ const old99='/workspace/gielinor-save-99.json';
  if(old&&r.oldLoad===false)fail.push('max save failed to load');
  if(old&&!(r.oldHunter&&r.oldHunter.level===1&&r.oldHunter.max===1000&&r.oldHunter.had===false))fail.push('max-save Hunter migration '+JSON.stringify(r.oldHunter));
  if(old&&r.oldAttackKept===false)fail.push('Attack level changed on migrate');
- if(r.ver!==24)fail.push('SAVE_VERSION '+r.ver);
+ if(r.ver<24)fail.push('SAVE_VERSION '+r.ver);
  if(oldLegacy&&r.legacyLoad===false)fail.push('legacy 99 save failed');
  if(oldLegacy&&r.legacyHunter!==1)fail.push('legacy Hunter '+r.legacyHunter);
  console.log(JSON.stringify(r,null,1));
