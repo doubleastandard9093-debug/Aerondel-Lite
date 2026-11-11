@@ -274,15 +274,20 @@ export function capeBoosts(player) {
 }
 export function regenBonus(player) { return equipmentBonuses(player).regen; }
 
+let attackHook = null;
+export function setAttackHook(fn) { attackHook = fn && typeof fn === 'object' ? fn : null; }
 export function attackSpeedTicks(player) {
   const w = ITEMS[player.equipment.weapon];
   const style = currentStyle(player);
-  return Math.max(2, (w && w.speed || 4) + (style.speed || 0));
+  let t = Math.max(2, (w && w.speed || 4) + (style.speed || 0));
+  if (attackHook && attackHook.speed) t = attackHook.speed(player, t);
+  return Math.max(2, t);
 }
 
 export function attackRange(player) {
-  if (isRangedWeapon(player.equipment.weapon)) return 7 + (currentStyle(player).range || 0);
-  return 1.6;
+  let r = isRangedWeapon(player.equipment.weapon) ? 7 + (currentStyle(player).range || 0) : 1.6;
+  if (attackHook && attackHook.range) r = attackHook.range(player, r);
+  return r;
 }
 
 export function hitChance(attRoll, defRoll) {

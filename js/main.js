@@ -376,6 +376,8 @@ function useItem(item) {
     }
   } else if (slotFor(item)) {
     if (equip(player, skills, item, log)) afterEquip();
+  } else if (item === 'Waycamp kit' && EXT.adapt && EXT.adapt.campPlace) {
+    EXT.adapt.campPlace();
   } else {
     // No direct use: show what it's for
     const r = RECIPES.find(rc => rc.inputs[item] && canCraft(skills, player.inventory, rc));
@@ -453,6 +455,7 @@ function itemMenu(item, x, y, mode) {
       if (have > 1) opts.push({ action: 'Bury all', target: `${item} (${have})`, color: c, fn: () => startBury(item, Infinity) });
     } else if (item === 'Treasure chart') { opts.push({ action: 'Read', target: item, color: c, fn: () => readChart() }); opts.push({ action: 'Dig here', target: item, color: c, fn: () => digHere() });
     } else if (info.type === 'tool') opts.push({ action: 'Add to toolbelt', target: item, color: c, fn: () => beltFromInventory(item) });
+    else if (item === 'Waycamp kit' && EXT.adapt && EXT.adapt.campPlace) opts.push({ action: 'Place', target: item, color: c, fn: () => EXT.adapt.campPlace() });
     else if (slotFor(item)) opts.push({ action: info.type === 'weapon' ? 'Wield' : 'Wear', target: item, color: c, fn: () => useItem(item) });
     if (WOODS.includes(item)) opts.push({ action: 'Light', target: item, color: c, fn: () => startAction({ kind: 'light', item, wait: 2 }) });
     const recipes = RECIPES.filter(r => r.inputs[item] && skills[r.skill].level >= r.level && hasInputs(player.inventory, r)).slice(0, 3);
@@ -1411,9 +1414,12 @@ function nearestStation(kind) {
   for (const n of stationsOf(kind)) { const d = distTo(n); if (d < bd) { bd = d; best = n; } }
   return best;
 }
+function craftBag() {
+  return (EXT.adapt && EXT.adapt.freightInv && EXT.adapt.freightCanPull && EXT.adapt.freightCanPull()) ? EXT.adapt.freightInv(player.inventory) : player.inventory;
+}
 function recipeState(r) {
   const level = skills[r.skill].level >= r.level;
-  const inputs = hasInputs(player.inventory, r);
+  const inputs = hasInputs(craftBag(), r);
   const tool = !r.tool || !!bestTool(player, skills, r.tool);
   return { level, inputs, tool, ok: level && inputs && tool };
 }
@@ -1447,7 +1453,13 @@ function craftOne() {
   const extra = !burnt && Math.random() < doubleMakeChance(r, skills);
   if (extra) outQty += recipeOutputQty(r);
   const saved = !burnt && Math.random() < saveChance(r, skills, player);
-  if (!saved) for (const [item, qty] of Object.entries(r.inputs)) removeItem(player, item, qty);
+  if (!saved) for (const [item, qty] of Object.entries(r.inputs)) {
+    const have = player.inventory[item] || 0;
+    const fromInv = Math.min(have, qty);
+    if (fromInv) removeItem(player, item, fromInv);
+    const rest = qty - fromInv;
+    if (rest && EXT.adapt && EXT.adapt.freightConsume) EXT.adapt.freightConsume(item, rest);
+  }
   if (!canAdd(player, output)) {
     if (!saved) for (const [item, qty] of Object.entries(r.inputs)) addItem(player, item, qty);
     log("You don't have enough inventory space.", 'warn'); stopAction(); return;
@@ -1463,7 +1475,7 @@ function craftOne() {
   a.left--;
   a.wait = makeTicks(r, skills) - 1;
   if (a.left <= 0) stopAction();
-  else if (!hasInputs(player.inventory, r)) { if (a.left !== Infinity || a.made > 1) log(`You have run out of materials.`, 'game'); stopAction(); }
+  else if (!hasInputs(craftBag(), r)) { if (a.left !== Infinity || a.made > 1) log(`You have run out of materials.`, 'game'); stopAction(); }
   markDirty();
 }
 

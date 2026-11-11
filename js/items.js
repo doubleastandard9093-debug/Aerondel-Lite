@@ -434,8 +434,14 @@ export function examineItem(item) {
   if (info.tool && info.toolTier !== undefined) bits.push(`tier ${info.toolTier + 1} tool`);
   if (info.req) bits.push('needs ' + Object.entries(info.req).map(([k, v]) => `${k} ${v}`).join(', '));
   if (bits.length) text += ` (${bits.join(', ')})`;
+  if (examineHook) {
+    const extra = examineHook(item, text);
+    if (typeof extra === 'string' && extra) text = extra;
+  }
   return text;
 }
+let examineHook = null;
+export function setExamineHook(fn) { examineHook = typeof fn === 'function' ? fn : null; }
 
 // Short potion descriptions for examine (effects live in potions.js).
 export const POTION_INFO = {
@@ -612,3 +618,20 @@ R({ name: 'Craft Fine vessel', cat: 'Crafting', group: 'Kinbeasts', skill: 'Hunt
 def('Limestone', { type: 'resource', value: 3, special: 'Soft building stone. Cut it into a Stone slab with Crafting, or find a finished slab while mining.' });
 def('Stone slab', { type: 'resource', value: 8, special: 'Cut stone for Freeframe walls and reinforced plates. Crafted from limestone or found while mining.' });
 R({ name: 'Cut Stone slab', cat: 'Crafting', group: 'Stonework', skill: 'Crafting', level: 12, inputs: { Limestone: 1 }, output: 'Stone slab', xp: 20, tool: 'hammer' });
+// Kitwright (v32): named weapon / armour kits. Behaviour and small numbers, not a damage percent.
+for (const [n, v, exam] of [
+  ['Longhaft kit', 40, 'A kit for a melee weapon: a little more reach, a little slower swing.'],
+  ['Hush-string kit', 35, 'A kit for a ranged weapon: a quieter setup and a little less reach.'],
+  ['Lamp-rim kit', 40, 'A kit for armour: a short cone of light. On Low it is a pip, not a new mesh.'],
+  ['Padded collar kit', 45, 'A kit for armour: a little more player poise.'],
+  ['Watch-sight kit', 55, 'A kit for a weapon: Stillwatch focus fills a little faster. It does not add damage.']
+]) def(n, { type: 'kit', value: v });
+R({ name: 'Craft Longhaft kit', cat: 'Smithing', group: 'Kits', skill: 'Smithing', level: 10, inputs: { Logs: 3, 'Iron bar': 1 }, output: 'Longhaft kit', xp: 40 });
+R({ name: 'Craft Hush-string kit', cat: 'Fletching', group: 'Kits', skill: 'Fletching', level: 10, inputs: { Bowstring: 1, Flax: 3 }, output: 'Hush-string kit', xp: 40 });
+R({ name: 'Craft Lamp-rim kit', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 10, inputs: { 'Iron bar': 1, Coal: 2 }, output: 'Lamp-rim kit', xp: 40 });
+R({ name: 'Craft Padded collar kit', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 12, inputs: { 'Soft leather': 2, Wool: 1 }, output: 'Padded collar kit', xp: 50 });
+R({ name: 'Craft Watch-sight kit', cat: 'Crafting', group: 'Kits', skill: 'Crafting', level: 15, inputs: { 'Iron bar': 1, 'Clear essence': 5 }, output: 'Watch-sight kit', xp: 55 });
+// Waycamp (v32): one portable camp pack. Construction XP is small; Freeframe stays the grind.
+def('Waycamp kit', { type: 'kit', value: 80, special: 'A packed camp. Place it in the wild and pack it up again. One at a time. Not in a town, not on Greenstead, not on Claimridge.' });
+R({ name: 'Craft Waycamp kit', cat: 'Crafting', group: 'Camps', skill: 'Construction', level: 8, inputs: { Logs: 8, 'Iron bar': 2 }, output: 'Waycamp kit', xp: 40 });
+

@@ -27,7 +27,7 @@ export default function holdraids(A) {
   };
 
   A.raidStart = (opts = {}) => {
-    if (!A.frameClaimed || !A.frameClaimed()) return A.log('Raids only come for a claimed wild plot. Claim Claimridge first. Town houses and the farm are never raided.', 'warn'), false;
+    if (!A.frameClaimed || !A.frameClaimed()) return A.log('Raids only come for a claimed wild plot. Claim Claimridge first. Town houses, the farm, and Waycamps are never raided.', 'warn'), false;
     if (state.active) return A.log('A raid is already on the plot.', 'warn'), false;
     const L = A.vLevel ? A.vLevel() : 20;
     const n = Math.min(A.cap ? A.cap(15) : 8, ctx.gfxQ && ctx.gfxQ() === 'low' ? 6 : 10);
