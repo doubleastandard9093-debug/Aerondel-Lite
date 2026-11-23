@@ -333,6 +333,7 @@ export function createWorld(scene) {
   // The play area is flat (feet stay on the ground); rolling hills rise beyond it.
   const MASK = WORLD_HALF * 2 + 10;
   const mask = paintGroundMask(MASK);
+  const _tileV = new THREE.Vector3(), tileIndex = [];
   const GSIZE = WORLD_HALF * 2 + 140, GSEG = Math.round(110 * (WORLD_HALF * 2 + 140) / 580);
   const groundGeo = new THREE.PlaneGeometry(GSIZE, GSIZE, GSEG, GSEG);
   const pos = groundGeo.attributes.position;
@@ -347,9 +348,29 @@ export function createWorld(scene) {
     }
     groundGeo.setAttribute('color', new THREE.BufferAttribute(cols, 3)); }
   const groundMat = terrainMaterial(mask, MASK); groundMat.vertexColors = true;
-  const ground = new THREE.Mesh(groundGeo, groundMat);
+  // Drawn as GTILE x GTILE tiles that share the one vertex buffer (each tile is a contiguous range of a re-ordered index),
+  // so the camera frustum skips the ~137k-triangle terrain behind and beside the view. Same vertices, normals and colours:
+  // what is drawn is unchanged. `ground` is the tile group (tap raycasts recurse into the tiles).
+  const ground = new THREE.Group();
   ground.rotation.x = -Math.PI / 2;
-  ground.receiveShadow = true;
+  // built after the elevation bake below (tile bounds need the final heights)
+  const buildGroundTiles = () => { const GTILE = 8, src = groundGeo.index.array, idx = new (src.constructor)(src.length), q = GSEG;
+    let o = 0;
+    for (let ty = 0; ty < GTILE; ty++) for (let tx = 0; tx < GTILE; tx++) {
+      const y0 = Math.floor(ty * q / GTILE), y1 = Math.floor((ty + 1) * q / GTILE), x0 = Math.floor(tx * q / GTILE), x1 = Math.floor((tx + 1) * q / GTILE);
+      const start = o, box = new THREE.Box3();
+      for (let iy = y0; iy < y1; iy++) for (let ix = x0; ix < x1; ix++) { const b = (iy * q + ix) * 6; for (let k = 0; k < 6; k++) { const v = src[b + k]; idx[o++] = v; box.expandByPoint(_tileV.fromBufferAttribute(pos, v)); } }
+      const tg = new THREE.BufferGeometry();
+      for (const name in groundGeo.attributes) tg.setAttribute(name, groundGeo.attributes[name]);
+      tileIndex.push([tg, start, o - start, box]);
+    }
+    const shared = new THREE.BufferAttribute(idx, 1);
+    for (const [tg, start, count, box] of tileIndex) {
+      tg.setIndex(shared); tg.setDrawRange(start, count);
+      tg.boundingBox = box; tg.boundingSphere = box.getBoundingSphere(new THREE.Sphere());
+      const tile = new THREE.Mesh(tg, groundMat); tile.receiveShadow = true; tile.name = 'ground-tile'; ground.add(tile);
+    }
+    tileIndex.length = 0; };
   scene.add(ground);
 
   // Lake: animated water with shore foam (sand is painted into the ground).
@@ -1694,6 +1715,7 @@ export function createWorld(scene) {
     for (let i = 0; i < pos.count; i++) pos.setZ(i, terrainHeight(pos.getX(i), -pos.getY(i)));
     groundGeo.computeVertexNormals();
     pos.needsUpdate = true; groundGeo.computeBoundingSphere(); groundGeo.computeBoundingBox();
+    buildGroundTiles();
     // Everything placed at ground level sits on the surface.
     for (const o of scene.children) {
       if (o === ground || o === water || o === bed || o.isLight || Math.abs(o.position.y) > 0.001) continue;
