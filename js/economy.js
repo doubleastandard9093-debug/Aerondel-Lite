@@ -56,7 +56,6 @@ export function isTopTier(item) {
   return Object.values(info.req || {}).some(l => l >= 40);
 }
 export function wearOf(player, item) { return (player.wear && player.wear[item]) || 0; }
-export function wearMult(player, item) { return wearOf(player, item) >= 100 ? ECON.wornMult : 1; }
 // Returns the names of items that just became fully worn.
 export function wearOnHit(player) {
   const out = [];

@@ -299,7 +299,6 @@ export function isTool(item) { return !!(ITEMS[item] && ITEMS[item].type === 'to
 export function toolType(item) { return ITEMS[item] && ITEMS[item].tool; }
 
 // Every identical item stacks in one slot.
-export function isStackable(item) { return true; }
 
 export function slotFor(item) {
   const t = ITEMS[item] && ITEMS[item].type;

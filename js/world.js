@@ -232,7 +232,6 @@ export function terrainHeight(x, z) {
   return (H[i] * (1 - fx) + H[i + 1] * fx) * (1 - fz) + (H[i + HF.N] * (1 - fx) + H[i + HF.N + 1] * fx) * fz;
 }
 // Surface normal-ish slope helper (for placing props upright on hills).
-export function groundAt(x, z) { return terrainHeight(x, z); }
 // flats: [{x, z, r}] circles and [{x1, z1, x2, z2, r}] segments kept level (blend over BLEND units).
 export function bakeHeightField(flats, segs, boxes) {
   const BLEND = 10, M = WORLD_HALF + 70, N = M * 2 + 1;
