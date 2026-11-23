@@ -193,7 +193,7 @@ export default function oathframe(A) {
   A.vtests.oathframe = async (g, A) => {
     const s = S(), snap = { owned: s.owned.slice(), assembled: s.assembled, core: s.core };
     const was = state.on;
-    const { playerMaxHit } = await import('/js/gameplay.js');
+    const { playerMaxHit } = await import('../gameplay.js');
     try {
       if (state.on) A.oathStepOut();
       s.owned = []; s.assembled = false; s.core = 0;

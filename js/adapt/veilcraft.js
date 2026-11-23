@@ -193,7 +193,7 @@ export default function veilcraft(A) {
   A.vtests = A.vtests || {};
   A.vtests.veilcraft = async (g, A) => {
     const P = g.player, s = S();
-    const { playerMaxHit } = await import('/js/gameplay.js');
+    const { playerMaxHit } = await import('../gameplay.js');
     const snap = { known: s.known.slice(), souls: s.souls, lesser: s.lesser, on: { ...s.on }, gold: P.gold, wsouls: A.S('wyrms') && A.S('wyrms').souls };
     const wpn0 = P.equipment && P.equipment.weapon;
     try {

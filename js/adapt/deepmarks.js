@@ -148,7 +148,7 @@ export default function deepmarks(A) {
       const n = A.zoneAlive('marks').length;
       if (!(n > 0 && n <= A.cap(15))) return 'cap ' + n;
       // Spider-shaped marks (Murk Leech, Glass Scorpion) must roll an eye colour so hi-LOD paint does not crash.
-      const Cr = await import('/js/creatures.js'), Gp = await import('/js/gameplay.js');
+      const Cr = await import('../creatures.js'), Gp = await import('../gameplay.js');
       for (const name of ['Murk Leech', 'Glass Scorpion']) {
         const typ = Gp.MONSTER_TYPES[name]; if (!typ || typ.shape !== 'spider') return 'missing '+name;
         const v = Cr.rollVariant(name, typ, 0.42);

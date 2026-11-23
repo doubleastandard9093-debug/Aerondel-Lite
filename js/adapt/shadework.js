@@ -171,7 +171,7 @@ export default function shadework(A) {
   A.vtests = A.vtests || {};
   A.vtests.shadework = async (g, A) => {
     const s = S(), hits0 = s.hits;
-    const { thieve } = await import('/js/gameplay.js');
+    const { thieve } = await import('../gameplay.js');
     // Pickpocket still fails with a stun (Wardfine may also raise a fine later; the stun remains on the result).
     const fail = thieve('Man', g.skills, g.player, () => 1);
     if (!(fail && fail.fail && fail.stun > 0)) return 'pickpocket stun ' + JSON.stringify(fail);
