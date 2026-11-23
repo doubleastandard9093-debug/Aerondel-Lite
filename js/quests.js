@@ -27,8 +27,23 @@ export function isDone(player, id) {
 }
 // Quest point cape: every quest done, or kept from an older save that had it.
 export function questCapeAllowed(player) { return isDone(player, 'all') || !!player.questCapeLegacy; }
+// Hot path (XP, damage, regen every tick): walk only the quests this player has touched, not all ~1,245.
 export function questPoints(player) {
-  return QUESTS.reduce((t, x) => t + (isDone(player, x.id) ? x.points : 0), 0);
+  const Q = player.quests || (player.quests = {}), by = questIndex().byId;
+  let t = 0;
+  for (const id in Q) { const s = Q[id], x = by.get(id); if (x && s && s.stage === 'done') t += x.points; }
+  return t;
+}
+// Lazy lookups over QUESTS (built once, rebuilt if the list ever grows): id -> quest, fx key -> [[id, value]].
+let QIDX = null;
+function questIndex() {
+  if (QIDX && QIDX.n === QUESTS.length) return QIDX;
+  const byId = new Map(), fx = new Map();
+  for (const x of QUESTS) {
+    if (!byId.has(x.id)) byId.set(x.id, x);
+    if (x.bonus && x.bonus.fx) for (const k in x.bonus.fx) { if (!fx.has(k)) fx.set(k, []); fx.get(k).push([x.id, x]); }
+  }
+  return (QIDX = { n: QUESTS.length, byId, fx });
 }
 
 // g = game helpers: has(item,n), take(item,n), give(item,n), xp(skill,n), gold(n), tool(item), log(text)
@@ -864,7 +879,8 @@ export const QP_MILESTONES = [
 // Sum of one bonus from every completed quest and reached milestone.
 export function questFx(player, key) {
   let v = 0;
-  for (const x of QUESTS) if (x.bonus && x.bonus.fx && x.bonus.fx[key] && isDone(player, x.id)) v += x.bonus.fx[key];
+  const Q = player.quests || (player.quests = {}), list = questIndex().fx.get(key);
+  if (list) for (const [id, x] of list) { const s = Q[id]; if (x.bonus.fx[key] && s && s.stage === 'done') v += x.bonus.fx[key]; }
   const qp = questPoints(player);
   for (const m of QP_MILESTONES) if (qp >= m.qp && m.fx[key]) v += m.fx[key];
   return v;
