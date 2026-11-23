@@ -3,13 +3,13 @@
 // Save key is `ash`, not `flare` — Overflare already owns player.adapt.flare.
 import * as THREE from 'three';
 import { REGION_DATA } from '../regiondata.js';
-import { TOWNS } from '../world.js';
+import { TOWNS, MAIN_TOWNS } from '../world.js';
 import { PLOT } from './freeframe.js';
 import { NORM, obj, num } from './state.js';
 
 export const DURATION_MS = 12 * 60 * 1000, WARN_MS = 3 * 60 * 1000;
 export const CADENCE_MIN = 22 * 60 * 1000, CADENCE_SPAN = 12 * 60 * 1000;
-export const MAIN_TOWNS = ['Larkhaven', 'Emberfold', 'Saltreach', 'Highcrest', 'Whitecairn'];
+export { MAIN_TOWNS };   // shared list in world.js (re-exported for older imports)
 export const SWAP = { Wolf: 'Goblin', Goblin: 'Skeleton', Cow: 'Wolf', 'Giant Spider': 'Skeleton' };
 export const TINT = 0x6a4a32;
 

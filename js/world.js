@@ -31,6 +31,8 @@ export const TOWNS = {
 for (const R of REGION_DATA) if (R.camp) TOWNS[R.camp.name] = { x: R.x + R.camp.dx, z: R.z + R.camp.dz };
 for (const V of VILLAGES) TOWNS[V.name] = { x: V.x, z: V.z };
 export const TOWN_NAME = 'Larkhaven';
+// The five main towns (Ventures systems keep their camps, flares and wyrm perches away from these).
+export const MAIN_TOWNS = ['Larkhaven', 'Emberfold', 'Saltreach', 'Highcrest', 'Whitecairn'];
 export const PATHS = [[0, 0, 13, -12], [0, 0, -15, -13], [0, 0, -15, 12], [0, 0, 20, 17], [0, 0, 0, 24], [0, 0, 0, -27], [0, 0, 5, -7.4], [0, 0, 50, -20], [50, -20, 55, -35],
   // roads to the new towns
   [0, 24, -30, 45], [-30, 45, -80, 60], [60, -22, 90, -30], [90, -30, 120, -40], [-15, -13, -35, -50], [-35, -50, -60, -80],
