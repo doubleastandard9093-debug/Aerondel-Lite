@@ -194,6 +194,21 @@ export function col(geo, hex, amt = 0.22) { return shade(geo, hex, amt); }
 // ---------------------------------------------------------------------------
 // Shared vertex-colour Standard materials (roughness/metalness tuned for outdoor props).
 export const vcMat = attachNoiseBump(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.72, metalness: 0.04 }), 0.2);
+// three.js keys a material's shader on whether the mesh is instanced and receives shadows. When plain and instanced
+// meshes share one material it re-derives the program (getParameters + cache key) at every switch, several times a
+// frame. Instanced users take a twin of vcMat instead: same look, same compiled shader, no per-frame churn.
+// (Per-instance colours are part of that key too, so tinted instances get their own twin.)
+const vcTwins = {};
+export function vcMatInst(receiveShadow = true, colored = false) {
+  const k = (receiveShadow ? 'rs' : 'flat') + (colored ? '-c' : '');
+  if (!vcTwins[k]) {
+    const m = vcMat.clone();
+    m.onBeforeCompile = vcMat.onBeforeCompile; m.customProgramCacheKey = vcMat.customProgramCacheKey;
+    m.userData.shared = true; // never disposed with a chunk
+    vcTwins[k] = m;
+  }
+  return vcTwins[k];
+}
 // Up to 4 world-space pushers (x, z, radius, strength): the player and nearby mobs flatten grass around them.
 export const PUSH = { value: [new THREE.Vector4(0, 0, 0, 0), new THREE.Vector4(0, 0, 0, 0), new THREE.Vector4(0, 0, 0, 0), new THREE.Vector4(0, 0, 0, 0)] };
 export function makeFoliageMat(opts = {}, amount = 1, ring = false) {
