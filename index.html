@@ -354,6 +354,17 @@ button:active { background: linear-gradient(180deg, #2a2e35, #1c1f24); }
 <div id="levelup"></div>
 <div id="chat"></div>
 
-<script type="module" src="js/main.js"></script>
+<script type="module">
+// Production loads the one-file bundle (built by tools/build-bundle.cjs). Sources (js/main.js) load with ?dev, and by default on
+// localhost so the tools/*-check.cjs suites and local edits see live code; ?bundle (or localStorage aerondel.bundle=1) forces the bundle there.
+const q = new URLSearchParams(location.search), local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+let forceBundle = q.has('bundle'); try { forceBundle = forceBundle || localStorage.getItem('aerondel.bundle') === '1'; } catch (e) {}
+const dev = q.has('dev') || (local && !forceBundle);
+import(dev ? './js/main.js' : './bundle/aerondel.js').catch(e => {
+  // only a failed download falls back to the sources; a runtime error must not boot the game twice
+  if (!dev && !window.aerondel && /fetch|Importing a module|loading dynamically/i.test(String(e && e.message))) { console.warn('bundle unavailable, loading sources', e); import('./js/main.js'); }
+  else throw e;
+});
+</script>
 </body>
 </html>
