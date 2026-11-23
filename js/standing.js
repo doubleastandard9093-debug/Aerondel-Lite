@@ -38,7 +38,3 @@ export function addRep(player, fid, n) {
   const tier = tierOf(repOf(player, fid));
   return { tier, up: tier > before };
 }
-export function standingXpBonus(player, skill) {
-  let b = 0; for (const f of FACTIONS) if (f.skills.includes(skill)) b += tierOf(repOf(player, f.id)) * 0.01;
-  return b;
-}

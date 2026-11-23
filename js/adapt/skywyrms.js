@@ -1,12 +1,12 @@
 // Skywyrms: occasional overworld flyers you can fight or leave. A kill yields a soul for Veilcraft.
 // Not a Colossus and not a weekly chest. Ashwyrm stays on its Contested Wilds route. At most one sighting at a time.
 import { REGION_DATA } from '../regiondata.js';
-import { TOWNS } from '../world.js';
+import { TOWNS, MAIN_TOWNS } from '../world.js';
 import { NORM, obj, num } from './state.js';
 
 export const SOUL_CAP = 8, HUNTER_XP = 30, PRAYER_XP = 8;
 export const CADENCE_MIN = 18 * 60 * 1000, CADENCE_SPAN = 10 * 60 * 1000, WARN_MS = 3 * 60 * 1000;
-export const MAIN_TOWNS = ['Larkhaven', 'Emberfold', 'Saltreach', 'Highcrest', 'Whitecairn'];
+export { MAIN_TOWNS };   // shared list in world.js (re-exported for older imports)
 
 NORM.wyrms = v => {
   v = obj(v);

@@ -195,7 +195,6 @@ export function setSeasonDetail(season) {
   const t = new THREE.TextureLoader().load('textures/season_' + season + '.webp', () => { if (seasonTex === season) DETAIL_TEX.value = t; });
   t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4;
 }
-export function seasonDetailName() { return seasonTex; }
 const DETAIL_N0 = { value: null }, DETAIL_N1 = { value: null }, DETAIL_R = { value: null };
 const BLANK_DETAIL = new THREE.DataTexture(new Uint8Array([128, 128, 128, 128]), 1, 1); BLANK_DETAIL.needsUpdate = true;
 export function terrainMaterial(maskTex, maskSize) {

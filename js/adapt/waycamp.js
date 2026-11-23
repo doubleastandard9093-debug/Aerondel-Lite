@@ -2,13 +2,13 @@
 // Not Freeframe, not a town house, not the farm. Tiny cap. No Holdraids. Small Construction XP.
 import { ITEMS } from '../items.js';
 import { PLOT } from './freeframe.js';
-import { TOWNS } from '../world.js';
+import { TOWNS, MAIN_TOWNS } from '../world.js';
 import { NORM, obj, num } from './state.js';
 
 export const CAMP_ITEM = 'Waycamp kit';
 export const TOWN_R = 16, CAMP_R = 4, PLACE_XP = 15, CRAFT_XP = 40;
 export const PIECE_CAP_LOW = 8, PIECE_CAP_HIGH = 12;
-export const MAIN_TOWNS = ['Larkhaven', 'Emberfold', 'Saltreach', 'Highcrest', 'Whitecairn'];
+export { MAIN_TOWNS };   // shared list in world.js (re-exported for older imports)
 export const BASE_PIECES = ['bed', 'chest', 'bench', 'fire', 'lantern'];
 export const EXTRA = { stool: { name: 'Stool', logs: 1, xp: 5 }, crate: { name: 'Crate', logs: 1, xp: 5 }, rack: { name: 'Rack', logs: 1, xp: 5 } };
 

@@ -12,4 +12,3 @@ export const VILLAGES = [
     blurb: 'White towers under silver leaves, far south of Larkhaven. A shimmering ward keeps strangers out.',
     mobs: [['Giant Spider', 36, 30, 3], ['Dark Archer', -36, 30, 3]] }
 ];
-export const villageById = id => VILLAGES.find(v => v.id === id);

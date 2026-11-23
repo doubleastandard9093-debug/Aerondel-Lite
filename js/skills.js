@@ -41,7 +41,6 @@ const XP_TABLE = [0, 0];
 for (let l = 2; l <= 100; l++) XP_TABLE[l] = xpForLevel(l);
 { const d99 = XP_TABLE[99] - XP_TABLE[98]; for (let l = 101; l <= COMBAT_MAX + 1; l++) XP_TABLE[l] = XP_TABLE[l - 1] + Math.floor(d99 * (1 + (l - 1 - 99) / 40)); }
 // keep the old 99->100 step only as the first step of the extended curve
-export const xpAtLevel = l => XP_TABLE[Math.max(1, Math.min(COMBAT_MAX + 1, l))];
 
 export function getLevel(xp, max = SKILL_MAX) {
   let lo = 1, hi = max;   // binary search: the table has 1000 entries

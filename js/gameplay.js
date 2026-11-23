@@ -64,10 +64,6 @@ export function addTool(player, item) {
   player.tools[item] = true;
   return true;
 }
-export function toolTierBonus(player, skills, type) {
-  const t = bestTool(player, skills, type);
-  return t ? (ITEMS[t].toolTier || 0) * 0.05 : 0;
-}
 
 const TOOL_NAME = { axe: 'an axe', pickaxe: 'a pickaxe', net: 'a small fishing net', rod: 'a fly fishing rod', cage: 'a lobster pot', harpoon: 'a harpoon', hammer: 'a hammer', knife: 'a knife', needle: 'a needle', tinderbox: 'a tinderbox' };
 export function toolName(type) { return TOOL_NAME[type] || type; }

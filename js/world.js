@@ -11,7 +11,7 @@ import { VILLAGES } from './villagedata.js';
 import { terrainMaterial, waterMaterial, hookWaterNoise, WATER_MESHES } from './gfx.js';
 import { buildHumanoidRig, apronGeo, varyLook, hashStr, contactShadow, plateCharMat, chainCharMat } from './anatomy.js';
 import { buildCreatureRig, rollVariant, namedVariant, loColours } from './creatures.js';
-import { vcMat, foliageMat, bakedMesh, treeGeometry, rockGeometry, stumpGeometry, emptyRockGeometry, blob, paint, place as put, prim, col, snoise, bake, makeFoliageMat, tuftGeometry, flowerGeometry, humanoidParts, npcExtras, legPivot, creatureParts, hairCap, treeMat, treeDepthMat, setMat, woodAxis, buildMat, addFadeDither } from './models.js';
+import { vcMat, vcMatInst, foliageMat, bakedMesh, treeGeometry, rockGeometry, stumpGeometry, emptyRockGeometry, blob, paint, place as put, prim, col, snoise, bake, makeFoliageMat, tuftGeometry, flowerGeometry, humanoidParts, npcExtras, legPivot, creatureParts, hairCap, treeMat, treeDepthMat, setMat, woodAxis, buildMat, addFadeDither } from './models.js';
 
 // The world is about 440 x 440. Chunked decor + instance packing keep phones smooth.
 export const WORLD_HALF = 620; // was 420; v21 frontier ring (regiondata.js) of high-level zones
@@ -31,6 +31,8 @@ export const TOWNS = {
 for (const R of REGION_DATA) if (R.camp) TOWNS[R.camp.name] = { x: R.x + R.camp.dx, z: R.z + R.camp.dz };
 for (const V of VILLAGES) TOWNS[V.name] = { x: V.x, z: V.z };
 export const TOWN_NAME = 'Larkhaven';
+// The five main towns (Ventures systems keep their camps, flares and wyrm perches away from these).
+export const MAIN_TOWNS = ['Larkhaven', 'Emberfold', 'Saltreach', 'Highcrest', 'Whitecairn'];
 export const PATHS = [[0, 0, 13, -12], [0, 0, -15, -13], [0, 0, -15, 12], [0, 0, 20, 17], [0, 0, 0, 24], [0, 0, 0, -27], [0, 0, 5, -7.4], [0, 0, 50, -20], [50, -20, 55, -35],
   // roads to the new towns
   [0, 24, -30, 45], [-30, 45, -80, 60], [60, -22, 90, -30], [90, -30, 120, -40], [-15, -13, -35, -50], [-35, -50, -60, -80],
@@ -232,7 +234,6 @@ export function terrainHeight(x, z) {
   return (H[i] * (1 - fx) + H[i + 1] * fx) * (1 - fz) + (H[i + HF.N] * (1 - fx) + H[i + HF.N + 1] * fx) * fz;
 }
 // Surface normal-ish slope helper (for placing props upright on hills).
-export function groundAt(x, z) { return terrainHeight(x, z); }
 // flats: [{x, z, r}] circles and [{x1, z1, x2, z2, r}] segments kept level (blend over BLEND units).
 export function bakeHeightField(flats, segs, boxes) {
   const BLEND = 10, M = WORLD_HALF + 70, N = M * 2 + 1;
@@ -468,7 +469,7 @@ export function createWorld(scene) {
   }
   function flushTreesAndRocks() {
     flushInstances(pendingTrees, (key) => treeGeoCache[key], treeMat, true);
-    flushInstances(pendingRocks, (key) => rockGeoCache[key], vcMat, true);
+    flushInstances(pendingRocks, (key) => rockGeoCache[key], vcMatInst(true), true);
     pendingTrees.length = 0; pendingRocks.length = 0;
   }
   // Exposed so the main loop can re-pack after distance cull flips.
@@ -596,7 +597,7 @@ export function createWorld(scene) {
   // Fences: round posts (one instanced draw call per fence) and two rails.
   const postGeo = col(prim.cyl(0.07, 0.09, 1.0, 7), 0x6a4a2a, 0.3);
   function posts(list) {
-    const inst = new THREE.InstancedMesh(postGeo, vcMat, list.length);
+    const inst = new THREE.InstancedMesh(postGeo, vcMatInst(false), list.length);
     const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(1, 1, 1), p = new THREE.Vector3();
     list.forEach(([x, z], i) => { p.set(x, 0.5, z); m4.compose(p, q, sc); inst.setMatrixAt(i, m4); });
     inst.castShadow = true;
@@ -1874,15 +1875,16 @@ function scatterDecor(scene, rng, occupied) {
         if (it.c) inst.setColorAt(i, it.c);
       });
       inst.count = list.length;
+      if (inst.instanceColor && mat === vcMatInst(true)) inst.material = vcMatInst(true, true);   // tinted twin (see vcMatInst)
       inst.castShadow = !!shadow; inst.receiveShadow = true;
       if (mat === treeMat) inst.customDepthMaterial = treeDepthMat;   // leaf shadows sway with the leaves
       inst.computeBoundingSphere();
       group.add(inst);
       return inst;
     }
-    decorPending.push(() => { for (const [geo, mat, list] of [[grassGeo, grassMat, lists.grass], [grassGeo, grassMat, lists.grassHi], [flowerGeo, flowerMat, lists.flowers], [fernGeo(), fernMat, lists.ferns], [mossGeo(), vcMat, lists.moss]]) { const im = makeInst(geo, mat, list, false); if (im) { fine.push(im); decorFine.push(im); } } });
+    decorPending.push(() => { for (const [geo, mat, list] of [[grassGeo, grassMat, lists.grass], [grassGeo, grassMat, lists.grassHi], [flowerGeo, flowerMat, lists.flowers], [fernGeo(), fernMat, lists.ferns], [mossGeo(), vcMatInst(true), lists.moss]]) { const im = makeInst(geo, mat, list, false); if (im) { fine.push(im); decorFine.push(im); } } });
     makeInst(bushGeo, foliageMat, lists.bushes, true);
-    makeInst(pebGeo, vcMat, lists.pebbles, false);
+    makeInst(pebGeo, vcMatInst(true), lists.pebbles, false);
     scene.add(group);
     const [kx, kz] = key.split(',').map(Number);
     decorChunks.set(key, { group, fine, minX: kx * CHUNK_SIZE - WORLD_HALF, minZ: kz * CHUNK_SIZE - WORLD_HALF });

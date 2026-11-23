@@ -22,7 +22,6 @@ export const EVENTS = [
   { id: 'founders', name: "Founders' Week", icon: '🏰', special: true, from: [6, 1], to: [6, 10], token: 'Founder\'s seal', deco: 'bunting', colors: [0xd4af37, 0x2a4aa0, 0xffffff],
     blurb: 'Aerondel remembers the first walls of Larkhaven.', shop: [['Founder\'s circlet', 'head', { def: 5, rdef: 5, atk: 2, str: 2 }, 120]] }
 ];
-export const eventById = id => EVENTS.find(e => e.id === id);
 const inWindow = (d, from, to) => { const v = (d.getMonth() + 1) * 100 + d.getDate(), a = from[0] * 100 + from[1], b = to[0] * 100 + to[1]; return a <= b ? v >= a && v <= b : v >= a || v <= b; };
 // Active events for a date: the current season's festival plus any special whose window contains the date.
 export function activeEvents(player, d = new Date()) {

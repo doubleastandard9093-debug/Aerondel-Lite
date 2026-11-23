@@ -14,7 +14,6 @@ export const DELVES = {
   keep: { name: 'The Drowned Keep', z: DELVE_Z - 80, level: 35, floor: 0x26323a, wall: 0x3a4a56,
     rooms: [[['Drowned Deckhand', 5]], [['Drowned Gunner', 3], ['Drowned Deckhand', 3]], [['Drowned Gunner', 4], ['Ogre', 2]]], coins: 1400, xp: 6000 }
 };
-export const inDelveZone = (x, z) => x < -700 && z < DELVE_Z + 40;
 export function normalizeDelves(d) {
   d = d && typeof d === 'object' ? d : {};
   const clears = {}; for (const k of Object.keys(DELVES)) clears[k] = Math.max(0, Math.floor(+(d.clears || {})[k] || 0));
