@@ -327,11 +327,15 @@ export const WATER_MESHES = [];
 export function createWaterReflection(renderer, scene, camera) {
   const rt = new THREE.WebGLRenderTarget(256, 256, { type: THREE.HalfFloatType });
   const cam = new THREE.PerspectiveCamera(), clip = [new THREE.Plane(new THREE.Vector3(0, 1, 0), -WATER_Y + 0.01)];
+  // While reflections are on, keep one no-op global clip plane (y >= -1e6) on the renderer, so every material keeps the same
+  // shader program in the clipped reflection pass and the main pass (numClippingPlanes stays 1 instead of flipping 0 <-> 1 twice a frame).
+  const keep = [new THREE.Plane(new THREE.Vector3(0, 1, 0), 1e6)];
   const fwd = new THREE.Vector3(), tgt = new THREE.Vector3(), near = new THREE.Vector3();
   const bias = new THREE.Matrix4().set(0.5, 0, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0, 0.5, 0.5, 0, 0, 0, 1);
   WATER_REFL.tex.value = rt.texture;
   return {
     update(enabled) {
+      if (enabled) { if (renderer.clippingPlanes !== keep) renderer.clippingPlanes = keep; } else if (renderer.clippingPlanes === keep) renderer.clippingPlanes = [];
       // only when some water is on screen nearby
       let vis = false;
       if (enabled) for (const w of WATER_MESHES) { if (w.parent && near.copy(w.position).distanceTo(camera.position) < 140) { vis = true; break; } }
