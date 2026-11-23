@@ -137,7 +137,7 @@ export default function kitwright(A) {
 
   A.vtests = A.vtests || {};
   A.vtests.kitwright = async (g, A) => {
-    const P = g.player, { attackRange, attackSpeedTicks, playerMaxHit } = await import('/js/gameplay.js');
+    const P = g.player, { attackRange, attackSpeedTicks, playerMaxHit } = await import('../gameplay.js');
     const w = P.equipment.weapon || 'Bronze sword';
     P.equipment.weapon = w;
     const dmg0 = A.totals(null).dmg;
@@ -167,7 +167,7 @@ export default function kitwright(A) {
     P.inventory['Longhaft kit'] = 1;
     const blocked = A.kitAttach(uniq, 'longhaft');
     P.equipment.weapon = w;
-    const exam = (await import('/js/items.js')).examineItem;
+    const exam = (await import('../items.js')).examineItem;
     // Sight does not change damage either; focus hook is a multiplier.
     return !blocked && facetOk && graftOk && typeof exam === 'function';
   };

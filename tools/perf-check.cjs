@@ -16,9 +16,9 @@ const [,,tier='low']=process.argv;
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   // shader-key flips over ~6 s
   const P=g.renderer.properties,K=['instancing','skinning','receiveShadow','instancingColor','vertexAlphas','morphTargetsCount','outputColorSpace','numClippingPlanes','toneMapping'];
-  const snap=m=>{const q=P.get(m);return K.map(k=>q[k]).join('|');};const before=new WeakMap(),flips={};
+  const snap=m=>{const q=P.get(m);return q.programs||q.currentProgram?K.map(k=>q[k]).join('|'):null;}; /* null = not compiled yet: a first compile is not a flip */const before=new WeakMap(),flips={};
   T.Mesh.prototype.onBeforeRender=function(r,s,c,geo,m){before.set(this,snap(m));};
-  T.Mesh.prototype.onAfterRender=function(r,s,c,geo,m){const a=before.get(this);if(a!==undefined&&a!==snap(m)){const k='mat#'+m.id+' '+m.type+(this.isInstancedMesh?' (instanced)':'');flips[k]=(flips[k]||0)+1;}};
+  T.Mesh.prototype.onAfterRender=function(r,s,c,geo,m){const a=before.get(this);if(s&&s.overrideMaterial===m)return; /* a whole-scene override (GTAO normal pass on High) is one material for every mesh by design */ if(a!=null&&a!==snap(m)){const k='mat#'+m.id+' '+m.type+(this.isInstancedMesh?' (instanced)':'');flips[k]=(flips[k]||0)+1;}};
   window.__pc.cb.length=0;const h0=performance.memory?performance.memory.usedJSHeapSize:0;
   await sleep(6000);delete T.Mesh.prototype.onBeforeRender;delete T.Mesh.prototype.onAfterRender;
   const cb=window.__pc.cb.slice().sort((a,b)=>a-b);o.frames=cb.length;o.rafAvgMs=+(cb.reduce((a,b)=>a+b,0)/(cb.length||1)).toFixed(2);o.rafP95Ms=+(cb[Math.floor(cb.length*.95)]||0).toFixed(2);
@@ -36,5 +36,6 @@ const [,,tier='low']=process.argv;
  if(r.flips&&Object.keys(r.flips).length)fail.push('shader key flips: '+JSON.stringify(r.flips));
  if(errs.length)fail.push('page errors: '+errs.slice(0,3).join(' | '));
  console.log(JSON.stringify(r));
+ if(r.boot&&r.frames<3)console.log('WARN: only '+r.frames+' frames in the 6 s window (software GL at this tier); flip and rAF numbers are thin. Re-run on a GPU for real numbers.');
  console.log(fail.length?'FAIL: '+fail.join('; '):'PASS perf-check ('+tier+')');
  await b.close();process.exit(fail.length?1:0);})();

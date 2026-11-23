@@ -237,7 +237,7 @@ export default function wardfine(A) {
     const snap = JSON.parse(JSON.stringify({ fines: s.fines, heat: s.heat, unwelcome: s.unwelcome, held: s.held, heldTown: s.heldTown, jailUntil: s.jailUntil, gold: g.player.gold, inv: { ...g.player.inventory } }));
     try {
       s.fines = {}; s.heat = {}; s.unwelcome = {}; s.held = {}; s.heldTown = ''; s.jailUntil = 0;
-      const { thieve } = await import('/js/gameplay.js');
+      const { thieve } = await import('../gameplay.js');
       const fail = thieve('Man', g.skills, g.player, () => 1);
       if (!(fail && fail.fail && fail.stun > 0)) return 'stun lost ' + JSON.stringify(fail);
       const p = A.pos && A.pos();

@@ -8,6 +8,13 @@ Browser-based 3D RPG inspired by classic 2000s fantasy MMOs. Plain static site, 
 2. Settings → Pages → Deploy from main branch
 3. Live at `https://yourusername.github.io/repo-name/`
 
+## Bundle (rebuild after every js/ change)
+
+The live game loads `bundle/aerondel.js`, a single minified ES module built from `js/` by esbuild (three.js stays on the CDN importmap).
+After ANY change under `js/`, run `node tools/build-bundle.cjs` and commit `bundle/` with the change; otherwise Pages keeps serving the old code.
+`node tools/build-bundle.cjs --check` fails when the bundle is stale, and `node tools/bundle-check.cjs low` checks the bundle boots and matches the sources.
+Add `?dev` to the URL to run the sources directly (localhost does this by default; add `?bundle` there to test the bundle).
+
 ## Interface
 
 The UI is original art made in code: CSS, inline SVG and canvas. There are no image files and no Jagex or Artix assets.

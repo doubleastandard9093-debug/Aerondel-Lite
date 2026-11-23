@@ -90,7 +90,7 @@ export default function skillwords(A) {
     const again = A.skillTry('hilda_pie');
     const once = /already/i.test((again && again[0] && again[0][1]) || '');
     // Silver Tongue table is untouched.
-    const tongue = await import('/js/tongue.js');
+    const tongue = await import('../tongue.js');
     const st = !!(tongue.QUEST_CHECKS && tongue.QUEST_CHECKS.hilda_pie && tongue.CHECKS.persuade);
     // Wrap adds a choose line for Hilda when the hook is still open (use bob, which has no quest gate, after clearing used).
     S.used = S.used.filter(x => x !== 'bob_tools');
